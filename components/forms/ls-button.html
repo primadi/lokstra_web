@@ -1,0 +1,184 @@
+import { LitElement, html, css } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+
+@customElement('ls-button')
+export class LsButton extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-block;
+    }
+
+    .ls-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      border-radius: var(--ls-button-border-radius, 0.5rem);
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ls-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Sizes */
+    .ls-button.small {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .ls-button.medium {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    .ls-button.large {
+      padding: 1rem 2rem;
+      font-size: 1.125rem;
+    }
+
+    /* Variants */
+    .ls-button.primary {
+      background-color: var(--ls-button-primary-bg, #3b82f6);
+      color: var(--ls-button-primary-color, #ffffff);
+      border-color: var(--ls-button-primary-border, #3b82f6);
+    }
+
+    .ls-button.primary:hover:not(:disabled) {
+      background-color: var(--ls-button-primary-hover-bg, #2563eb);
+      border-color: var(--ls-button-primary-hover-border, #2563eb);
+    }
+
+    .ls-button.secondary {
+      background-color: var(--ls-button-secondary-bg, #6b7280);
+      color: var(--ls-button-secondary-color, #ffffff);
+      border-color: var(--ls-button-secondary-border, #6b7280);
+    }
+
+    .ls-button.secondary:hover:not(:disabled) {
+      background-color: var(--ls-button-secondary-hover-bg, #4b5563);
+      border-color: var(--ls-button-secondary-hover-border, #4b5563);
+    }
+
+    .ls-button.outline {
+      background-color: var(--ls-button-outline-bg, transparent);
+      border-color: var(--ls-button-outline-border, #d1d5db);
+      color: var(--ls-button-outline-color, #374151);
+    }
+
+    .ls-button.outline:hover:not(:disabled) {
+      background-color: var(--ls-button-outline-hover-bg, #f9fafb);
+    }
+
+    .ls-button.danger {
+      background-color: var(--ls-button-danger-bg, #ef4444);
+      color: var(--ls-button-danger-color, #ffffff);
+      border-color: var(--ls-button-danger-border, #ef4444);
+    }
+
+    .ls-button.danger:hover:not(:disabled) {
+      background-color: var(--ls-button-danger-hover-bg, #dc2626);
+      border-color: var(--ls-button-danger-hover-border, #dc2626);
+    }
+
+    .ls-button.success {
+      background-color: var(--ls-button-success-bg, #10b981);
+      color: var(--ls-button-success-color, #ffffff);
+      border-color: var(--ls-button-success-border, #10b981);
+    }
+
+    .ls-button.success:hover:not(:disabled) {
+      background-color: var(--ls-button-success-hover-bg, #059669);
+      border-color: var(--ls-button-success-hover-border, #059669);
+    }
+
+    .ls-button-icon {
+      margin-right: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .ls-button-loading {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none;
+    }
+  `;
+
+  @property({ type: String }) text = '';
+  @property({ type: String }) type = 'button';
+  @property({ type: String }) variant = 'primary';
+  @property({ type: String }) size = 'medium';
+  @property({ type: Boolean }) disabled = false;
+  @property({ type: Boolean }) loading = false;
+  @property({ type: String }) hxPost = '';
+  @property({ type: String }) hxGet = '';
+  @property({ type: String }) hxTrigger = '';
+  @property({ type: String }) hxTarget = '';
+  @property({ type: String }) hxSwap = '';
+
+  @state() private isLoading = false;
+
+  private handleClick() {
+    if (this.disabled || this.loading) return;
+    
+    if (this.hxPost || this.hxGet) {
+      this.isLoading = true;
+      // HTMX will handle the loading state
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 100);
+    }
+
+    this.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+  }
+
+  render() {
+    const buttonClasses = [
+      'ls-button',
+      this.size,
+      this.variant
+    ].join(' ');
+
+    const showLoading = this.loading || this.isLoading;
+
+    return html`
+      <button
+        type="${this.type}"
+        class="${buttonClasses}"
+        ?disabled="${this.disabled || showLoading}"
+        @click="${this.handleClick}"
+        hx-post="${this.hxPost}"
+        hx-get="${this.hxGet}"
+        hx-trigger="${this.hxTrigger}"
+        hx-target="${this.hxTarget}"
+        hx-swap="${this.hxSwap}"
+      >
+        ${showLoading ? html`
+          <span class="ls-button-icon ls-button-loading">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </span>
+        ` : ''}
+        
+        <slot name="icon" class="${showLoading ? 'hidden' : ''}"></slot>
+        
+        <span>${this.text}</span>
+      </button>
+    `;
+  }
+}

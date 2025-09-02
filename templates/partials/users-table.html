@@ -1,0 +1,209 @@
+<!-- Users Table Content (Partial for HTMX loading) -->
+<table class="user-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Last Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="user-avatar">JD</div>
+                    <div>
+                        <div style="font-weight: 500;">John Doe</div>
+                        <div style="font-size: 0.875rem; color: var(--ls-gray-600);">Administrator</div>
+                    </div>
+                </div>
+            </td>
+            <td>john.doe@example.com</td>
+            <td>
+                <span style="font-weight: 500; color: var(--ls-primary-600);">Admin</span>
+            </td>
+            <td>
+                <span class="status-badge status-active">Active</span>
+            </td>
+            <td>
+                <span style="color: var(--ls-gray-600);">2 minutes ago</span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn edit-user" data-user-id="1" title="Edit User">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn" title="View Details" hx-get="/users/1" hx-target="#pageContent">
+                        <i data-lucide="eye" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn danger delete-user" data-user-id="1" title="Delete User">
+                        <i data-lucide="trash-2" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="user-avatar">JS</div>
+                    <div>
+                        <div style="font-weight: 500;">Jane Smith</div>
+                        <div style="font-size: 0.875rem; color: var(--ls-gray-600);">Editor</div>
+                    </div>
+                </div>
+            </td>
+            <td>jane.smith@example.com</td>
+            <td>
+                <span style="font-weight: 500; color: var(--ls-blue-600);">Editor</span>
+            </td>
+            <td>
+                <span class="status-badge status-active">Active</span>
+            </td>
+            <td>
+                <span style="color: var(--ls-gray-600);">1 hour ago</span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn edit-user" data-user-id="2" title="Edit User">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn" title="View Details" hx-get="/users/2" hx-target="#pageContent">
+                        <i data-lucide="eye" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn danger delete-user" data-user-id="2" title="Delete User">
+                        <i data-lucide="trash-2" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="user-avatar">MB</div>
+                    <div>
+                        <div style="font-weight: 500;">Mike Brown</div>
+                        <div style="font-size: 0.875rem; color: var(--ls-gray-600);">User</div>
+                    </div>
+                </div>
+            </td>
+            <td>mike.brown@example.com</td>
+            <td>
+                <span style="font-weight: 500; color: var(--ls-green-600);">User</span>
+            </td>
+            <td>
+                <span class="status-badge status-pending">Pending</span>
+            </td>
+            <td>
+                <span style="color: var(--ls-gray-600);">3 days ago</span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn edit-user" data-user-id="3" title="Edit User">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn" title="View Details" hx-get="/users/3" hx-target="#pageContent">
+                        <i data-lucide="eye" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn danger delete-user" data-user-id="3" title="Delete User">
+                        <i data-lucide="trash-2" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="user-avatar">SW</div>
+                    <div>
+                        <div style="font-weight: 500;">Sarah Wilson</div>
+                        <div style="font-size: 0.875rem; color: var(--ls-gray-600);">Viewer</div>
+                    </div>
+                </div>
+            </td>
+            <td>sarah.wilson@example.com</td>
+            <td>
+                <span style="font-weight: 500; color: var(--ls-purple-600);">Viewer</span>
+            </td>
+            <td>
+                <span class="status-badge status-inactive">Inactive</span>
+            </td>
+            <td>
+                <span style="color: var(--ls-gray-600);">1 week ago</span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn edit-user" data-user-id="4" title="Edit User">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn" title="View Details" hx-get="/users/4" hx-target="#pageContent">
+                        <i data-lucide="eye" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn danger delete-user" data-user-id="4" title="Delete User">
+                        <i data-lucide="trash-2" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="user-avatar">DL</div>
+                    <div>
+                        <div style="font-weight: 500;">David Lee</div>
+                        <div style="font-size: 0.875rem; color: var(--ls-gray-600);">Editor</div>
+                    </div>
+                </div>
+            </td>
+            <td>david.lee@example.com</td>
+            <td>
+                <span style="font-weight: 500; color: var(--ls-blue-600);">Editor</span>
+            </td>
+            <td>
+                <span class="status-badge status-active">Active</span>
+            </td>
+            <td>
+                <span style="color: var(--ls-gray-600);">30 minutes ago</span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn edit-user" data-user-id="5" title="Edit User">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn" title="View Details" hx-get="/users/5" hx-target="#pageContent">
+                        <i data-lucide="eye" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                    <button class="action-btn danger delete-user" data-user-id="5" title="Delete User">
+                        <i data-lucide="trash-2" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<div class="pagination">
+    <div class="pagination-info">
+        Showing 1 to 5 of 24 users
+    </div>
+    
+    <div class="pagination-controls">
+        <ls-button text="Previous" variant="outline" size="sm" disabled="true"></ls-button>
+        <ls-button text="1" variant="primary" size="sm"></ls-button>
+        <ls-button text="2" variant="outline" size="sm" hx-get="/api/users?page=2" hx-target="#usersTable"></ls-button>
+        <ls-button text="3" variant="outline" size="sm" hx-get="/api/users?page=3" hx-target="#usersTable"></ls-button>
+        <ls-button text="Next" variant="outline" size="sm" hx-get="/api/users?page=2" hx-target="#usersTable"></ls-button>
+    </div>
+</div>
+
+<script>
+    // Update user count in header
+    document.getElementById('userCount').textContent = '24';
+</script>

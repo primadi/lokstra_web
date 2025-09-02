@@ -1,0 +1,242 @@
+<!-- ls-modal: Standard modal dialog component -->
+<div class="ls-modal" x-data="{ open: {{ .Open | default false }} }" x-show="open" x-cloak>
+    <style>
+        .ls-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .ls-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+        }
+        
+        .ls-modal-container {
+            position: relative;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .ls-modal-small {
+            max-width: 400px;
+        }
+        
+        .ls-modal-medium {
+            max-width: 600px;
+        }
+        
+        .ls-modal-large {
+            max-width: 800px;
+        }
+        
+        .ls-modal-xl {
+            max-width: 1200px;
+        }
+        
+        .ls-modal-full {
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+        
+        .ls-modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ls-modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .ls-modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            color: #6b7280;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .ls-modal-close:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .ls-modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+        
+        .ls-modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        .ls-modal-footer.center {
+            justify-content: center;
+        }
+        
+        .ls-modal-footer.left {
+            justify-content: flex-start;
+        }
+        
+        .ls-modal-footer.between {
+            justify-content: space-between;
+        }
+        
+        /* Theme overrides */
+        .theme-dark .ls-modal-container {
+            background-color: #1f2937;
+        }
+        
+        .theme-dark .ls-modal-header {
+            border-color: #374151;
+        }
+        
+        .theme-dark .ls-modal-title {
+            color: white;
+        }
+        
+        .theme-dark .ls-modal-footer {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+        
+        /* Animations */
+        [x-cloak] {
+            display: none !important;
+        }
+        
+        .ls-modal[x-show="true"] {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        .ls-modal-container {
+            transform: scale(0.95);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .ls-modal[x-show="true"] .ls-modal-container {
+            transform: scale(1);
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .ls-modal {
+                padding: 0.5rem;
+                align-items: flex-end;
+            }
+            
+            .ls-modal-container {
+                border-radius: 0.75rem 0.75rem 0 0;
+                max-height: 90vh;
+            }
+            
+            .ls-modal-body {
+                max-height: 60vh;
+            }
+            
+            .ls-modal-footer {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+    
+    <!-- Modal overlay -->
+    <div class="ls-modal-overlay" @click="open = false"></div>
+    
+    <!-- Modal container -->
+    <div class="ls-modal-container {{ .Size | default "medium" }} {{ .Class }}">
+        <!-- Header -->
+        {{ if .ShowHeader | default true }}
+        <div class="ls-modal-header {{ .HeaderClass }}">
+            <h3 class="ls-modal-title">{{ .Title }}</h3>
+            {{ if .ShowCloseButton | default true }}
+            <button class="ls-modal-close" @click="open = false" type="button">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            {{ end }}
+        </div>
+        {{ end }}
+        
+        <!-- Body -->
+        <div class="ls-modal-body {{ .BodyClass }}">
+            {{ .Content }}
+        </div>
+        
+        <!-- Footer -->
+        {{ if .ShowFooter }}
+        <div class="ls-modal-footer {{ .FooterAlign | default "right" }} {{ .FooterClass }}">
+            {{ if .FooterButtons }}
+            {{ range .FooterButtons }}
+            {{ template "ls-button.html" . }}
+            {{ end }}
+            {{ else }}
+            <!-- Default buttons -->
+            <button type="button" class="ls-button secondary" @click="open = false">
+                {{ .CancelText | default "Cancel" }}
+            </button>
+            <button type="button" class="ls-button primary"
+                    {{ if .ConfirmAction }}@click="{{ .ConfirmAction }}"{{ end }}
+                    {{ if .HxPost }}hx-post="{{ .HxPost }}"{{ end }}
+                    {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}>
+                {{ .ConfirmText | default "Confirm" }}
+            </button>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</div>
+
+<!-- Modal trigger (optional) -->
+{{ if .TriggerButton }}
+<button type="button" 
+        class="{{ .TriggerButton.Class | default "ls-button primary" }}"
+        @click="open = true"
+        {{ if .TriggerButton.HxGet }}hx-get="{{ .TriggerButton.HxGet }}"{{ end }}
+        {{ if .TriggerButton.HxTarget }}hx-target="{{ .TriggerButton.HxTarget }}"{{ end }}>
+    {{ .TriggerButton.Text }}
+</button>
+{{ end }}

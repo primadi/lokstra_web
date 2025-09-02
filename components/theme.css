@@ -1,0 +1,550 @@
+/* Global CSS Variables for Lokstra Web Components Theme with Preline Integration */
+
+/* Import Preline variables and extend with Lokstra custom properties */
+@import url("https://unpkg.com/preline@3.2.3/dist/preline.css");
+
+:root {
+  /* Lokstra Primary Colors - Compatible with Preline */
+  --ls-primary-50: #eff6ff;
+  --ls-primary-100: #dbeafe;
+  --ls-primary-200: #bfdbfe;
+  --ls-primary-300: #93c5fd;
+  --ls-primary-400: #60a5fa;
+  --ls-primary-500: #3b82f6;
+  --ls-primary-600: #2563eb;
+  --ls-primary-700: #1d4ed8;
+  --ls-primary-800: #1e40af;
+  --ls-primary-900: #1e3a8a;
+
+  /* Preline Gray Scale - Using Preline conventions */
+  --ls-gray-50: #f9fafb;
+  --ls-gray-100: #f3f4f6;
+  --ls-gray-200: #e5e7eb;
+  --ls-gray-300: #d1d5db;
+  --ls-gray-400: #9ca3af;
+  --ls-gray-500: #6b7280;
+  --ls-gray-600: #4b5563;
+  --ls-gray-700: #374151;
+  --ls-gray-800: #1f2937;
+  --ls-gray-900: #111827;
+
+  /* Status Colors - Preline Compatible */
+  --ls-error-50: #fef2f2;
+  --ls-error-100: #fee2e2;
+  --ls-error-200: #fecaca;
+  --ls-error-300: #fca5a5;
+  --ls-error-400: #f87171;
+  --ls-error-500: #ef4444;
+  --ls-error-600: #dc2626;
+  --ls-error-700: #b91c1c;
+  --ls-error-800: #991b1b;
+  --ls-error-900: #7f1d1d;
+
+  --ls-success-50: #ecfdf5;
+  --ls-success-100: #d1fae5;
+  --ls-success-200: #a7f3d0;
+  --ls-success-300: #6ee7b7;
+  --ls-success-400: #34d399;
+  --ls-success-500: #10b981;
+  --ls-success-600: #059669;
+  --ls-success-700: #047857;
+  --ls-success-800: #065f46;
+  --ls-success-900: #064e3b;
+
+  --ls-warning-50: #fffbeb;
+  --ls-warning-100: #fef3c7;
+  --ls-warning-200: #fde68a;
+  --ls-warning-300: #fcd34d;
+  --ls-warning-400: #fbbf24;
+  --ls-warning-500: #f59e0b;
+  --ls-warning-600: #d97706;
+  --ls-warning-700: #b45309;
+  --ls-warning-800: #92400e;
+  --ls-warning-900: #78350f;
+
+  /* Preline Design Tokens */
+  --ls-border-radius: 0.5rem;
+  --ls-border-radius-sm: 0.25rem;
+  --ls-border-radius-lg: 0.75rem;
+  --ls-border-radius-xl: 1rem;
+
+  --ls-spacing-xs: 0.25rem;
+  --ls-spacing-sm: 0.5rem;
+  --ls-spacing-md: 0.75rem;
+  --ls-spacing-lg: 1rem;
+  --ls-spacing-xl: 1.5rem;
+  --ls-spacing-2xl: 2rem;
+
+  --ls-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --ls-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --ls-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --ls-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Lokstra Component Variables - Preline Style */
+  --ls-input-bg: #ffffff;
+  --ls-input-border: var(--ls-gray-300);
+  --ls-input-text: var(--ls-gray-900);
+  --ls-input-placeholder: var(--ls-gray-500);
+  --ls-input-focus-border: var(--ls-primary-500);
+  --ls-input-focus-ring: rgba(59, 130, 246, 0.1);
+  --ls-input-disabled-bg: var(--ls-gray-100);
+  --ls-input-error-border: var(--ls-error-500);
+  --ls-input-error-ring: rgba(239, 68, 68, 0.1);
+
+  /* Button Variables - Preline Style */
+  --ls-btn-padding-y: 0.5rem;
+  --ls-btn-padding-x: 1rem;
+  --ls-btn-font-size: 0.875rem;
+  --ls-btn-border-radius: var(--ls-border-radius);
+  --ls-btn-font-weight: 500;
+
+  /* Primary Button */
+  --ls-btn-primary-color: #ffffff;
+  --ls-btn-primary-bg: var(--ls-primary-600);
+  --ls-btn-primary-border: var(--ls-primary-600);
+  --ls-btn-primary-hover-bg: var(--ls-primary-700);
+  --ls-btn-primary-hover-border: var(--ls-primary-700);
+  --ls-btn-primary-active-bg: var(--ls-primary-800);
+
+  /* Secondary Button */
+  --ls-btn-secondary-color: var(--ls-gray-900);
+  --ls-btn-secondary-bg: var(--ls-gray-200);
+  --ls-btn-secondary-border: var(--ls-gray-200);
+  --ls-btn-secondary-hover-bg: var(--ls-gray-300);
+  --ls-btn-secondary-hover-border: var(--ls-gray-300);
+
+  /* Outline Button */
+  --ls-btn-outline-color: var(--ls-gray-600);
+  --ls-btn-outline-bg: transparent;
+  --ls-btn-outline-border: var(--ls-gray-300);
+  --ls-btn-outline-hover-bg: var(--ls-gray-50);
+  --ls-btn-outline-hover-border: var(--ls-gray-400);
+
+  /* Danger Button */
+  --ls-btn-danger-color: #ffffff;
+  --ls-btn-danger-bg: var(--ls-error-600);
+  --ls-btn-danger-border: var(--ls-error-600);
+  --ls-btn-danger-hover-bg: var(--ls-error-700);
+  --ls-btn-danger-hover-border: var(--ls-error-700);
+
+  /* Success Button */
+  --ls-btn-success-color: #ffffff;
+  --ls-btn-success-bg: var(--ls-success-600);
+  --ls-btn-success-border: var(--ls-success-600);
+  --ls-btn-success-hover-bg: var(--ls-success-700);
+  --ls-btn-success-hover-border: var(--ls-success-700);
+
+  /* Sidebar Variables - Preline Compatible */
+  --ls-sidebar-width: 16rem;
+  --ls-sidebar-collapsed-width: 4rem;
+  --ls-sidebar-bg: var(--ls-gray-900);
+  --ls-sidebar-border: var(--ls-gray-800);
+  --ls-sidebar-text: var(--ls-gray-100);
+  --ls-sidebar-text-muted: var(--ls-gray-400);
+  --ls-sidebar-item-hover-bg: var(--ls-gray-800);
+  --ls-sidebar-item-active-bg: var(--ls-primary-600);
+  --ls-sidebar-item-active-border: var(--ls-primary-400);
+
+  /* Navbar Variables */
+  --ls-navbar-bg: #ffffff;
+  --ls-navbar-border: var(--ls-gray-200);
+  --ls-navbar-text: var(--ls-gray-900);
+  --ls-navbar-shadow: var(--ls-shadow-sm);
+}
+
+/* Dark Theme - Preline Compatible */
+.theme-dark,
+[data-hs-theme-appearance="dark"] {
+  /* Dark theme color overrides */
+  --ls-gray-50: #1f2937;
+  --ls-gray-100: #374151;
+  --ls-gray-200: #4b5563;
+  --ls-gray-300: #6b7280;
+  --ls-gray-400: #9ca3af;
+  --ls-gray-500: #d1d5db;
+  --ls-gray-600: #e5e7eb;
+  --ls-gray-700: #f3f4f6;
+  --ls-gray-800: #f9fafb;
+  --ls-gray-900: #ffffff;
+
+  /* Component dark overrides */
+  --ls-input-bg: var(--ls-gray-800);
+  --ls-input-border: var(--ls-gray-600);
+  --ls-input-text: var(--ls-gray-100);
+  --ls-input-placeholder: var(--ls-gray-400);
+  --ls-input-disabled-bg: var(--ls-gray-700);
+
+  --ls-btn-secondary-color: var(--ls-gray-100);
+  --ls-btn-secondary-bg: var(--ls-gray-700);
+  --ls-btn-secondary-border: var(--ls-gray-700);
+  --ls-btn-secondary-hover-bg: var(--ls-gray-600);
+
+  --ls-btn-outline-color: var(--ls-gray-300);
+  --ls-btn-outline-border: var(--ls-gray-600);
+  --ls-btn-outline-hover-bg: var(--ls-gray-800);
+
+  --ls-navbar-bg: var(--ls-gray-900);
+  --ls-navbar-border: var(--ls-gray-800);
+  --ls-navbar-text: var(--ls-gray-100);
+}
+
+/* Preline Component Extensions */
+.ls-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: var(--ls-btn-padding-y) var(--ls-btn-padding-x);
+  font-size: var(--ls-btn-font-size);
+  font-weight: var(--ls-btn-font-weight);
+  line-height: 1.25;
+  border-radius: var(--ls-btn-border-radius);
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.ls-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ls-btn-sm {
+  --ls-btn-padding-y: 0.375rem;
+  --ls-btn-padding-x: 0.75rem;
+  --ls-btn-font-size: 0.75rem;
+}
+
+.ls-btn-lg {
+  --ls-btn-padding-y: 0.75rem;
+  --ls-btn-padding-x: 1.5rem;
+  --ls-btn-font-size: 1rem;
+}
+
+.ls-btn-primary {
+  color: var(--ls-btn-primary-color);
+  background-color: var(--ls-btn-primary-bg);
+  border-color: var(--ls-btn-primary-border);
+}
+
+.ls-btn-primary:hover:not(:disabled) {
+  background-color: var(--ls-btn-primary-hover-bg);
+  border-color: var(--ls-btn-primary-hover-border);
+}
+
+.ls-btn-secondary {
+  color: var(--ls-btn-secondary-color);
+  background-color: var(--ls-btn-secondary-bg);
+  border-color: var(--ls-btn-secondary-border);
+}
+
+.ls-btn-secondary:hover:not(:disabled) {
+  background-color: var(--ls-btn-secondary-hover-bg);
+  border-color: var(--ls-btn-secondary-hover-border);
+}
+
+.ls-btn-outline {
+  color: var(--ls-btn-outline-color);
+  background-color: var(--ls-btn-outline-bg);
+  border-color: var(--ls-btn-outline-border);
+}
+
+.ls-btn-outline:hover:not(:disabled) {
+  background-color: var(--ls-btn-outline-hover-bg);
+  border-color: var(--ls-btn-outline-hover-border);
+}
+
+.ls-btn-danger {
+  color: var(--ls-btn-danger-color);
+  background-color: var(--ls-btn-danger-bg);
+  border-color: var(--ls-btn-danger-border);
+}
+
+.ls-btn-danger:hover:not(:disabled) {
+  background-color: var(--ls-btn-danger-hover-bg);
+  border-color: var(--ls-btn-danger-hover-border);
+}
+
+.ls-btn-success {
+  color: var(--ls-btn-success-color);
+  background-color: var(--ls-btn-success-bg);
+  border-color: var(--ls-btn-success-border);
+}
+
+.ls-btn-success:hover:not(:disabled) {
+  background-color: var(--ls-btn-success-hover-bg);
+  border-color: var(--ls-btn-success-hover-border);
+}
+
+/* Input Component Styles - Preline Compatible */
+.ls-input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--ls-input-text);
+  background-color: var(--ls-input-bg);
+  background-clip: padding-box;
+  border: 1px solid var(--ls-input-border);
+  border-radius: var(--ls-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.ls-input:focus {
+  outline: 0;
+  border-color: var(--ls-input-focus-border);
+  box-shadow: 0 0 0 0.2rem var(--ls-input-focus-ring);
+}
+
+.ls-input:disabled {
+  background-color: var(--ls-input-disabled-bg);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ls-input.is-invalid {
+  border-color: var(--ls-input-error-border);
+}
+
+.ls-input.is-invalid:focus {
+  border-color: var(--ls-input-error-border);
+  box-shadow: 0 0 0 0.2rem var(--ls-input-error-ring);
+}
+
+/* Form Group */
+.ls-form-group {
+  margin-bottom: 1rem;
+}
+
+.ls-form-label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--ls-input-text);
+}
+
+.ls-form-label.required::after {
+  content: "*";
+  color: var(--ls-error-500);
+  margin-left: 0.25rem;
+}
+
+.ls-form-text {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--ls-gray-600);
+}
+
+.ls-invalid-feedback {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--ls-error-600);
+}
+
+/* Card Components - Preline Style */
+.ls-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #ffffff;
+  background-clip: border-box;
+  border: 1px solid var(--ls-gray-200);
+  border-radius: var(--ls-border-radius-lg);
+  box-shadow: var(--ls-shadow-sm);
+}
+
+.ls-card-header {
+  padding: 1.5rem 1.5rem 1rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--ls-gray-200);
+}
+
+.ls-card-body {
+  flex: 1 1 auto;
+  padding: 1.5rem;
+}
+
+.ls-card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--ls-gray-200);
+}
+
+/* Sidebar Styles - Preline Compatible */
+.ls-sidebar {
+  width: var(--ls-sidebar-width);
+  height: 100vh;
+  background-color: var(--ls-sidebar-bg);
+  color: var(--ls-sidebar-text);
+  border-right: 1px solid var(--ls-sidebar-border);
+  transition: all 0.3s ease-in-out;
+}
+
+.ls-sidebar.collapsed {
+  width: var(--ls-sidebar-collapsed-width);
+}
+
+.ls-sidebar-nav {
+  padding: 1rem 0;
+}
+
+.ls-sidebar-nav .nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--ls-sidebar-text-muted);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  border-left: 3px solid transparent;
+}
+
+.ls-sidebar-nav .nav-item:hover {
+  background-color: var(--ls-sidebar-item-hover-bg);
+  color: var(--ls-sidebar-text);
+}
+
+.ls-sidebar-nav .nav-item.active {
+  background-color: var(--ls-sidebar-item-active-bg);
+  color: #ffffff;
+  border-left-color: var(--ls-sidebar-item-active-border);
+}
+
+/* Utility Classes - Preline Style */
+.ls-theme-transition {
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Responsive Utilities */
+.ls-d-none {
+  display: none !important;
+}
+.ls-d-block {
+  display: block !important;
+}
+.ls-d-flex {
+  display: flex !important;
+}
+
+@media (max-width: 767.98px) {
+  .ls-d-md-none {
+    display: none !important;
+  }
+  .ls-d-md-block {
+    display: block !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .ls-d-md-block {
+    display: block !important;
+  }
+  .ls-d-md-none {
+    display: none !important;
+  }
+}
+
+/* Dark Theme Variables */
+.theme-dark,
+[data-theme="dark"] {
+  --ls-primary-50: #1e3a8a;
+  --ls-primary-100: #1d4ed8;
+  --ls-primary-200: #2563eb;
+  --ls-primary-300: #3b82f6;
+  --ls-primary-400: #60a5fa;
+  --ls-primary-500: #93c5fd;
+  --ls-primary-600: #bfdbfe;
+  --ls-primary-700: #dbeafe;
+  --ls-primary-800: #eff6ff;
+  --ls-primary-900: #f8fafc;
+
+  /* Dark theme backgrounds */
+  --ls-bg-primary: var(--ls-gray-900);
+  --ls-bg-secondary: var(--ls-gray-800);
+  --ls-bg-tertiary: var(--ls-gray-700);
+
+  /* Dark theme text colors */
+  --ls-text-primary: var(--ls-gray-100);
+  --ls-text-secondary: var(--ls-gray-300);
+  --ls-text-muted: var(--ls-gray-400);
+
+  /* Dark theme borders */
+  --ls-border-primary: var(--ls-gray-700);
+  --ls-border-secondary: var(--ls-gray-600);
+
+  /* Component specific dark theme variables */
+  --ls-card-bg: var(--ls-gray-800);
+  --ls-card-border: var(--ls-gray-700);
+  --ls-input-bg: var(--ls-gray-800);
+  --ls-input-border: var(--ls-gray-600);
+  --ls-button-bg: var(--ls-gray-700);
+  --ls-sidebar-bg: var(--ls-gray-800);
+  --ls-sidebar-text: var(--ls-gray-200);
+  --ls-sidebar-border: var(--ls-gray-700);
+  --ls-navbar-bg: var(--ls-gray-800);
+  --ls-navbar-border: var(--ls-gray-700);
+}
+
+/* Dark theme component overrides */
+.theme-dark .ls-card,
+.theme-dark [class*="card"] {
+  background-color: var(--ls-card-bg);
+  border-color: var(--ls-card-border);
+  color: var(--ls-text-primary);
+}
+
+.theme-dark .ls-button,
+.theme-dark [class*="btn"] {
+  background-color: var(--ls-button-bg);
+  color: var(--ls-text-primary);
+  border-color: var(--ls-border-primary);
+}
+
+.theme-dark input,
+.theme-dark textarea,
+.theme-dark select {
+  background-color: var(--ls-input-bg);
+  border-color: var(--ls-input-border);
+  color: var(--ls-text-primary);
+}
+
+.theme-dark input::placeholder,
+.theme-dark textarea::placeholder {
+  color: var(--ls-text-muted);
+}
+
+/* Force dark theme background */
+.theme-dark,
+.theme-dark body,
+body.theme-dark {
+  background-color: var(--ls-gray-900) !important;
+  color: var(--ls-gray-100) !important;
+}
+
+/* Force dark theme for main content areas */
+.theme-dark .content-area,
+.theme-dark .dashboard-layout,
+.theme-dark .main-content {
+  background-color: var(--ls-gray-900) !important;
+  color: var(--ls-gray-100) !important;
+}
+
+/* Recent activity specific dark theme */
+.theme-dark #activityContent,
+.theme-dark .activity-container,
+.theme-dark [id*="activity"] {
+  background-color: var(--ls-gray-800) !important;
+  color: var(--ls-gray-100) !important;
+}
+
+.theme-dark .activity-item,
+.theme-dark [class*="activity"] {
+  background-color: var(--ls-gray-700) !important;
+  border-color: var(--ls-gray-600) !important;
+  color: var(--ls-gray-100) !important;
+}

@@ -1,0 +1,392 @@
+<!-- ls-navbar: Standard top navigation component -->
+<nav class="ls-navbar" x-data="{ 
+    mobileMenuOpen: false, 
+    userMenuOpen: false,
+    notificationOpen: false 
+}">
+    <style>
+        .ls-navbar {
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+        
+        .ls-navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 4rem;
+        }
+        
+        .ls-navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .ls-navbar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        
+        .ls-navbar-menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+        
+        .ls-navbar-menu-toggle:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .ls-navbar-nav {
+            display: none;
+            gap: 2rem;
+        }
+        
+        .ls-navbar-nav-item {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease-in-out;
+            position: relative;
+        }
+        
+        .ls-navbar-nav-item:hover {
+            color: #1f2937;
+        }
+        
+        .ls-navbar-nav-item.active {
+            color: #3b82f6;
+        }
+        
+        .ls-navbar-nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #3b82f6;
+        }
+        
+        .ls-navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .ls-navbar-search {
+            position: relative;
+            display: none;
+        }
+        
+        .ls-navbar-search-input {
+            width: 320px;
+            padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .ls-navbar-search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+        
+        .ls-navbar-search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+        
+        .ls-navbar-notification {
+            position: relative;
+        }
+        
+        .ls-navbar-notification-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            position: relative;
+            transition: background-color 0.2s ease-in-out;
+        }
+        
+        .ls-navbar-notification-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .ls-navbar-notification-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            background-color: #ef4444;
+            border-radius: 50%;
+        }
+        
+        .ls-navbar-notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 320px;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
+            z-index: 50;
+        }
+        
+        .ls-navbar-user {
+            position: relative;
+        }
+        
+        .ls-navbar-user-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+        
+        .ls-navbar-user-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .ls-navbar-user-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        
+        .ls-navbar-user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 200px;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
+            z-index: 50;
+        }
+        
+        .ls-navbar-dropdown-item {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #374151;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease-in-out;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .ls-navbar-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ls-navbar-dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .ls-navbar-mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem;
+            display: none;
+        }
+        
+        .ls-navbar-mobile-menu.show {
+            display: block;
+        }
+        
+        .ls-navbar-mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /* Theme overrides */
+        .theme-dark .ls-navbar {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        
+        .theme-dark .ls-navbar-logo {
+            color: white;
+        }
+        
+        .theme-dark .ls-navbar-nav-item {
+            color: #d1d5db;
+        }
+        
+        .theme-dark .ls-navbar-nav-item:hover {
+            color: white;
+        }
+        
+        .theme-primary .ls-navbar-nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .theme-primary .ls-navbar-nav-item.active::after {
+            background-color: var(--primary-color);
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .ls-navbar-nav {
+                display: flex;
+            }
+            
+            .ls-navbar-search {
+                display: block;
+            }
+            
+            .ls-navbar-menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+    
+    <div class="ls-navbar-container">
+        <!-- Left section -->
+        <div class="ls-navbar-left">
+            <button class="ls-navbar-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            
+            <a href="{{ .LogoUrl | default "/" }}" class="ls-navbar-logo">
+                {{ .LogoText | default "Lokstra" }}
+            </a>
+            
+            <div class="ls-navbar-nav">
+                {{ range .NavItems }}
+                <a href="{{ .Url }}" 
+                   class="ls-navbar-nav-item {{ if .Active }}active{{ end }}"
+                   {{ if .HxGet }}hx-get="{{ .HxGet }}"{{ end }}
+                   {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}>
+                    {{ .Title }}
+                </a>
+                {{ end }}
+            </div>
+        </div>
+        
+        <!-- Right section -->
+        <div class="ls-navbar-right">
+            <!-- Search -->
+            {{ if .ShowSearch }}
+            <div class="ls-navbar-search">
+                <input 
+                    type="text" 
+                    class="ls-navbar-search-input" 
+                    placeholder="{{ .SearchPlaceholder | default "Search..." }}"
+                    {{ if .SearchHxPost }}hx-post="{{ .SearchHxPost }}"{{ end }}
+                    {{ if .SearchHxTrigger }}hx-trigger="{{ .SearchHxTrigger }}"{{ end }}
+                    {{ if .SearchHxTarget }}hx-target="{{ .SearchHxTarget }}"{{ end }}
+                />
+                <svg class="ls-navbar-search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            {{ end }}
+            
+            <!-- Notifications -->
+            {{ if .ShowNotifications }}
+            <div class="ls-navbar-notification">
+                <button class="ls-navbar-notification-btn" @click="notificationOpen = !notificationOpen" @click.away="notificationOpen = false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 6l16 0M4 12l16 0M4 18l7 0"></path>
+                    </svg>
+                    {{ if .NotificationCount }}
+                    <span class="ls-navbar-notification-badge"></span>
+                    {{ end }}
+                </button>
+                
+                <div x-show="notificationOpen" x-transition class="ls-navbar-notification-dropdown">
+                    <!-- Notification content will be loaded via HTMX -->
+                    <div 
+                        {{ if .NotificationHxGet }}hx-get="{{ .NotificationHxGet }}"{{ end }}
+                        {{ if .NotificationHxTrigger }}hx-trigger="{{ .NotificationHxTrigger }}"{{ end }}
+                    >
+                        Loading notifications...
+                    </div>
+                </div>
+            </div>
+            {{ end }}
+            
+            <!-- User menu -->
+            <div class="ls-navbar-user">
+                <button class="ls-navbar-user-btn" @click="userMenuOpen = !userMenuOpen" @click.away="userMenuOpen = false">
+                    <div class="ls-navbar-user-avatar">
+                        {{ if .User.Avatar }}
+                        <img src="{{ .User.Avatar }}" alt="{{ .User.Name }}" class="w-full h-full rounded-full object-cover" />
+                        {{ else }}
+                        {{ substr .User.Name 0 1 | upper }}
+                        {{ end }}
+                    </div>
+                    <span class="hidden md:block">{{ .User.Name }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                
+                <div x-show="userMenuOpen" x-transition class="ls-navbar-user-dropdown">
+                    {{ range .UserMenuItems }}
+                    <a href="{{ .Url }}" class="ls-navbar-dropdown-item"
+                       {{ if .HxPost }}hx-post="{{ .HxPost }}"{{ end }}
+                       {{ if .HxGet }}hx-get="{{ .HxGet }}"{{ end }}
+                       {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}>
+                        {{ .Title }}
+                    </a>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile menu -->
+    <div class="ls-navbar-mobile-menu" :class="{ 'show': mobileMenuOpen }">
+        <div class="ls-navbar-mobile-nav">
+            {{ range .NavItems }}
+            <a href="{{ .Url }}" class="ls-navbar-nav-item {{ if .Active }}active{{ end }}">
+                {{ .Title }}
+            </a>
+            {{ end }}
+        </div>
+    </div>
+</nav>

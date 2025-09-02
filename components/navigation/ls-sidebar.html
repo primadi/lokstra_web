@@ -1,0 +1,296 @@
+<!-- ls-sidebar: Standard sidebar navigation component -->
+<div class="ls-sidebar" x-data="{ 
+    open: {{ .Open | default false }}, 
+    activeMenu: '{{ .ActiveMenu }}',
+    expandedGroups: []
+}">
+    <style>
+        .ls-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 256px;
+            background-color: #1f2937;
+            color: white;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 40;
+            overflow-y: auto;
+        }
+        
+        .ls-sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .ls-sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ls-sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .ls-sidebar-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            transition: color 0.2s ease-in-out;
+        }
+        
+        .ls-sidebar-close:hover {
+            color: white;
+        }
+        
+        .ls-sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .ls-sidebar-group {
+            margin-bottom: 1rem;
+        }
+        
+        .ls-sidebar-group-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ls-sidebar-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #d1d5db;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+        
+        .ls-sidebar-item:hover {
+            background-color: #374151;
+            color: white;
+        }
+        
+        .ls-sidebar-item.active {
+            background-color: #3b82f6;
+            color: white;
+            border-left-color: #60a5fa;
+        }
+        
+        .ls-sidebar-item-icon {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            vertical-align: middle;
+        }
+        
+        .ls-sidebar-item-text {
+            vertical-align: middle;
+        }
+        
+        .ls-sidebar-item-badge {
+            float: right;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            margin-top: 0.125rem;
+        }
+        
+        .ls-sidebar-submenu {
+            background-color: #374151;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        
+        .ls-sidebar-submenu-item {
+            display: block;
+            padding: 0.5rem 1.5rem 0.5rem 3.5rem;
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .ls-sidebar-submenu-item:hover {
+            background-color: #4b5563;
+            color: white;
+        }
+        
+        .ls-sidebar-submenu-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .ls-sidebar-toggle-icon {
+            float: right;
+            margin-top: 0.125rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .ls-sidebar-toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .ls-sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 30;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .ls-sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Theme overrides */
+        .theme-light .ls-sidebar {
+            background-color: white;
+            color: #374151;
+            border-right: 1px solid #e5e7eb;
+        }
+        
+        .theme-light .ls-sidebar-header {
+            border-color: #e5e7eb;
+        }
+        
+        .theme-light .ls-sidebar-logo {
+            color: #374151;
+        }
+        
+        .theme-light .ls-sidebar-item {
+            color: #6b7280;
+        }
+        
+        .theme-light .ls-sidebar-item:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .theme-primary .ls-sidebar-item.active {
+            background-color: var(--primary-color);
+        }
+        
+        /* Desktop styles */
+        @media (min-width: 768px) {
+            .ls-sidebar.desktop {
+                position: relative;
+                transform: translateX(0);
+                width: 256px;
+                flex-shrink: 0;
+            }
+            
+            .ls-sidebar-overlay {
+                display: none;
+            }
+        }
+    </style>
+    
+    <!-- Sidebar overlay for mobile -->
+    <div class="ls-sidebar-overlay" :class="{ 'show': open }" @click="open = false"></div>
+    
+    <!-- Sidebar -->
+    <div class="ls-sidebar {{ .Class }}" :class="{ 'open': open }">
+        <!-- Header -->
+        <div class="ls-sidebar-header">
+            <a href="{{ .LogoUrl | default "/" }}" class="ls-sidebar-logo">
+                {{ .LogoText | default "Lokstra" }}
+            </a>
+            <button class="ls-sidebar-close" @click="open = false">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="ls-sidebar-nav">
+            {{ range .Groups }}
+            <div class="ls-sidebar-group">
+                {{ if .Title }}
+                <div class="ls-sidebar-group-title">{{ .Title }}</div>
+                {{ end }}
+                
+                {{ range .Items }}
+                {{ if .Submenu }}
+                <!-- Menu with submenu -->
+                <div>
+                    <div class="ls-sidebar-item" 
+                         @click="expandedGroups.includes('{{ .Key }}') ? expandedGroups = expandedGroups.filter(g => g !== '{{ .Key }}') : expandedGroups.push('{{ .Key }}')"
+                         :class="{ 'active': activeMenu === '{{ .Key }}' }">
+                        {{ if .Icon }}
+                        <span class="ls-sidebar-item-icon">{{ .Icon }}</span>
+                        {{ end }}
+                        <span class="ls-sidebar-item-text">{{ .Title }}</span>
+                        {{ if .Badge }}
+                        <span class="ls-sidebar-item-badge">{{ .Badge }}</span>
+                        {{ end }}
+                        <svg class="ls-sidebar-toggle-icon w-4 h-4" :class="{ 'expanded': expandedGroups.includes('{{ .Key }}') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="ls-sidebar-submenu" 
+                         x-show="expandedGroups.includes('{{ .Key }}')" 
+                         x-transition:enter="transition-all duration-300" 
+                         x-transition:enter-start="max-h-0" 
+                         x-transition:enter-end="max-h-96">
+                        {{ range .Submenu }}
+                        <a href="{{ .Url }}" 
+                           class="ls-sidebar-submenu-item"
+                           :class="{ 'active': activeMenu === '{{ .Key }}' }"
+                           {{ if .HxGet }}hx-get="{{ .HxGet }}"{{ end }}
+                           {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}>
+                            {{ .Title }}
+                            {{ if .Badge }}
+                            <span class="ls-sidebar-item-badge">{{ .Badge }}</span>
+                            {{ end }}
+                        </a>
+                        {{ end }}
+                    </div>
+                </div>
+                {{ else }}
+                <!-- Regular menu item -->
+                <a href="{{ .Url }}" 
+                   class="ls-sidebar-item"
+                   :class="{ 'active': activeMenu === '{{ .Key }}' }"
+                   {{ if .HxGet }}hx-get="{{ .HxGet }}"{{ end }}
+                   {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}>
+                    {{ if .Icon }}
+                    <span class="ls-sidebar-item-icon">{{ .Icon }}</span>
+                    {{ end }}
+                    <span class="ls-sidebar-item-text">{{ .Title }}</span>
+                    {{ if .Badge }}
+                    <span class="ls-sidebar-item-badge">{{ .Badge }}</span>
+                    {{ end }}
+                </a>
+                {{ end }}
+                {{ end }}
+            </div>
+            {{ end }}
+        </nav>
+    </div>
+</div>

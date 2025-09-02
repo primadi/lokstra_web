@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://lokstra.dev/schema/lokstra-group.json
+
+routes:
+  - method: "GET"
+    path: ""
+    handler: "user.list"
+      
+  - method: "POST"
+    path: ""
+    handler: "user.create"
+      
+  # Fixed routing: add "id" prefix to avoid conflict with httprouter
+  - method: "GET"
+    path: "/id/:id"
+    handler: "user.get"
+      
+  - method: "PUT"
+    path: "/id/:id"
+    handler: "user.update"
+      
+  - method: "DELETE"
+    path: "/id/:id"
+    handler: "user.delete"
+      
+  - method: "GET"
+    path: "/by-name/:username"
+    handler: "user.get_by_name"

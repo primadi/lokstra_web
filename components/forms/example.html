@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokstra Web Components Example</title>
+    
+    <!-- Lokstra Theme CSS -->
+    <link rel="stylesheet" href="../theme.css">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    
+    <!-- Lit Library -->
+    <script type="module" src="https://unpkg.com/lit@3.0.0/index.js"></script>
+    
+    <!-- Lokstra Web Components -->
+    <script type="module" src="./register.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: var(--ls-gray-50);
+            color: var(--ls-gray-900);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--ls-border-radius-lg);
+            box-shadow: var(--ls-shadow-lg);
+        }
+        
+        .theme-switcher {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--ls-gray-100);
+            border-radius: var(--ls-border-radius);
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid var(--ls-gray-200);
+            border-radius: var(--ls-border-radius);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-row > * {
+            flex: 1;
+        }
+        
+        h1, h2 {
+            color: var(--ls-gray-800);
+            margin-bottom: 1rem;
+        }
+        
+        .theme-dark {
+            background-color: var(--ls-gray-900);
+            color: var(--ls-gray-100);
+        }
+        
+        .theme-dark .container {
+            background: var(--ls-gray-800);
+        }
+        
+        .theme-dark .form-section {
+            border-color: var(--ls-gray-600);
+        }
+        
+        .theme-dark .theme-switcher {
+            background: var(--ls-gray-700);
+        }
+        
+        .theme-dark h1, .theme-dark h2 {
+            color: var(--ls-gray-100);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lokstra Web Components Demo</h1>
+        
+        <!-- Theme Switcher -->
+        <div class="theme-switcher">
+            <h2>Theme Switcher</h2>
+            <div style="display: flex; gap: 1rem;">
+                <ls-button text="Light Theme" variant="outline" size="small" onclick="setTheme('')"></ls-button>
+                <ls-button text="Dark Theme" variant="outline" size="small" onclick="setTheme('theme-dark')"></ls-button>
+                <ls-button text="Primary Theme" variant="outline" size="small" onclick="setTheme('theme-primary')"></ls-button>
+                <ls-button text="Green Theme" variant="outline" size="small" onclick="setTheme('theme-green')"></ls-button>
+            </div>
+        </div>
+        
+        <!-- Input Components -->
+        <div class="form-section">
+            <h2>Input Components</h2>
+            
+            <div class="form-row">
+                <ls-input 
+                    label="Email Address" 
+                    type="email" 
+                    placeholder="Enter your email"
+                    helper-text="We'll never share your email"
+                    required
+                ></ls-input>
+                
+                <ls-input 
+                    label="Password" 
+                    type="password" 
+                    placeholder="Enter your password"
+                    required
+                ></ls-input>
+            </div>
+            
+            <div class="form-row">
+                <ls-input 
+                    label="Full Name" 
+                    placeholder="Enter your full name"
+                    value="John Doe"
+                ></ls-input>
+                
+                <ls-input 
+                    label="Phone Number" 
+                    type="tel" 
+                    placeholder="Enter your phone"
+                    error
+                    error-text="Invalid phone number format"
+                ></ls-input>
+            </div>
+            
+            <div class="form-row">
+                <ls-input 
+                    label="Website" 
+                    type="url" 
+                    placeholder="https://example.com"
+                    success
+                ></ls-input>
+                
+                <ls-input 
+                    label="Disabled Field" 
+                    value="This field is disabled"
+                    disabled
+                ></ls-input>
+            </div>
+        </div>
+        
+        <!-- Button Components -->
+        <div class="form-section">
+            <h2>Button Components</h2>
+            
+            <h3>Button Variants</h3>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <ls-button text="Primary" variant="primary"></ls-button>
+                <ls-button text="Secondary" variant="secondary"></ls-button>
+                <ls-button text="Outline" variant="outline"></ls-button>
+                <ls-button text="Danger" variant="danger"></ls-button>
+                <ls-button text="Success" variant="success"></ls-button>
+            </div>
+            
+            <h3>Button Sizes</h3>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
+                <ls-button text="Small" size="small"></ls-button>
+                <ls-button text="Medium" size="medium"></ls-button>
+                <ls-button text="Large" size="large"></ls-button>
+            </div>
+            
+            <h3>Button States</h3>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <ls-button text="Normal Button"></ls-button>
+                <ls-button text="Loading..." loading></ls-button>
+                <ls-button text="Disabled" disabled></ls-button>
+            </div>
+            
+            <h3>HTMX Integration</h3>
+            <div style="display: flex; gap: 1rem;">
+                <ls-button 
+                    text="Load Content" 
+                    hx-get="/api/content" 
+                    hx-target="#content-area"
+                    hx-trigger="click"
+                ></ls-button>
+                <ls-button 
+                    text="Submit Form" 
+                    variant="success"
+                    hx-post="/api/submit" 
+                    hx-target="#result-area"
+                ></ls-button>
+            </div>
+            
+            <div id="content-area" style="margin-top: 1rem; padding: 1rem; background: var(--ls-gray-100); border-radius: var(--ls-border-radius); min-height: 2rem;">
+                <!-- HTMX content will be loaded here -->
+            </div>
+            
+            <div id="result-area" style="margin-top: 1rem; padding: 1rem; background: var(--ls-gray-100); border-radius: var(--ls-border-radius); min-height: 2rem;">
+                <!-- HTMX result will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Form Example -->
+        <div class="form-section">
+            <h2>Complete Form Example</h2>
+            <form>
+                <div class="form-row">
+                    <ls-input 
+                        label="First Name" 
+                        name="firstName"
+                        placeholder="Enter first name"
+                        required
+                    ></ls-input>
+                    
+                    <ls-input 
+                        label="Last Name" 
+                        name="lastName"
+                        placeholder="Enter last name"
+                        required
+                    ></ls-input>
+                </div>
+                
+                <ls-input 
+                    label="Email" 
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    helper-text="We'll use this to send you updates"
+                    required
+                ></ls-input>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <ls-button text="Cancel" variant="outline"></ls-button>
+                    <ls-button text="Save" variant="primary" type="submit"></ls-button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Theme switching functionality
+        function setTheme(themeClass) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-dark', 'theme-primary', 'theme-green');
+            
+            // Add new theme class if provided
+            if (themeClass) {
+                document.body.classList.add(themeClass);
+            }
+            
+            // Store theme preference
+            localStorage.setItem('lokstra-theme', themeClass);
+        }
+        
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('lokstra-theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+        });
+        
+        // Listen to custom events from components
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'LS-INPUT') {
+                console.log('Input changed:', e.detail);
+            }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'LS-BUTTON') {
+                console.log('Button clicked:', e.target.text);
+            }
+        });
+    </script>
+</body>
+</html>
