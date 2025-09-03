@@ -6,17 +6,44 @@
 class ThemeManager {
   constructor() {
     this.STORAGE_KEY = "lokstra-theme";
-    this.DEFAULT_THEME = "dark";
+    this.DEFAULT_THEME = "light";
     this.THEME_CLASS_PREFIX = "theme-";
     this.callbacks = [];
     this.isInitialized = false;
 
-    // Wait for DOM to be ready before initializing
+    // Apply theme immediately to prevent FOUC
+    this.applyInitialTheme();
+
+    // Wait for DOM to be ready before full initialization
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => this.init());
     } else {
       // DOM is already ready
       this.init();
+    }
+  }
+
+  /**
+   * Apply theme immediately to prevent FOUC
+   */
+  applyInitialTheme() {
+    const savedTheme =
+      localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME;
+
+    // Apply theme class immediately
+    document.documentElement.className = "";
+    document.documentElement.classList.add(
+      `${this.THEME_CLASS_PREFIX}${savedTheme}`
+    );
+    document.documentElement.setAttribute("data-theme", savedTheme);
+
+    // Apply basic CSS variables immediately
+    if (savedTheme === "dark") {
+      document.documentElement.style.setProperty("--initial-bg", "#111827");
+      document.documentElement.style.setProperty("--initial-text", "#f3f4f6");
+    } else {
+      document.documentElement.style.setProperty("--initial-bg", "#ffffff");
+      document.documentElement.style.setProperty("--initial-text", "#111827");
     }
   }
 
@@ -40,15 +67,15 @@ class ThemeManager {
     style.id = "lokstra-theme-variables";
     style.textContent = `
             :root {
-                /* Light theme (default) */
+                /* Light theme - Clean and bright */
                 --lokstra-bg-primary: #ffffff;
-                --lokstra-bg-secondary: #f9fafb;
-                --lokstra-bg-tertiary: #f3f4f6;
-                --lokstra-text-primary: #111827;
-                --lokstra-text-secondary: #374151;
-                --lokstra-text-muted: #6b7280;
-                --lokstra-border-primary: #e5e7eb;
-                --lokstra-border-secondary: #d1d5db;
+                --lokstra-bg-secondary: #f8fafc;
+                --lokstra-bg-tertiary: #e2e8f0;
+                --lokstra-text-primary: #0f172a;
+                --lokstra-text-secondary: #334155;
+                --lokstra-text-muted: #64748b;
+                --lokstra-border-primary: #cbd5e1;
+                --lokstra-border-secondary: #94a3b8;
                 --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
                 --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
                 --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -56,25 +83,35 @@ class ThemeManager {
 
             [data-theme="dark"],
             .theme-dark {
-                /* Dark theme */
-                --lokstra-bg-primary: #111827;
-                --lokstra-bg-secondary: #1f2937;
-                --lokstra-bg-tertiary: #374151;
-                --lokstra-text-primary: #f3f4f6;
-                --lokstra-text-secondary: #d1d5db;
-                --lokstra-text-muted: #9ca3af;
-                --lokstra-border-primary: #374151;
-                --lokstra-border-secondary: #4b5563;
-                --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-                --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-                --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+                /* Dark theme - Deep and rich */
+                --lokstra-bg-primary: #0f172a;
+                --lokstra-bg-secondary: #1e293b;
+                --lokstra-bg-tertiary: #334155;
+                --lokstra-text-primary: #f1f5f9;
+                --lokstra-text-secondary: #cbd5e1;
+                --lokstra-text-muted: #94a3b8;
+                --lokstra-border-primary: #334155;
+                --lokstra-border-secondary: #475569;
+                --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+                --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+                --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
             }
 
             /* Base styles using theme variables */
             body {
-                background-color: var(--lokstra-bg-primary);
-                color: var(--lokstra-text-primary);
+                background-color: var(--lokstra-bg-primary) !important;
+                color: var(--lokstra-text-primary) !important;
                 transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            /* Override any conflicting styles */
+            .dashboard-layout {
+                background-color: var(--lokstra-bg-primary) !important;
+            }
+
+            /* Ensure components use theme variables */
+            * {
+                border-color: var(--lokstra-border-primary);
             }
         `;
 

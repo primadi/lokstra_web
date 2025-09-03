@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}} - Lokstra Framework</title>
     
+    <!-- Prevent FOUC - Apply theme immediately -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('lokstra-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('theme-dark');
+            } else {
+                document.documentElement.classList.remove('theme-dark');
+            }
+        })();
+    </script>
+    
     <!-- Preline UI CSS -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -50,6 +63,18 @@
     <script type="module" src="/components/register-all.js"></script>
 
     <style>
+        /* Prevent FOUC - Set initial light theme styles */
+        :root {
+            --initial-bg: #ffffff;
+            --initial-text: #0f172a;
+        }
+        
+        html, body {
+            background-color: var(--initial-bg) !important;
+            color: var(--initial-text) !important;
+            transition: none !important;
+        }
+        
         /* ThemeManager will handle CSS variables */
         
         /* Reset and base styles */
@@ -755,10 +780,83 @@
         
         // Initialize Preline components
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded');
+            console.log('LokstraTheme available:', !!window.LokstraTheme);
+            
             if (typeof HSStaticMethods !== 'undefined') {
                 HSStaticMethods.autoInit();
             }
+            
+            // Initialize components immediately with hardcoded data
+            initializeComponentsWithHardcodedData();
         });
+
+        function initializeComponentsWithHardcodedData() {
+            // Initialize navbar data
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                console.log('Initializing navbar with hardcoded data');
+                navbar.breadcrumb = [
+                    { title: 'Home', url: '/' },
+                    { title: 'Dashboard', url: '/dashboard', active: true }
+                ];
+                navbar.user = {
+                    name: 'John Doe',
+                    role: 'Administrator',
+                    avatar: null
+                };
+            }
+            
+            // Initialize sidebar data  
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                console.log('Initializing sidebar with hardcoded data');
+                sidebar.menuItems = [
+                    {
+                        title: 'Main',
+                        items: [
+                            { key: 'dashboard', title: 'Dashboard', icon: 'home', url: '/dashboard', active: true },
+                            { key: 'analytics', title: 'Analytics', icon: 'bar-chart-2', url: '/analytics' },
+                            { key: 'users', title: 'Users', icon: 'users', url: '/users' }
+                        ]
+                    }
+                ];
+                sidebar.activeItem = 'dashboard';
+            }
+            
+            // Initialize icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // Wait for Alpine.js to be ready (if it loads)
+        document.addEventListener('alpine:init', () => {
+            console.log('Alpine initialized - updating with Alpine data');
+            updateWithAlpineData();
+        });
+
+        function updateWithAlpineData() {
+            try {
+                if (Alpine && Alpine.store && Alpine.store('dashboard')) {
+                    const navbar = document.getElementById('navbar');
+                    const sidebar = document.getElementById('sidebar');
+                    
+                    if (navbar) {
+                        navbar.breadcrumb = Alpine.store('dashboard').getBreadcrumbData();
+                        navbar.user = Alpine.store('dashboard').getUserData();
+                    }
+                    
+                    if (sidebar) {
+                        sidebar.menuItems = Alpine.store('dashboard').getMenuData();
+                    }
+                    
+                    console.log('Updated components with Alpine data');
+                }
+            } catch (error) {
+                console.log('Alpine store not ready, using hardcoded data');
+            }
+        }
     </script>
 </body>
 </html>

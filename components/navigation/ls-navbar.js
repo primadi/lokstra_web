@@ -341,10 +341,54 @@ export class LsNavbar extends LitElement {
   }
 
   toggleTheme() {
+    console.log("Toggle theme called");
+    console.log("LokstraTheme available:", !!window.LokstraTheme);
+    console.log("Current theme:", this.currentTheme);
+
+    const newTheme = this.currentTheme === "light" ? "dark" : "light";
+    console.log("Setting new theme:", newTheme);
+
     if (window.LokstraTheme) {
-      const newTheme = this.currentTheme === "light" ? "dark" : "light";
       window.LokstraTheme.setTheme(newTheme);
-      this.currentTheme = newTheme;
+    } else {
+      console.warn("LokstraTheme not available, using fallback");
+      // Fallback manual theme switch
+      document.documentElement.setAttribute("data-theme", newTheme);
+      document.documentElement.classList.toggle(
+        "theme-dark",
+        newTheme === "dark"
+      );
+      localStorage.setItem("lokstra-theme", newTheme);
+
+      // Manually trigger CSS variables update
+      this.updateCSSVariables(newTheme);
+    }
+
+    this.currentTheme = newTheme;
+    this.requestUpdate();
+  }
+
+  updateCSSVariables(theme) {
+    const root = document.documentElement;
+
+    if (theme === "dark") {
+      root.style.setProperty("--lokstra-bg-primary", "#0f172a");
+      root.style.setProperty("--lokstra-bg-secondary", "#1e293b");
+      root.style.setProperty("--lokstra-bg-tertiary", "#334155");
+      root.style.setProperty("--lokstra-text-primary", "#f1f5f9");
+      root.style.setProperty("--lokstra-text-secondary", "#cbd5e1");
+      root.style.setProperty("--lokstra-text-muted", "#94a3b8");
+      root.style.setProperty("--lokstra-border-primary", "#334155");
+      root.style.setProperty("--lokstra-border-secondary", "#475569");
+    } else {
+      root.style.setProperty("--lokstra-bg-primary", "#ffffff");
+      root.style.setProperty("--lokstra-bg-secondary", "#f8fafc");
+      root.style.setProperty("--lokstra-bg-tertiary", "#e2e8f0");
+      root.style.setProperty("--lokstra-text-primary", "#0f172a");
+      root.style.setProperty("--lokstra-text-secondary", "#334155");
+      root.style.setProperty("--lokstra-text-muted", "#64748b");
+      root.style.setProperty("--lokstra-border-primary", "#cbd5e1");
+      root.style.setProperty("--lokstra-border-secondary", "#94a3b8");
     }
   }
 
