@@ -1,5 +1,5 @@
 <!-- ls-alert: Standard alert/notification component -->
-<div class="ls-alert {{ .Type | default "info" }} {{ .Class }}" 
+<div class="ls-alert {{ .Type | default 'info' }} {{ .Class }}" 
      x-data="{ show: {{ .Show | default true }}, autoHide: {{ .AutoHide | default false }} }"
      x-show="show"
      x-init="if (autoHide) { setTimeout(() => show = false, {{ .AutoHideDuration | default 5000 }}) }">

@@ -1,4 +1,288 @@
 <!-- ls-table: Standard data table component -->
+<div class="ls-table-wrapper" x-data='{ 
+    sortBy: {{ .SortBy | toJson }}, 
+    sortDir: {{ .SortDir | default "asc" | toJson }},
+    selectedRows: [],
+    selectAll: false
+}'>
+    <style>
+        .ls-table-wrapper {
+            overflow-x: auto;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .ls-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .ls-table-header {
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .ls-table-header th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .ls-table-sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        
+        .ls-table-sortable:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .ls-table-sort-icon {
+            display: inline-block;
+            margin-left: 0.25rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .ls-table-body tr {
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.2s ease-in-out;
+        }
+        
+        .ls-table-body tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        .ls-table-body tr.selected {
+            background-color: #eff6ff;
+        }
+        
+        .ls-table-body td {
+            padding: 1rem;
+            color: #374151;
+            font-size: 0.875rem;
+            vertical-align: middle;
+        }
+        
+        .ls-table-checkbox {
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+        
+        .ls-table-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .ls-table-pagination {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            background-color: #f9fafb;
+        }
+        
+        .ls-table-pagination-info {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .ls-table-pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .ls-table-page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .ls-table-page-btn:hover:not(:disabled) {
+            background-color: #f3f4f6;
+        }
+        
+        .ls-table-page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .ls-table-page-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        /* Theme overrides */
+        .theme-dark .ls-table-wrapper {
+            background-color: #1f2937;
+        }
+        
+        .theme-dark .ls-table-header {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+        
+        .theme-dark .ls-table-header th {
+            color: #d1d5db;
+        }
+        
+        .theme-dark .ls-table-body tr {
+            border-color: #4b5563;
+        }
+        
+        .theme-dark .ls-table-body tr:hover {
+            background-color: #374151;
+        }
+        
+        .theme-dark .ls-table-body td {
+            color: #d1d5db;
+        }
+        
+        .theme-primary .ls-table-page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+    </style>
+    
+    <table class="ls-table {{ .Class }}">
+        <thead class="ls-table-header">
+            <tr>
+                {{ if .Selectable }}
+                <th class="w-8">
+                    <input 
+                        type="checkbox" 
+                        class="ls-table-checkbox"
+                        x-model="selectAll"
+                        @change="selectedRows = selectAll ? {{ .Data | len }} : []"
+                    />
+                </th>
+                {{ end }}
+                
+                {{ range .Columns }}
+                <th class="{{ if .Sortable }}ls-table-sortable{{ end }} {{ .Class }}"
+                    {{ if .Sortable }}
+                    @click="if (sortBy === '{{ .Key }}') { sortDir = sortDir === 'asc' ? 'desc' : 'asc' } else { sortBy = '{{ .Key }}'; sortDir = 'asc' }"
+                    {{ if .HxPost }}hx-post="{{ .HxPost }}?sort={{ .Key }}&dir=' + (sortBy === '{{ .Key }}' && sortDir === 'asc' ? 'desc' : 'asc')"{{ end }}
+                    {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}
+                    {{ end }}
+                >
+                    {{ .Title }}
+                    {{ if .Sortable }}
+                    <span class="ls-table-sort-icon" x-show="sortBy === '{{ .Key }}'">
+                        <svg class="w-4 h-4" :class="{ 'rotate-180': sortDir === 'desc' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                    </span>
+                    {{ end }}
+                </th>
+                {{ end }}
+                
+                {{ if .Actions }}
+                <th class="w-32">Actions</th>
+                {{ end }}
+            </tr>
+        </thead>
+        
+        <tbody class="ls-table-body">
+            {{ range $index, $row := .Data }}
+            <tr :class="{ 'selected': selectedRows.includes({{ $index }}) }">
+                {{ if $.Selectable }}
+                <td>
+                    <input 
+                        type="checkbox" 
+                        class="ls-table-checkbox"
+                        x-model="selectedRows"
+                        value="{{ $index }}"
+                    />
+                </td>
+                {{ end }}
+                
+                {{ range $.Columns }}
+                <td class="{{ .CellClass }}">
+                    {{ if .Template }}
+                        {{ template .Template $row }}
+                    {{ else }}
+                        {{ index $row .Key }}
+                    {{ end }}
+                </td>
+                {{ end }}
+                
+                {{ if $.Actions }}
+                <td>
+                    <div class="ls-table-actions">
+                        {{ range $.Actions }}
+                        <button 
+                            class="ls-table-action-btn {{ .Class }}"
+                            {{ if .HxPost }}hx-post="{{ .HxPost }}"{{ end }}
+                            {{ if .HxGet }}hx-get="{{ .HxGet }}"{{ end }}
+                            {{ if .HxTarget }}hx-target="{{ .HxTarget }}"{{ end }}
+                            {{ if .Confirm }}onclick="return confirm('{{ .Confirm }}')"{{ end }}
+                        >
+                            {{ .Title }}
+                        </button>
+                        {{ end }}
+                    </div>
+                </td>
+                {{ end }}
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+    
+    {{ if .Pagination }}
+    <div class="ls-table-pagination">
+        <div class="ls-table-pagination-info">
+            Showing {{ .Pagination.From }} to {{ .Pagination.To }} of {{ .Pagination.Total }} results
+        </div>
+        
+        <div class="ls-table-pagination-controls">
+            <button 
+                class="ls-table-page-btn"
+                {{ if eq .Pagination.CurrentPage 1 }}disabled{{ end }}
+                {{ if .Pagination.HxPost }}hx-post="{{ .Pagination.HxPost }}?page={{ sub .Pagination.CurrentPage 1 }}"{{ end }}
+                {{ if .Pagination.HxTarget }}hx-target="{{ .Pagination.HxTarget }}"{{ end }}
+            >
+                Previous
+            </button>
+            
+            {{ range .Pagination.Pages }}
+            <button 
+                class="ls-table-page-btn {{ if eq . $.Pagination.CurrentPage }}active{{ end }}"
+                {{ if .Pagination.HxPost }}hx-post="{{ $.Pagination.HxPost }}?page={{ . }}"{{ end }}
+                {{ if .Pagination.HxTarget }}hx-target="{{ $.Pagination.HxTarget }}"{{ end }}
+            >
+                {{ . }}
+            </button>
+            {{ end }}
+            
+            <button 
+                class="ls-table-page-btn"
+                {{ if eq .Pagination.CurrentPage .Pagination.LastPage }}disabled{{ end }}
+                {{ if .Pagination.HxPost }}hx-post="{{ .Pagination.HxPost }}?page={{ add .Pagination.CurrentPage 1 }}"{{ end }}
+                {{ if .Pagination.HxTarget }}hx-target="{{ .Pagination.HxTarget }}"{{ end }}
+            >
+                Next
+            </button>
+        </div>
+    </div>
+    {{ end }}
+</div>
+<!-- ls-table: Standard data table component -->
 <div class="ls-table-wrapper" x-data="{ 
     sortBy: '{{ .SortBy }}', 
     sortDir: '{{ .SortDir | default "asc" }}',

@@ -30,13 +30,6 @@ class ThemeManager {
     const savedTheme =
       localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME;
 
-    // Apply theme class immediately
-    document.documentElement.className = "";
-    document.documentElement.classList.add(
-      `${this.THEME_CLASS_PREFIX}${savedTheme}`
-    );
-    document.documentElement.setAttribute("data-theme", savedTheme);
-
     // Apply basic CSS variables immediately
     if (savedTheme === "dark") {
       document.documentElement.style.setProperty("--initial-bg", "#111827");
@@ -142,21 +135,24 @@ class ThemeManager {
    * Get current active theme
    */
   getCurrentTheme() {
-    if (!document.body) {
-      // Fallback to stored theme if body not available
+    if (!document.documentElement) {
+      // Fallback to stored theme if documentElement not available
       return this.getStoredTheme();
     }
-    return document.body.classList.contains("theme-dark") ? "dark" : "light";
+    const hasDarkClass =
+      document.documentElement.classList.contains("theme-dark");
+    const currentTheme = hasDarkClass ? "dark" : "light";
+    return currentTheme;
   }
 
   /**
    * Set theme and update all components
    */
   setTheme(theme, triggerCallbacks = true) {
-    // Safety check: ensure body exists
-    if (!document.body) {
+    // Safety check: ensure documentElement exists
+    if (!document.documentElement) {
       console.warn(
-        "ThemeManager: document.body not available, deferring theme application"
+        "ThemeManager: document.documentElement not available, deferring theme application"
       );
       // Retry after a short delay
       setTimeout(() => this.setTheme(theme, triggerCallbacks), 10);
@@ -164,13 +160,22 @@ class ThemeManager {
     }
 
     // Remove all theme classes
-    document.body.classList.remove("theme-light", "theme-dark");
+    document.documentElement.classList.remove("theme-light", "theme-dark");
 
     // Add new theme class
-    document.body.classList.add(`theme-${theme}`);
+    document.documentElement.classList.add(`theme-${theme}`);
 
     // Set data attribute for CSS selectors
-    document.body.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+
+    // Update initial CSS variables to prevent FOUC
+    if (theme === "dark") {
+      document.documentElement.style.setProperty("--initial-bg", "#111827");
+      document.documentElement.style.setProperty("--initial-text", "#f3f4f6");
+    } else {
+      document.documentElement.style.setProperty("--initial-bg", "#ffffff");
+      document.documentElement.style.setProperty("--initial-text", "#111827");
+    }
 
     // Store preference
     this.setStoredTheme(theme);

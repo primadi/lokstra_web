@@ -18,11 +18,9 @@
         })();
     </script>
     
-    <!-- Preline UI CSS -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link href="https://unpkg.com/preline@3.2.3/dist/preline.css" rel="stylesheet">
-    
+    <!-- tailwind.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css">
+   
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.6"></script>
     
@@ -64,17 +62,6 @@
 
     <style>
         /* Prevent FOUC - Set initial light theme styles */
-        :root {
-            --initial-bg: #ffffff;
-            --initial-text: #0f172a;
-        }
-        
-        html, body {
-            background-color: var(--initial-bg) !important;
-            color: var(--initial-text) !important;
-            transition: none !important;
-        }
-        
         /* ThemeManager will handle CSS variables */
         
         /* Reset and base styles */
@@ -86,50 +73,15 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            /* ThemeManager handles background and color via CSS variables */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .content-area {
             flex: 1;
             padding: 1.5rem;
             overflow-y: auto;
-            background-color: var(--lokstra-bg-primary);
-        }
-
-        .footer {
-            background: var(--lokstra-bg-primary);
-            border-top: 1px solid var(--lokstra-border-primary);
-            padding: 1rem 1.5rem;
-            text-align: center;
-            color: var(--lokstra-text-muted);
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-
-        body.theme-dark .footer {
-            background: #1f2937;
-            border-top-color: #374151;
-            color: #9ca3af;
-        }
-
-        .content-card {
-            background: var(--lokstra-bg-primary);
-            border: 1px solid var(--lokstra-border-primary);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--lokstra-text-primary);
-            transition: all 0.3s ease;
-        }
-
-        body.theme-dark .content-card {
-            background: #1f2937;
-            border-color: #374151;
-            color: #f3f4f6;
         }
         
         .dashboard-layout {
@@ -742,11 +694,11 @@
         });
         
         document.addEventListener('sidebar-toggle', (e) => {
-            console.log('Sidebar toggled:', e.detail.collapsed);
+            // Sidebar toggle event handled
         });
         
         document.addEventListener('nav-item-click', (e) => {
-            console.log('Navigation item clicked:', e.detail.item);
+            // Navigation item click event handled
             
             // Close mobile sidebar after navigation
             if (window.innerWidth <= 768) {
@@ -780,8 +732,9 @@
         
         // Initialize Preline components
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded');
-            console.log('LokstraTheme available:', !!window.LokstraTheme);
+            if (typeof HSStaticMethods !== 'undefined') {
+                HSStaticMethods.autoInit();
+            }
             
             if (typeof HSStaticMethods !== 'undefined') {
                 HSStaticMethods.autoInit();
@@ -795,7 +748,6 @@
             // Initialize navbar data
             const navbar = document.getElementById('navbar');
             if (navbar) {
-                console.log('Initializing navbar with hardcoded data');
                 navbar.breadcrumb = [
                     { title: 'Home', url: '/' },
                     { title: 'Dashboard', url: '/dashboard', active: true }
@@ -807,10 +759,9 @@
                 };
             }
             
-            // Initialize sidebar data  
+            // Initialize sidebar data
             const sidebar = document.getElementById('sidebar');
             if (sidebar) {
-                console.log('Initializing sidebar with hardcoded data');
                 sidebar.menuItems = [
                     {
                         title: 'Main',
@@ -832,7 +783,6 @@
 
         // Wait for Alpine.js to be ready (if it loads)
         document.addEventListener('alpine:init', () => {
-            console.log('Alpine initialized - updating with Alpine data');
             updateWithAlpineData();
         });
 
@@ -850,11 +800,9 @@
                     if (sidebar) {
                         sidebar.menuItems = Alpine.store('dashboard').getMenuData();
                     }
-                    
-                    console.log('Updated components with Alpine data');
                 }
             } catch (error) {
-                console.log('Alpine store not ready, using hardcoded data');
+                // Alpine store not ready, using hardcoded data
             }
         }
     </script>
