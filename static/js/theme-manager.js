@@ -30,13 +30,16 @@ class ThemeManager {
     const savedTheme =
       localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME;
 
+    // Apply data-theme attribute immediately
+    document.documentElement.setAttribute("data-theme", savedTheme);
+
     // Apply basic CSS variables immediately
     if (savedTheme === "dark") {
       document.documentElement.style.setProperty("--initial-bg", "#111827");
-      document.documentElement.style.setProperty("--initial-text", "#f3f4f6");
+      document.documentElement.style.setProperty("--initial-text", "#f9fafb");
     } else {
-      document.documentElement.style.setProperty("--initial-bg", "#ffffff");
-      document.documentElement.style.setProperty("--initial-text", "#111827");
+      document.documentElement.style.setProperty("--initial-bg", "#fafafa");
+      document.documentElement.style.setProperty("--initial-text", "#374151");
     }
   }
 
@@ -56,65 +59,12 @@ class ThemeManager {
    * Setup CSS custom properties for consistent theming
    */
   setupCSSVariables() {
-    const style = document.createElement("style");
-    style.id = "lokstra-theme-variables";
-    style.textContent = `
-            :root {
-                /* Light theme - Clean and bright */
-                --lokstra-bg-primary: #ffffff;
-                --lokstra-bg-secondary: #f8fafc;
-                --lokstra-bg-tertiary: #e2e8f0;
-                --lokstra-text-primary: #0f172a;
-                --lokstra-text-secondary: #334155;
-                --lokstra-text-muted: #64748b;
-                --lokstra-border-primary: #cbd5e1;
-                --lokstra-border-secondary: #94a3b8;
-                --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-                --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            }
+    // CSS variables are now defined in dashboard.html template
+    // This method is kept for potential future extensions
 
-            [data-theme="dark"],
-            .theme-dark {
-                /* Dark theme - Deep and rich */
-                --lokstra-bg-primary: #0f172a;
-                --lokstra-bg-secondary: #1e293b;
-                --lokstra-bg-tertiary: #334155;
-                --lokstra-text-primary: #f1f5f9;
-                --lokstra-text-secondary: #cbd5e1;
-                --lokstra-text-muted: #94a3b8;
-                --lokstra-border-primary: #334155;
-                --lokstra-border-secondary: #475569;
-                --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-                --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-                --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-            }
-
-            /* Base styles using theme variables */
-            body {
-                background-color: var(--lokstra-bg-primary) !important;
-                color: var(--lokstra-text-primary) !important;
-                transition: background-color 0.3s ease, color 0.3s ease;
-            }
-
-            /* Override any conflicting styles */
-            .dashboard-layout {
-                background-color: var(--lokstra-bg-primary) !important;
-            }
-
-            /* Ensure components use theme variables */
-            * {
-                border-color: var(--lokstra-border-primary);
-            }
-        `;
-
-    // Remove existing theme variables if any
-    const existing = document.getElementById("lokstra-theme-variables");
-    if (existing) {
-      existing.remove();
-    }
-
-    document.head.appendChild(style);
+    // Just ensure the theme attribute is applied
+    const currentTheme = this.getStoredTheme();
+    document.documentElement.setAttribute("data-theme", currentTheme);
   }
 
   /**
@@ -139,10 +89,8 @@ class ThemeManager {
       // Fallback to stored theme if documentElement not available
       return this.getStoredTheme();
     }
-    const hasDarkClass =
-      document.documentElement.classList.contains("theme-dark");
-    const currentTheme = hasDarkClass ? "dark" : "light";
-    return currentTheme;
+    const dataTheme = document.documentElement.getAttribute("data-theme");
+    return dataTheme || this.getStoredTheme();
   }
 
   /**
@@ -159,22 +107,16 @@ class ThemeManager {
       return;
     }
 
-    // Remove all theme classes
-    document.documentElement.classList.remove("theme-light", "theme-dark");
-
-    // Add new theme class
-    document.documentElement.classList.add(`theme-${theme}`);
-
-    // Set data attribute for CSS selectors
+    // Set data attribute for CSS selectors - this is the main theme control
     document.documentElement.setAttribute("data-theme", theme);
 
     // Update initial CSS variables to prevent FOUC
     if (theme === "dark") {
       document.documentElement.style.setProperty("--initial-bg", "#111827");
-      document.documentElement.style.setProperty("--initial-text", "#f3f4f6");
+      document.documentElement.style.setProperty("--initial-text", "#f9fafb");
     } else {
-      document.documentElement.style.setProperty("--initial-bg", "#ffffff");
-      document.documentElement.style.setProperty("--initial-text", "#111827");
+      document.documentElement.style.setProperty("--initial-bg", "#fafafa");
+      document.documentElement.style.setProperty("--initial-text", "#374151");
     }
 
     // Store preference

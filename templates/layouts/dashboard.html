@@ -10,11 +10,6 @@
         (function() {
             const savedTheme = localStorage.getItem('lokstra-theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('theme-dark');
-            } else {
-                document.documentElement.classList.remove('theme-dark');
-            }
         })();
     </script>
     
@@ -61,8 +56,43 @@
     <script type="module" src="/components/register-all.js"></script>
 
     <style>
-        /* Prevent FOUC - Set initial light theme styles */
-        /* ThemeManager will handle CSS variables */
+        /* CSS Variables for Themes */
+        :root {
+            /* Light theme - Soft colors */
+            --lokstra-bg-primary: #fafafa;
+            --lokstra-bg-secondary: #f5f5f5;
+            --lokstra-bg-tertiary: #e5e5e5;
+            --lokstra-text-primary: #374151;
+            --lokstra-text-secondary: #6b7280;
+            --lokstra-text-muted: #9ca3af;
+            --lokstra-border-primary: #e5e7eb;
+            --lokstra-border-secondary: #d1d5db;
+            --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --ls-border-radius-lg: 0.5rem;
+            --ls-success-600: #059669;
+            --ls-error-600: #dc2626;
+            --ls-warning-600: #d97706;
+        }
+        
+        [data-theme="dark"] {
+            /* Dark theme */
+            --lokstra-bg-primary: #111827;
+            --lokstra-bg-secondary: #1f2937;
+            --lokstra-bg-tertiary: #374151;
+            --lokstra-text-primary: #f9fafb;
+            --lokstra-text-secondary: #e5e7eb;
+            --lokstra-text-muted: #d1d5db;
+            --lokstra-border-primary: #374151;
+            --lokstra-border-secondary: #4b5563;
+            --lokstra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --lokstra-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --lokstra-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --ls-success-600: #10b981;
+            --ls-error-600: #f87171;
+            --ls-warning-600: #fbbf24;
+        }
         
         /* Reset and base styles */
         * {
@@ -76,12 +106,18 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: var(--lokstra-bg-primary);
+            color: var(--lokstra-text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .content-area {
             flex: 1;
             padding: 1.5rem;
             overflow-y: auto;
+            background-color: var(--lokstra-bg-primary);
+            color: var(--lokstra-text-primary);
+            transition: all 0.3s ease;
         }
         
         .dashboard-layout {
@@ -104,20 +140,6 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
-        }
-        
-        .content-area {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            background-color: var(--lokstra-bg-primary) !important;
-            color: var(--lokstra-text-primary) !important;
-            transition: all 0.3s ease;
-        }
-
-        .theme-dark .content-area {
-            background-color: #111827 !important;
-            color: #f3f4f6 !important;
         }
 
         .page-title {
@@ -158,27 +180,6 @@
             box-shadow: var(--lokstra-shadow-sm);
             border: 1px solid var(--lokstra-border-primary);
             transition: all 0.3s ease;
-        }
-        
-        body.theme-dark .stat-card {
-            background: #1f2937;
-            border-color: #374151;
-            color: #f3f4f6;
-        }
-        
-        body.theme-dark .card-title {
-            color: #f3f4f6;
-        }
-        
-        body.theme-dark ls-button {
-            background: #374151;
-            color: #f3f4f6;
-            border-color: #4b5563;
-        }
-        
-        body.theme-dark ls-button:hover {
-            background: #4b5563;
-            border-color: #6b7280;
         }
         
         .stat-card:hover {
@@ -244,12 +245,6 @@
             border: 1px solid var(--lokstra-border-primary);
             transition: all 0.3s ease;
         }
-
-        .theme-dark .content-card {
-            background: #1f2937 !important;
-            border-color: #374151 !important;
-            color: #f3f4f6 !important;
-        }
         
         .card-header {
             display: flex;
@@ -268,10 +263,13 @@
             background: transparent;
         }
         
-        .theme-dark .footer {
-            background: #1f2937 !important;
-            border-top-color: #374151 !important;
-            color: #9ca3af !important;
+        .footer {
+            background: var(--lokstra-bg-secondary);
+            border-top: 1px solid var(--lokstra-border-primary);
+            color: var(--lokstra-text-muted);
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
         }
         
         .mobile-overlay {

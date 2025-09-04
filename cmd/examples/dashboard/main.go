@@ -6,7 +6,6 @@ import (
 
 	"github.com/primadi/lokstra"
 	"github.com/primadi/lokstra/core/request"
-	"github.com/primadi/lokstra_web"
 	"github.com/primadi/lokstra_web/cmd/examples/dashboard/handlers"
 )
 
@@ -37,11 +36,7 @@ func registerComponents(regCtx lokstra.RegistrationContext) {
 func createApp(server *lokstra.Server) *lokstra.App {
 	app := server.NewApp("dashboard-app", ":8081")
 	app.GET("/static/", request.ServeFile(rootProject+"static"))
-	// app.GET("/components/", ServeFile(rootProject+"components"))
-	app.GET("/components/", request.ServeFile(lokstra_web.EmbedComponents))
-
-	// app.RawHandle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(rootProject+"static"))))
-	// app.RawHandle("/components/", http.StripPrefix("/components/", http.FileServer(http.Dir(rootProject+"components"))))
+	app.GET("/components/", request.ServeFile(rootProject+"components"))
 
 	app.GET("/", handlers.DashboardHandler)
 	app.RawHandle("/users", http.HandlerFunc(handlers.UsersHandler))
