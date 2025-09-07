@@ -3,6 +3,55 @@
 /* Import Preline variables and extend with Lokstra custom properties */
 @import url("https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css");
 
+/* Global reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Smooth theme transitions for all elements */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced transitions during theme switching */
+.theme-transitioning * {
+  transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Preserve specific transitions for interactive elements */
+.stat-card,
+.content-card,
+.ls-btn {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced transitions during theme switching for interactive elements */
+.theme-transitioning .stat-card,
+.theme-transitioning .content-card,
+.theme-transitioning .ls-btn {
+  transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 :root {
   /* Lokstra Primary Colors - Compatible with Preline */
   --ls-primary-50: #eff6ff;
@@ -142,7 +191,7 @@
   --ls-sidebar-text: var(--ls-gray-100);
   --ls-sidebar-text-muted: var(--ls-gray-400);
   --ls-sidebar-item-hover-bg: var(--ls-gray-800);
-  --ls-sidebar-item-active-bg: var(--ls-primary-600);
+  --ls-sidebar-item-active-bg: #3b82f6; /*var(--ls-primary-600);*/
   --ls-sidebar-item-active-border: var(--ls-primary-400);
 
   /* Navbar Variables */
@@ -150,6 +199,20 @@
   --ls-navbar-border: var(--ls-gray-200);
   --ls-navbar-text: var(--ls-gray-900);
   --ls-navbar-shadow: var(--ls-shadow-sm);
+
+  /* Light theme layout colors */
+  --ls-bg-primary: #c0d0df;
+  --ls-bg-secondary: #d4e2f0;
+  --ls-bg-tertiary: #e8f0f8;
+  --ls-text-primary: #2c3e50;
+  --ls-text-secondary: #34495e;
+  --ls-text-muted: #5a6b7c;
+  --ls-border-primary: #bdc3c7;
+  --ls-border-secondary: #95a5a6;
+
+  /* Light theme panel colors */
+  --ls-panel-bg: #ced8dd;
+  --ls-card-bg: #adc1dd;
 }
 
 /* Dark Theme - Preline Compatible */
@@ -254,6 +317,7 @@
 .ls-btn-outline:hover:not(:disabled) {
   background-color: var(--ls-btn-outline-hover-bg);
   border-color: var(--ls-btn-outline-hover-border);
+  transform: translateY(-1px);
 }
 
 .ls-btn-danger {
@@ -276,6 +340,24 @@
 .ls-btn-success:hover:not(:disabled) {
   background-color: var(--ls-btn-success-hover-bg);
   border-color: var(--ls-btn-success-hover-border);
+}
+
+/* Button icon styling */
+.ls-btn i[data-lucide],
+.ls-btn svg[data-lucide] {
+  width: 1rem;
+  height: 1rem;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+/* Footer Component - Common footer styling */
+.footer {
+  background: var(--ls-bg-secondary);
+  border-top: 1px solid var(--ls-border-primary);
+  color: var(--ls-text-muted);
+  padding: 1rem;
+  text-align: center;
 }
 
 /* Input Component Styles - Preline Compatible */
@@ -389,31 +471,6 @@
   width: var(--ls-sidebar-collapsed-width);
 }
 
-.ls-sidebar-nav {
-  padding: 1rem 0;
-}
-
-.ls-sidebar-nav .nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  color: var(--ls-sidebar-text-muted);
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-  border-left: 3px solid transparent;
-}
-
-.ls-sidebar-nav .nav-item:hover {
-  background-color: var(--ls-sidebar-item-hover-bg);
-  color: var(--ls-sidebar-text);
-}
-
-.ls-sidebar-nav .nav-item.active {
-  background-color: var(--ls-sidebar-item-active-bg);
-  color: #ffffff;
-  border-left-color: var(--ls-sidebar-item-active-border);
-}
-
 /* Utility Classes - Preline Style */
 .ls-theme-transition {
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out,
@@ -476,6 +533,10 @@
   /* Dark theme borders */
   --ls-border-primary: var(--ls-gray-700);
   --ls-border-secondary: var(--ls-gray-600);
+
+  /* Dark theme panel colors */
+  --ls-panel-bg: var(--ls-gray-800);
+  --ls-card-bg: var(--ls-gray-700);
 
   /* Component specific dark theme variables */
   --ls-card-bg: var(--ls-gray-800);
@@ -547,4 +608,57 @@ body.theme-dark {
   background-color: var(--ls-gray-700) !important;
   border-color: var(--ls-gray-600) !important;
   color: var(--ls-gray-100) !important;
+}
+
+/* Custom Scrollbar Styling */
+/* Light Theme Scrollbar */
+:root {
+  --scrollbar-width: 8px;
+  --scrollbar-track-bg: rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb-bg: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover-bg: rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb-active-bg: rgba(0, 0, 0, 0.4);
+}
+
+/* Dark Theme Scrollbar */
+[data-theme="dark"],
+.theme-dark {
+  --scrollbar-track-bg: rgba(255, 255, 255, 0.05);
+  --scrollbar-thumb-bg: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover-bg: rgba(255, 255, 255, 0.3);
+  --scrollbar-thumb-active-bg: rgba(255, 255, 255, 0.4);
+}
+
+/* Webkit Scrollbar (Chrome, Safari, Edge) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-bg);
+}
+
+*::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-bg);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-bg);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-active-bg);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track-bg);
 }

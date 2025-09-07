@@ -23,498 +23,16 @@
     <link rel="stylesheet" href="/static/css/dashboard.css">
 
     <script src="/static/js/init-loader.js"></script>
-
-    <!-- HTMX -->
-    <!-- <script src="https://unpkg.com/htmx.org@2.0.6"></script> -->
     
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Lucide Icons - using specific stable version -->
-    <!-- <script src="https://unpkg.com/lucide@0.294.0/dist/umd/lucide.js"></script> -->
-    
-    <!-- Lokstra Theme Manager - Single Source of Truth -->
-    <!-- <script src="/static/js/theme-manager.js"></script> -->
-
-    <!-- Lokstra Web Components -->
-    <!-- <script type="module" src="/components/register-all.js"></script> -->
-
     <style>
-        /* CSS Variables for Themes */
-        :root {
-            /* Light theme - Soft blue-gray palette with depth */
-            --ls-bg-primary: #c0d0df;
-            --ls-bg-secondary: #d4e2f0;
-            --ls-bg-tertiary: #e8f0f8;
-            --ls-text-primary: #2c3e50;
-            --ls-text-secondary: #34495e;
-            --ls-text-muted: #5a6b7c;
-            --ls-border-primary: #bdc3c7;
-            --ls-border-secondary: #95a5a6;
-            --ls-shadow-sm: 0 1px 3px 0 rgba(44, 62, 80, 0.1);
-            --ls-shadow-md: 0 2px 6px -1px rgba(44, 62, 80, 0.15);
-            --ls-shadow-lg: 0 4px 12px -2px rgba(44, 62, 80, 0.2);
-            --ls-border-radius-lg: 0.5rem;
-            --ls-success-600: #27ae60;
-            --ls-error-600: #e74c3c;
-            --ls-warning-600: #f39c12;
-            
-            /* Panel colors - slightly different from background */
-            --ls-panel-bg: #ced8dd;
-            --ls-card-bg: #adc1dd;
-        }
+        /* Only critical inline styles that must be inline for FOUC prevention */
         
-        [data-theme="dark"] {
-            /* Dark theme */
-            --ls-bg-primary: #111827;
-            --ls-bg-secondary: #1f2937;
-            --ls-bg-tertiary: #374151;
-            --ls-text-primary: #f9fafb;
-            --ls-text-secondary: #e5e7eb;
-            --ls-text-muted: #d1d5db;
-            --ls-border-primary: #374151;
-            --ls-border-secondary: #4b5563;
-            --ls-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-            --ls-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-            --ls-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-            --ls-success-600: #10b981;
-            --ls-error-600: #f87171;
-            --ls-warning-600: #fbbf24;
-            
-            /* Panel colors for dark theme */
-            --ls-panel-bg: #1f2937;
-            --ls-card-bg: #374151;
-            
-            /* Sidebar dark theme */
-            --ls-sidebar-bg: #111827;
-            --ls-sidebar-border: #374151;
-            --ls-sidebar-text: #f9fafb;
-            --ls-sidebar-text-muted: #9ca3af;
-            --ls-sidebar-item-hover-bg: #1f2937;
-            --ls-sidebar-item-active-bg: #3b82f6;
-            --ls-sidebar-item-active-border: #60a5fa;
-        }
-        
-        /* Reset and base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        /* Smooth theme transitions for all elements */
-        *, *::before, *::after {
-            transition: 
-                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Enhanced transitions during theme switching */
-        .theme-transitioning * {
-            transition: 
-                background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        /* Preserve specific transitions for interactive elements */
-        .stat-card, .content-card, .ls-btn {
-            transition: 
-                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Enhanced transitions during theme switching for interactive elements */
-        .theme-transitioning .stat-card,
-        .theme-transitioning .content-card,
-        .theme-transitioning .ls-btn {
-            transition: 
-                background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--ls-bg-primary);
-            color: var(--ls-text-primary);
-        }
-        
-        .content-area {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            background-color: var(--ls-bg-primary);
-            color: var(--ls-text-primary);
-        }
-        
-        .dashboard-layout {
-            display: flex;
-            min-height: 100vh;
-            flex: 1;
-        }
-        
-        /* Sidebar Container - Wrapper untuk ls-sidebar component */
-        .sidebar-container {
-            width: var(--ls-sidebar-width, 16rem);
-            transition: width 0.3s ease-in-out;
-            background-color: var(--ls-sidebar-bg, var(--ls-bg-secondary));
-            border-right: 1px solid var(--ls-sidebar-border, var(--ls-border-primary));
-            position: relative;
-            z-index: 40;
-        }
-        
-        .sidebar-container.collapsed {
-            width: var(--ls-sidebar-collapsed-width, 4rem);
-        }
-        
-        /* Ensure ls-sidebar fills the container */
-        ls-sidebar {
-            display: block;
-            width: 100%;
-            height: 100vh;
-        }
-        
-        /* Fallback styling if web component fails to load */
-        .sidebar-container:not(:has(ls-sidebar)) {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--ls-text-muted);
-            font-size: 0.875rem;
-        }
-        
-        .sidebar-container:not(:has(ls-sidebar))::before {
-            content: "Loading sidebar...";
-        }
-        
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .page-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: var(--ls-text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .page-subtitle {
-            color: var(--ls-text-muted);
-            font-size: 1rem;
-        }
-
-        .page-header {
-            margin-bottom: 2rem;
-        }
-        
-        .page-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stat-card {
-            background: var(--ls-panel-bg);
-            border-radius: var(--ls-border-radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--ls-shadow-md);
-            border: 1px solid var(--ls-border-primary);
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            box-shadow: var(--ls-shadow-lg);
-            transform: translateY(-2px);
-        }
-        
-        .stat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        
-        .stat-title {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--ls-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .stat-icon {
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            background-color: var(--ls-bg-tertiary);
-            color: #60a5fa;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--ls-text-primary);
-            margin-bottom: 0.25rem;
-        }
-        
-        .stat-change {
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        
-        .stat-change.positive {
-            color: var(--ls-success-600);
-        }
-        
-        .stat-change.negative {
-            color: var(--ls-error-600);
-        }
-        
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .content-card {
-            background: var(--ls-card-bg);
-            border-radius: var(--ls-border-radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--ls-shadow-md);
-            border: 1px solid var(--ls-border-primary);
-            transition: all 0.3s ease;
-        }
-        
-        .content-card:hover {
-            box-shadow: var(--ls-shadow-lg);
-            transform: translateY(-1px);
-        }
-        
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--ls-border-primary);
-            background: transparent;
-        }
-        
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--ls-text-primary);
-            background: transparent;
-        }
-        
-        .footer {
-            background: var(--ls-bg-secondary);
-            border-top: 1px solid var(--ls-border-primary);
-            color: var(--ls-text-muted);
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .mobile-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 30;
-            display: none;
-        }
-        
-        .mobile-overlay.show {
-            display: block;
-        }
-        
-        /* Button styles */
-        .ls-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            line-height: 1.25;
-            border-radius: 0.375rem;
-            border: 1px solid transparent;
-            text-decoration: none;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.15s ease-in-out;
-        }
-
-        .ls-btn-sm {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.75rem;
-        }
-
-        .ls-btn-outline {
-            color: var(--ls-text-secondary);
-            background-color: transparent;
-            border-color: var(--ls-border-secondary);
-        }
-
-        .ls-btn-outline:hover {
-            background-color: var(--ls-bg-secondary);
-            border-color: var(--ls-text-muted);
-            color: var(--ls-text-primary);
-            transform: translateY(-1px);
-        }
-        
-        /* Button icon styling */
-        .ls-btn i[data-lucide],
-        .ls-btn svg[data-lucide] {
-            width: 1rem;
-            height: 1rem;
-            stroke: currentColor;
-            flex-shrink: 0;
-        }
-        
-        /* Lucide Icons Styling - Fixed stroke colors with higher specificity */
-        body svg[data-lucide] {
-            display: inline-block !important;
-            width: inherit !important;
-            height: inherit !important;
-            stroke-width: 2 !important;
-            fill: none !important;
-            stroke: var(--ls-text-primary) !important;
-            color: var(--ls-text-primary) !important;
-        }
-        
-        /* Specific icon color overrides for better visibility */
-        body .stat-icon svg[data-lucide] {
-            stroke: #60a5fa !important;
-            color: #60a5fa !important;
-        }
-        
-        body .stat-change.positive svg[data-lucide] {
-            stroke: var(--ls-success-600) !important;
-            color: var(--ls-success-600) !important;
-        }
-        
-        body .stat-change.negative svg[data-lucide] {
-            stroke: var(--ls-error-600) !important;
-            color: var(--ls-error-600) !important;
-        }
-        
-        /* Theme switcher icon */
-        body #themeIcon {
-            stroke: currentColor !important;
-            color: currentColor !important;
-        }
-        
-        /* Icons in content areas */
-        body #activityContent svg[data-lucide] {
-            stroke: var(--ls-text-muted) !important;
-            color: var(--ls-text-muted) !important;
-        }
-        
-        /* Success/status icons */
-        body span[style*="success"] svg[data-lucide] {
-            stroke: var(--ls-success-600) !important;
-            color: var(--ls-success-600) !important;
-        }
-        
-        body i[data-lucide] {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        
-        #activityContent * {
-            background-color: inherit;
-            color: inherit;
-        }
-        
-        #activityContent div[style*="background-color"] {
-            background-color: var(--ls-bg-secondary) !important;
-            border-color: var(--ls-border-primary) !important;
-        }
-        
-        #activityContent h4 {
-            color: var(--ls-text-primary) !important;
-        }
-        
-        #activityContent p {
-            color: var(--ls-text-secondary) !important;
-        }
-        
-        #activityContent time {
-            color: var(--ls-text-muted) !important;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .page-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .content-area {
-                padding: 1rem;
-            }
-            
-            .sidebar-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                z-index: 40;
-                height: 100vh;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease-in-out;
-            }
-            
-            .sidebar-container.open {
-                transform: translateX(0);
-            }
-        }
-        
-        @media (min-width: 769px) {
-            .mobile-overlay {
-                display: none !important;
-            }
+        /* Theme transition helper for smooth theme switching */
+        .theme-transitioning {
+            transition-duration: 0.4s !important;
         }
     </style>
 </head>
@@ -797,9 +315,6 @@
             }, 100);
         });
         
-        // Remove the automatic theme change icon reinitialization to prevent memory leaks
-        // Theme switcher component will handle its own icons
-        
         // Alpine.js data for dashboard
         document.addEventListener('alpine:init', () => {
             Alpine.data('dashboard', () => ({
@@ -807,11 +322,12 @@
                 sidebarOpen: false,
                 
                 init() {
-                    // Initialize components
-                    this.initializeComponents();
-                    
-                    // Load initial content
-                    this.loadInitialContent();
+                    console.log('Dashboard Alpine.js initialized');
+                    // Initialize components after Alpine is ready
+                    this.$nextTick(() => {
+                        this.initializeComponents();
+                        this.loadInitialContent();
+                    });
                 },
                 
                 toggleSidebar() {
@@ -836,19 +352,19 @@
                     const sidebar = document.getElementById('sidebar');
                     const navbar = document.getElementById('navbar');
                     
-                    if (sidebar && navbar) {
-                        // Set sidebar menu items
-                        const menuItems = this.getMenuItems();
-                        console.log('Setting menu items:', menuItems); // Debug log
-                        sidebar.menuItems = menuItems;
+                    if (sidebar) {
+                        // Set sidebar menu items - SINGLE SOURCE OF TRUTH
+                        sidebar.menuItems = this.getMenuItems();
                         sidebar.activeItem = 'dashboard';
-                        
-                        // Set navbar data
+                        console.log('Sidebar initialized with menu items');
+                    }
+                    
+                    if (navbar) {
+                        // Set navbar data - SINGLE SOURCE OF TRUTH
                         navbar.user = this.getUserData();
                         navbar.breadcrumb = this.getBreadcrumbData();
                         navbar.notificationCount = 3;
-                        
-                        // Icons will be initialized by window.load event
+                        console.log('Navbar initialized with user data');
                     }
                 },
                 
@@ -863,6 +379,7 @@
                     }, 1000);
                 },
                 
+                // SINGLE SOURCE OF TRUTH untuk menu items
                 getMenuItems() {
                     return [
                         {
@@ -899,6 +416,7 @@
                     ];
                 },
                 
+                // SINGLE SOURCE OF TRUTH untuk user data
                 getUserData() {
                     return {
                         name: 'John Doe',
@@ -907,6 +425,7 @@
                     };
                 },
                 
+                // SINGLE SOURCE OF TRUTH untuk breadcrumb data
                 getBreadcrumbData() {
                     return [
                         { title: 'Home', url: '/' },
@@ -918,16 +437,14 @@
         
         // Event listeners
         document.addEventListener('toggle-sidebar', () => {
-            Alpine.store('dashboard').toggleSidebar();
-        });
-        
-        document.addEventListener('sidebar-toggle', (e) => {
-            // Sidebar toggle event handled
+            // Get Alpine.js dashboard instance and call toggleSidebar
+            const dashboardEl = document.querySelector('[x-data="dashboard"]');
+            if (dashboardEl && dashboardEl._x_dataStack) {
+                dashboardEl._x_dataStack[0].toggleSidebar();
+            }
         });
         
         document.addEventListener('nav-item-click', (e) => {
-            // Navigation item click event handled
-            
             // Close mobile sidebar after navigation
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebarContainer').classList.remove('open');
@@ -953,102 +470,6 @@
         document.addEventListener('htmx:afterSwap', () => {
             initLucideIcons();
         });
-        
-        // Initialize components
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize components immediately with hardcoded data
-            initializeComponentsWithHardcodedData();
-            
-            // Try to update with Alpine data after a short delay
-            setTimeout(() => {
-                updateWithAlpineData();
-            }, 500);
-        });
-
-        function initializeComponentsWithHardcodedData() {
-            // Initialize navbar data
-            const navbar = document.getElementById('navbar');
-            if (navbar) {
-                navbar.breadcrumb = [
-                    { title: 'Home', url: '/' },
-                    { title: 'Dashboard', url: '/dashboard', active: true }
-                ];
-                navbar.user = {
-                    name: 'John Doe',
-                    role: 'Administrator',
-                    avatar: null
-                };
-            }
-            
-            // Initialize sidebar data with submenu
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar) {
-                const testMenuItems = [
-                    {
-                        title: 'Main',
-                        items: [
-                            { key: 'dashboard', title: 'Dashboard', icon: 'home', url: '/dashboard', active: true },
-                            { key: 'analytics', title: 'Analytics', icon: 'bar-chart-2', url: '/analytics' }
-                        ]
-                    },
-                    {
-                        title: 'Management',
-                        items: [
-                            {
-                                key: 'users',
-                                title: 'Users',
-                                icon: 'users',
-                                submenu: [
-                                    { key: 'users-list', title: 'All Users', url: '/users' },
-                                    { key: 'users-new', title: 'Add User', url: '/users/new' },
-                                    { key: 'users-roles', title: 'Roles', url: '/users/roles' }
-                                ]
-                            },
-                            { key: 'projects', title: 'Projects', icon: 'folder', url: '/projects', badge: '12' },
-                            { key: 'reports', title: 'Reports', icon: 'file-text', url: '/reports' }
-                        ]
-                    },
-                    {
-                        title: 'System',
-                        items: [
-                            { key: 'settings', title: 'Settings', icon: 'settings', url: '/settings' },
-                            { key: 'logs', title: 'Logs', icon: 'file-text', url: '/logs' }
-                        ]
-                    }
-                ];
-                console.log('Hardcoded menu items with submenu:', testMenuItems); // Debug log
-                sidebar.menuItems = testMenuItems;
-                sidebar.activeItem = 'dashboard';
-            }
-            
-            // Icons will be initialized by window.load event
-        }
-
-        // Wait for Alpine.js to be ready (if it loads)
-        document.addEventListener('alpine:init', () => {
-            updateWithAlpineData();
-        });
-
-        function updateWithAlpineData() {
-            try {
-                if (Alpine && Alpine.store && Alpine.store('dashboard')) {
-                    const navbar = document.getElementById('navbar');
-                    const sidebar = document.getElementById('sidebar');
-                    
-                    if (navbar) {
-                        navbar.breadcrumb = Alpine.store('dashboard').getBreadcrumbData();
-                        navbar.user = Alpine.store('dashboard').getUserData();
-                    }
-                    
-                    if (sidebar) {
-                        sidebar.menuItems = Alpine.store('dashboard').getMenuItems();
-                    }
-                }
-            } catch (error) {
-                // Alpine store not ready, using hardcoded data
-                console.log('Alpine store not ready:', error);
-            }
-        }
     </script>
 </body>
 </html>

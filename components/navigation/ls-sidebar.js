@@ -5,28 +5,26 @@ export class LsSidebar extends LitElement {
   static styles = css`
     :host {
       display: block;
-      width: var(--ls-sidebar-width);
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       background-color: var(--ls-sidebar-bg);
       color: var(--ls-sidebar-text);
-      border-right: 1px solid var(--ls-sidebar-border);
       transition: all 0.3s ease-in-out;
       position: relative;
-      z-index: 40;
-      overflow-y: auto;
+      /* Remove overflow-y and positioning from host, let container handle it */
     }
 
     :host(.collapsed) {
       width: var(--ls-sidebar-collapsed-width);
     }
 
-    .hs-sidebar {
+    .ls-sidebar {
       display: flex;
       flex-direction: column;
       height: 100%;
     }
 
-    .hs-sidebar-header {
+    .ls-sidebar-header {
       padding: 1.5rem;
       border-bottom: 1px solid var(--ls-sidebar-border);
       display: flex;
@@ -35,14 +33,14 @@ export class LsSidebar extends LitElement {
       flex-shrink: 0;
     }
 
-    .hs-sidebar-logo {
+    .ls-sidebar-logo {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--ls-sidebar-text);
       text-decoration: none;
     }
 
-    .hs-sidebar-toggle {
+    .ls-sidebar-toggle {
       background: none;
       border: none;
       color: var(--ls-sidebar-text-muted);
@@ -53,27 +51,52 @@ export class LsSidebar extends LitElement {
       display: none;
     }
 
-    .hs-sidebar-toggle:hover {
+    .ls-sidebar-toggle:hover {
       color: var(--ls-sidebar-text);
     }
 
-    .hs-sidebar-body {
+    .ls-sidebar-body {
       flex: 1;
       padding: 1rem 0;
       overflow-y: auto;
+      /* Enhanced scrollbar for sidebar */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
     }
 
-    .hs-sidebar-nav {
+    .ls-sidebar-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .ls-sidebar-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .ls-sidebar-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      transition: background-color 0.2s ease;
+    }
+
+    .ls-sidebar-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .ls-sidebar-body::-webkit-scrollbar-thumb:active {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .ls-sidebar-nav {
       list-style: none;
       margin: 0;
       padding: 0;
     }
 
-    .hs-sidebar-nav-group {
+    .ls-sidebar-nav-group {
       margin-bottom: 1rem;
     }
 
-    .hs-sidebar-nav-group-title {
+    .ls-sidebar-nav-group-title {
       padding: 0.5rem 1.5rem;
       font-size: 0.75rem;
       font-weight: 600;
@@ -83,7 +106,7 @@ export class LsSidebar extends LitElement {
       margin-bottom: 0.5rem;
     }
 
-    .hs-sidebar-nav-item {
+    .ls-sidebar-nav-item {
       display: flex;
       align-items: center;
       padding: 0.75rem 1.5rem;
@@ -95,31 +118,31 @@ export class LsSidebar extends LitElement {
       gap: 0.75rem;
     }
 
-    .hs-sidebar-nav-item:hover {
+    .ls-sidebar-nav-item:hover {
       background-color: var(--ls-sidebar-item-hover-bg);
       color: var(--ls-sidebar-text);
     }
 
-    .hs-sidebar-nav-item.active {
+    .ls-sidebar-nav-item.active {
       background-color: var(--ls-sidebar-item-active-bg);
       color: #ffffff;
       border-left-color: var(--ls-sidebar-item-active-border);
     }
 
-    .hs-sidebar-nav-icon {
+    .ls-sidebar-nav-icon {
       width: 1.25rem;
       height: 1.25rem;
       flex-shrink: 0;
     }
 
-    .hs-sidebar-nav-text {
+    .ls-sidebar-nav-text {
       flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .hs-sidebar-nav-badge {
+    .ls-sidebar-nav-badge {
       background-color: var(--ls-error-500);
       color: white;
       font-size: 0.75rem;
@@ -129,7 +152,7 @@ export class LsSidebar extends LitElement {
       flex-shrink: 0;
     }
 
-    .hs-sidebar-submenu {
+    .ls-sidebar-submenu {
       background-color: var(--ls-sidebar-item-hover-bg);
       overflow: hidden;
       transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -137,12 +160,12 @@ export class LsSidebar extends LitElement {
       opacity: 0;
     }
 
-    .hs-sidebar-submenu.expanded {
+    .ls-sidebar-submenu.expanded {
       max-height: 500px;
       opacity: 1;
     }
 
-    .hs-sidebar-submenu-item {
+    .ls-sidebar-submenu-item {
       display: block;
       padding: 0.5rem 1.5rem 0.5rem 3.5rem;
       color: var(--ls-sidebar-text-muted);
@@ -151,36 +174,36 @@ export class LsSidebar extends LitElement {
       transition: all 0.2s ease-in-out;
     }
 
-    .hs-sidebar-submenu-item:hover {
+    .ls-sidebar-submenu-item:hover {
       background-color: rgba(255, 255, 255, 0.1);
       color: var(--ls-sidebar-text);
     }
 
-    .hs-sidebar-submenu-item.active {
+    .ls-sidebar-submenu-item.active {
       background-color: var(--ls-sidebar-item-active-bg);
       color: #ffffff;
     }
 
-    .hs-sidebar-nav-expand {
+    .ls-sidebar-nav-expand {
       transition: transform 0.2s ease-in-out;
       margin-left: auto;
       flex-shrink: 0;
     }
 
-    .hs-sidebar-nav-expand.expanded {
+    .ls-sidebar-nav-expand.expanded {
       transform: rotate(180deg);
     }
 
     /* Collapsed state */
-    :host(.collapsed) .hs-sidebar-nav-text,
-    :host(.collapsed) .hs-sidebar-nav-badge,
-    :host(.collapsed) .hs-sidebar-logo,
-    :host(.collapsed) .hs-sidebar-nav-group-title,
-    :host(.collapsed) .hs-sidebar-nav-expand {
+    :host(.collapsed) .ls-sidebar-nav-text,
+    :host(.collapsed) .ls-sidebar-nav-badge,
+    :host(.collapsed) .ls-sidebar-logo,
+    :host(.collapsed) .ls-sidebar-nav-group-title,
+    :host(.collapsed) .ls-sidebar-nav-expand {
       display: none;
     }
 
-    :host(.collapsed) .hs-sidebar-nav-item {
+    :host(.collapsed) .ls-sidebar-nav-item {
       justify-content: center;
       padding: 0.75rem;
     }
@@ -199,7 +222,7 @@ export class LsSidebar extends LitElement {
         transform: translateX(0);
       }
 
-      .hs-sidebar-toggle {
+      .ls-sidebar-toggle {
         display: block;
       }
     }
@@ -294,22 +317,22 @@ export class LsSidebar extends LitElement {
   render() {
     console.log("Rendering sidebar with menuItems:", this.menuItems)
     return html`
-      <div class="hs-sidebar">
-        <div class="hs-sidebar-header">
-          <a href="/" class="hs-sidebar-logo">Lokstra</a>
-          <button class="hs-sidebar-toggle" @click="${this.toggleCollapse}">
+      <div class="ls-sidebar">
+        <div class="ls-sidebar-header">
+          <a href="/" class="ls-sidebar-logo">Lokstra</a>
+          <button class="ls-sidebar-toggle" @click="${this.toggleCollapse}">
             <i data-lucide="x" style="width: 1.25rem; height: 1.25rem;"></i>
           </button>
         </div>
 
-        <div class="hs-sidebar-body">
-          <ul class="hs-sidebar-nav">
+        <div class="ls-sidebar-body">
+          <ul class="ls-sidebar-nav">
             ${this.menuItems.map(
               (group) => html`
-                <li class="hs-sidebar-nav-group">
+                <li class="ls-sidebar-nav-group">
                   ${group.title
                     ? html`
-                        <div class="hs-sidebar-nav-group-title">
+                        <div class="ls-sidebar-nav-group-title">
                           ${group.title}
                         </div>
                       `
@@ -321,7 +344,7 @@ export class LsSidebar extends LitElement {
                             <!-- Menu with submenu -->
                             <div>
                               <div
-                                class="hs-sidebar-nav-item ${this.activeItem ===
+                                class="ls-sidebar-nav-item ${this.activeItem ===
                                 item.key
                                   ? "active"
                                   : ""}"
@@ -329,19 +352,19 @@ export class LsSidebar extends LitElement {
                               >
                                 <i
                                   data-lucide="${item.icon || "folder"}"
-                                  class="hs-sidebar-nav-icon"
+                                  class="ls-sidebar-nav-icon"
                                 ></i>
-                                <span class="hs-sidebar-nav-text"
+                                <span class="ls-sidebar-nav-text"
                                   >${item.title}</span
                                 >
                                 ${item.badge
-                                  ? html`<span class="hs-sidebar-nav-badge"
+                                  ? html`<span class="ls-sidebar-nav-badge"
                                       >${item.badge}</span
                                     >`
                                   : ""}
                                 <i
                                   data-lucide="chevron-down"
-                                  class="hs-sidebar-nav-expand ${this.expandedGroups.includes(
+                                  class="ls-sidebar-nav-expand ${this.expandedGroups.includes(
                                     item.key
                                   )
                                     ? "expanded"
@@ -351,7 +374,7 @@ export class LsSidebar extends LitElement {
                               </div>
 
                               <div
-                                class="hs-sidebar-submenu ${this.expandedGroups.includes(
+                                class="ls-sidebar-submenu ${this.expandedGroups.includes(
                                   item.key
                                 )
                                   ? "expanded"
@@ -361,7 +384,7 @@ export class LsSidebar extends LitElement {
                                   (subItem) => html`
                                     <a
                                       href="${subItem.url}"
-                                      class="hs-sidebar-submenu-item ${this
+                                      class="ls-sidebar-submenu-item ${this
                                         .activeItem === subItem.key
                                         ? "active"
                                         : ""}"
@@ -377,7 +400,7 @@ export class LsSidebar extends LitElement {
                                       ${subItem.title}
                                       ${subItem.badge
                                         ? html`<span
-                                            class="hs-sidebar-nav-badge"
+                                            class="ls-sidebar-nav-badge"
                                             >${subItem.badge}</span
                                           >`
                                         : ""}
@@ -391,7 +414,7 @@ export class LsSidebar extends LitElement {
                             <!-- Regular menu item -->
                             <a
                               href="${item.url}"
-                              class="hs-sidebar-nav-item ${this.activeItem ===
+                              class="ls-sidebar-nav-item ${this.activeItem ===
                               item.key
                                 ? "active"
                                 : ""}"
@@ -403,13 +426,13 @@ export class LsSidebar extends LitElement {
                             >
                               <i
                                 data-lucide="${item.icon || "circle"}"
-                                class="hs-sidebar-nav-icon"
+                                class="ls-sidebar-nav-icon"
                               ></i>
-                              <span class="hs-sidebar-nav-text"
+                              <span class="ls-sidebar-nav-text"
                                 >${item.title}</span
                               >
                               ${item.badge
-                                ? html`<span class="hs-sidebar-nav-badge"
+                                ? html`<span class="ls-sidebar-nav-badge"
                                     >${item.badge}</span
                                   >`
                                 : ""}
