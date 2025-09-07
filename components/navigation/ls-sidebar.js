@@ -1,4 +1,5 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
+import { createIconsManually } from "/static/js/lucide-utils.js"
 
 export class LsSidebar extends LitElement {
   static styles = css`
@@ -131,12 +132,14 @@ export class LsSidebar extends LitElement {
     .hs-sidebar-submenu {
       background-color: var(--ls-sidebar-item-hover-bg);
       overflow: hidden;
-      transition: max-height 0.3s ease-in-out;
+      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
       max-height: 0;
+      opacity: 0;
     }
 
     .hs-sidebar-submenu.expanded {
       max-height: 500px;
+      opacity: 1;
     }
 
     .hs-sidebar-submenu-item {
@@ -208,14 +211,14 @@ export class LsSidebar extends LitElement {
         transform: translateX(0);
       }
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.collapsed = false;
-    this.menuItems = [];
-    this.activeItem = "";
-    this.expandedGroups = [];
+    super()
+    this.collapsed = false
+    this.menuItems = []
+    this.activeItem = ""
+    this.expandedGroups = []
   }
 
   static get properties() {
@@ -224,43 +227,72 @@ export class LsSidebar extends LitElement {
       menuItems: { type: Array },
       activeItem: { type: String },
       expandedGroups: { type: Array },
-    };
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    // Initialize icons after the component is connected and rendered
+    this.updateComplete.then(() => {
+      this.initializeLucideIcons()
+    })
+  }
+
+  updated(changedProperties) {
+    super.updated(changedProperties)
+    // Re-initialize icons when content changes
+    this.initializeLucideIcons()
+  }
+
+  initializeLucideIcons() {
+    setTimeout(() => {
+      createIconsManually(this.shadowRoot)
+    }, 50)
   }
 
   toggleCollapse() {
-    this.collapsed = !this.collapsed;
+    this.collapsed = !this.collapsed
     this.dispatchEvent(
       new CustomEvent("sidebar-toggle", {
         detail: { collapsed: this.collapsed },
         bubbles: true,
       })
-    );
+    )
   }
 
   toggleGroup(groupKey) {
+    console.log(
+      "Toggling group:",
+      groupKey,
+      "Current expanded:",
+      this.expandedGroups
+    )
     if (this.expandedGroups.includes(groupKey)) {
-      this.expandedGroups = this.expandedGroups.filter((g) => g !== groupKey);
+      this.expandedGroups = this.expandedGroups.filter((g) => g !== groupKey)
     } else {
-      this.expandedGroups = [...this.expandedGroups, groupKey];
+      this.expandedGroups = [...this.expandedGroups, groupKey]
     }
+    console.log("New expanded groups:", this.expandedGroups)
+    this.requestUpdate()
   }
 
   handleItemClick(item) {
-    this.activeItem = item.key;
+    this.activeItem = item.key
     this.dispatchEvent(
       new CustomEvent("nav-item-click", {
         detail: { item },
         bubbles: true,
       })
-    );
+    )
   }
 
   renderIcon(iconName) {
     // Using Lucide icons
-    return html`<i data-lucide="${iconName}" class="nav-icon"></i>`;
+    return html`<i data-lucide="${iconName}" class="nav-icon"></i>`
   }
 
   render() {
+    console.log("Rendering sidebar with menuItems:", this.menuItems)
     return html`
       <div class="hs-sidebar">
         <div class="hs-sidebar-header">
@@ -391,6 +423,9 @@ export class LsSidebar extends LitElement {
           </ul>
         </div>
       </div>
-    `;
+    `
   }
 }
+
+// Register the custom element
+customElements.define("ls-sidebar", LsSidebar)

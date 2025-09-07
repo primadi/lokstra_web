@@ -267,12 +267,7 @@ export class LsTable extends LitElement {
     super.updated(changedProperties);
 
     if (changedProperties.has("data") || changedProperties.has("columns")) {
-      // Initialize Lucide icons
-      setTimeout(() => {
-        if (typeof lucide !== "undefined") {
-          lucide.createIcons();
-        }
-      }, 0);
+      // Icons will be initialized globally by dashboard.html
     }
   }
 

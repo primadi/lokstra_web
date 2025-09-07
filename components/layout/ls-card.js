@@ -316,12 +316,7 @@ export class LsCard extends LitElement {
   updated(changedProperties) {
     super.updated(changedProperties);
 
-    // Initialize Lucide icons
-    setTimeout(() => {
-      if (typeof lucide !== "undefined") {
-        lucide.createIcons();
-      }
-    }, 0);
+    // Icons will be initialized globally by dashboard.html
   }
 
   handleClick() {

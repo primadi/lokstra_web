@@ -10,6 +10,8 @@ class ThemeManager {
     this.THEME_CLASS_PREFIX = "theme-";
     this.callbacks = [];
     this.isInitialized = false;
+    this.isTransitioning = false;
+    this.transitionDuration = 300; // milliseconds
 
     // Apply theme immediately to prevent FOUC
     this.applyInitialTheme();
@@ -31,16 +33,8 @@ class ThemeManager {
       localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME;
 
     // Apply data-theme attribute immediately
+    // CSS variables will be applied automatically via CSS selectors
     document.documentElement.setAttribute("data-theme", savedTheme);
-
-    // Apply basic CSS variables immediately
-    if (savedTheme === "dark") {
-      document.documentElement.style.setProperty("--initial-bg", "#111827");
-      document.documentElement.style.setProperty("--initial-text", "#f9fafb");
-    } else {
-      document.documentElement.style.setProperty("--initial-bg", "#fafafa");
-      document.documentElement.style.setProperty("--initial-text", "#374151");
-    }
   }
 
   /**
@@ -94,7 +88,7 @@ class ThemeManager {
   }
 
   /**
-   * Set theme and update all components
+   * Set theme and update all components with smooth animation
    */
   setTheme(theme, triggerCallbacks = true) {
     // Safety check: ensure documentElement exists
@@ -107,37 +101,67 @@ class ThemeManager {
       return;
     }
 
-    // Set data attribute for CSS selectors - this is the main theme control
-    document.documentElement.setAttribute("data-theme", theme);
-
-    // Update initial CSS variables to prevent FOUC
-    if (theme === "dark") {
-      document.documentElement.style.setProperty("--initial-bg", "#111827");
-      document.documentElement.style.setProperty("--initial-text", "#f9fafb");
-    } else {
-      document.documentElement.style.setProperty("--initial-bg", "#fafafa");
-      document.documentElement.style.setProperty("--initial-text", "#374151");
+    // Prevent multiple transitions at once
+    if (this.isTransitioning) {
+      return;
     }
+
+    // Set transitioning state
+    this.isTransitioning = true;
+
+    // Add theme transition class for enhanced animation
+    document.documentElement.classList.add("theme-transitioning");
+
+    // Set data attribute for CSS selectors - this is the main theme control
+    // CSS variables will be applied automatically via CSS selectors
+    document.documentElement.setAttribute("data-theme", theme);
 
     // Store preference
     this.setStoredTheme(theme);
 
+    // Remove transition class after animation completes
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+      this.isTransitioning = false;
+    }, this.transitionDuration);
+
     // Trigger callbacks for components that need to know about theme changes
     if (triggerCallbacks) {
-      this.notifyComponents(theme);
+      // Delay callbacks slightly to allow CSS transition to start
+      setTimeout(() => {
+        this.notifyComponents(theme);
+      }, 50);
     }
 
     console.log(`Theme changed to: ${theme}`);
   }
 
   /**
-   * Toggle between light and dark theme
+   * Toggle between light and dark theme with smooth animation
    */
   toggleTheme() {
+    if (this.isTransitioning) {
+      return this.getCurrentTheme(); // Return current theme if already transitioning
+    }
+
     const currentTheme = this.getCurrentTheme();
     const newTheme = currentTheme === "dark" ? "light" : "dark";
     this.setTheme(newTheme);
     return newTheme;
+  }
+
+  /**
+   * Set theme transition duration (in milliseconds)
+   */
+  setTransitionDuration(duration) {
+    this.transitionDuration = duration;
+  }
+
+  /**
+   * Check if theme is currently transitioning
+   */
+  isThemeTransitioning() {
+    return this.isTransitioning;
   }
 
   /**
@@ -159,6 +183,14 @@ class ThemeManager {
    * Notify all subscribed components about theme change
    */
   notifyComponents(theme) {
+    // Dispatch custom event for components that listen to events
+    const event = new CustomEvent("lokstra-theme-changed", {
+      detail: { theme },
+      bubbles: true,
+    });
+    document.dispatchEvent(event);
+
+    // Also call registered callbacks
     this.callbacks.forEach((callback) => {
       try {
         callback(theme);
@@ -173,7 +205,7 @@ class ThemeManager {
    */
   getCSSVariable(variableName) {
     return getComputedStyle(document.documentElement)
-      .getPropertyValue(`--lokstra-${variableName}`)
+      .getPropertyValue(`--ls-${variableName}`)
       .trim();
   }
 

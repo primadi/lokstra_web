@@ -86,17 +86,17 @@ func ApiActivityHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	// Simple HTML template for activity items
-	html := `<div style="space-y: 1rem;">
+	// Simple HTML template for activity items with proper theme support
+	html := `<div style="display: flex; flex-direction: column; gap: 1rem;">
 {{range .}}
-		<div style="display: flex; align-items: start; gap: 0.75rem; padding: 1rem; border-radius: var(--ls-border-radius); background-color: var(--ls-gray-50); border: 1px solid var(--ls-gray-200);">
-			<div style="padding: 0.5rem; border-radius: 0.5rem; background-color: var(--ls-primary-100); color: var(--ls-primary-600);">
+		<div style="display: flex; align-items: start; gap: 0.75rem; padding: 1rem; border-radius: var(--ls-border-radius-lg); background-color: var(--ls-bg-secondary); border: 1px solid var(--ls-border-primary); transition: all 0.3s ease;">
+			<div style="padding: 0.5rem; border-radius: 0.5rem; background-color: var(--ls-bg-tertiary); color: #3b82f6;">
 				<i data-lucide="{{.Icon}}" style="width: 1rem; height: 1rem;"></i>
 			</div>
 			<div style="flex: 1;">
-				<h4 style="font-weight: 500; color: var(--ls-gray-900); margin-bottom: 0.25rem;">{{.Title}}</h4>
-				<p style="color: var(--ls-gray-600); font-size: 0.875rem; margin-bottom: 0.5rem;">{{.Description}}</p>
-				<time style="color: var(--ls-gray-500); font-size: 0.75rem;">{{.Time.Format "Jan 2, 3:04 PM"}}</time>
+				<h4 style="font-weight: 500; color: var(--ls-text-primary); margin-bottom: 0.25rem;">{{.Title}}</h4>
+				<p style="color: var(--ls-text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">{{.Description}}</p>
+				<time style="color: var(--ls-text-muted); font-size: 0.75rem;">{{.Time.Format "Jan 2, 3:04 PM"}}</time>
 			</div>
 		</div>
 {{end}}

@@ -78,8 +78,9 @@ Theming menggunakan CSS custom properties yang dapat di-override:
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Include Preline UI CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/preline@3.2.3/dist/preline.css">
+    <!-- tailwind.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css">
+
     
     <!-- Include theme CSS dengan Preline integration -->
     <link rel="stylesheet" href="components/theme.css">
@@ -508,8 +509,9 @@ Components mendukung browser modern dengan:
 
 ### 1. Include All Dependencies
 ```html
-<!-- Preline UI CSS -->
-<link rel="stylesheet" href="https://unpkg.com/preline@3.2.3/dist/preline.css">
+    <!-- tailwind.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css">
+
 
 <!-- Lokstra Theme CSS -->
 <link rel="stylesheet" href="components/theme.css">

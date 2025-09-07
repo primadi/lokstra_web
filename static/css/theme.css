@@ -1,0 +1,46 @@
+/* theme.css - reusable theme variables and base styles */
+:root {
+  --ls-bg-primary: #c0d0df;
+  --ls-bg-secondary: #d4e2f0;
+  --ls-bg-tertiary: #e8f0f8;
+  --ls-text-primary: #2c3e50;
+  --ls-text-secondary: #34495e;
+  --ls-text-muted: #5a6b7c;
+  --ls-border-primary: #bdc3c7;
+  --ls-border-secondary: #95a5a6;
+  --ls-shadow-sm: 0 1px 3px 0 rgba(44, 62, 80, 0.1);
+  --ls-shadow-md: 0 2px 6px -1px rgba(44, 62, 80, 0.15);
+  --ls-shadow-lg: 0 4px 12px -2px rgba(44, 62, 80, 0.2);
+  --ls-border-radius-lg: 0.5rem;
+  --ls-success-600: #27ae60;
+  --ls-error-600: #e74c3c;
+  --ls-warning-600: #f39c12;
+  --ls-panel-bg: #ced8dd;
+  --ls-card-bg: #adc1dd;
+}
+[data-theme="dark"] {
+  --ls-bg-primary: #111827;
+  --ls-bg-secondary: #1f2937;
+  --ls-bg-tertiary: #374151;
+  --ls-text-primary: #f9fafb;
+  --ls-text-secondary: #e5e7eb;
+  --ls-text-muted: #d1d5db;
+  --ls-border-primary: #374151;
+  --ls-border-secondary: #4b5563;
+  --ls-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --ls-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --ls-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --ls-success-600: #10b981;
+  --ls-error-600: #f87171;
+  --ls-warning-600: #fbbf24;
+  --ls-panel-bg: #1f2937;
+  --ls-card-bg: #374151;
+  --ls-sidebar-bg: #111827;
+  --ls-sidebar-border: #374151;
+  --ls-sidebar-text: #f9fafb;
+  --ls-sidebar-text-muted: #9ca3af;
+  --ls-sidebar-item-hover-bg: #1f2937;
+  --ls-sidebar-item-active-bg: #3b82f6;
+  --ls-sidebar-item-active-border: #60a5fa;
+}
+/* Add more reusable base styles as needed */

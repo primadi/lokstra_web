@@ -223,12 +223,7 @@ export class LsLayout extends LitElement {
       this.style.setProperty("--layout-max-width", this.maxWidth);
     }
 
-    // Initialize Lucide icons
-    setTimeout(() => {
-      if (typeof lucide !== "undefined") {
-        lucide.createIcons();
-      }
-    }, 0);
+    // Icons will be initialized globally by dashboard.html
   }
 
   toggleSidebar() {

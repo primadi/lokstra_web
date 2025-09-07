@@ -1,109 +1,171 @@
-import { LitElement, html, css, nothing } from "lit";
+import { LitElement, html, css, nothing } from "lit"
+import { createIconsManually } from "/static/js/lucide-utils.js"
 
 export class LsButton extends LitElement {
   static styles = css`
     :host {
+      /* Default mode: shrink to fit content */
       display: inline-block;
     }
 
+    /* Full width mode: stretch to parent width */
+    :host([fullwidth]),
+    :host([block]) {
+      display: block;
+      width: 100%;
+    }
+
+    /* Stretch the inner button when host is fullwidth or block */
+    :host([fullwidth]) .ls-btn,
+    :host([block]) .ls-btn {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Fixed width mode: when host has explicit width style */
+    :host([style*="width"]) .ls-btn {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Optional: allow external classes + 'stretch' attribute */
+    :host([stretch]) .ls-btn {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Base style for the inner button */
     .ls-btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      padding: var(--ls-btn-padding-y) var(--ls-btn-padding-x);
-      font-size: var(--ls-btn-font-size);
-      font-weight: var(--ls-btn-font-weight);
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
       line-height: 1.25;
-      border-radius: var(--ls-btn-border-radius);
+      border-radius: 0.375rem;
       border: 1px solid transparent;
       text-decoration: none;
       cursor: pointer;
       user-select: none;
       transition: all 0.15s ease-in-out;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .ls-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      box-sizing: border-box;
+      white-space: nowrap;
+      background: transparent;
     }
 
     /* Size variants */
     .ls-btn-sm {
-      --ls-btn-padding-y: 0.375rem;
-      --ls-btn-padding-x: 0.75rem;
-      --ls-btn-font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
     }
 
     .ls-btn-lg {
-      --ls-btn-padding-y: 0.75rem;
-      --ls-btn-padding-x: 1.5rem;
-      --ls-btn-font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
     }
 
-    /* Color variants */
+    /* Primary variant */
     .ls-btn-primary {
-      color: var(--ls-btn-primary-color);
-      background-color: var(--ls-btn-primary-bg);
-      border-color: var(--ls-btn-primary-border);
+      color: white;
+      background-color: #3b82f6;
+      border-color: #3b82f6;
     }
 
     .ls-btn-primary:hover:not(:disabled) {
-      background-color: var(--ls-btn-primary-hover-bg);
-      border-color: var(--ls-btn-primary-hover-border);
+      background-color: #2563eb;
+      border-color: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
     }
 
+    .ls-btn-primary:active:not(:disabled) {
+      background-color: #1d4ed8;
+      border-color: #1d4ed8;
+      transform: translateY(0);
+    }
+
+    /* Secondary variant */
     .ls-btn-secondary {
-      color: var(--ls-btn-secondary-color);
-      background-color: var(--ls-btn-secondary-bg);
-      border-color: var(--ls-btn-secondary-border);
+      color: var(--ls-text-primary);
+      background-color: var(--ls-bg-secondary);
+      border-color: var(--ls-border-primary);
     }
 
     .ls-btn-secondary:hover:not(:disabled) {
-      background-color: var(--ls-btn-secondary-hover-bg);
-      border-color: var(--ls-btn-secondary-hover-border);
+      background-color: var(--ls-bg-tertiary);
+      border-color: var(--ls-border-secondary);
+      transform: translateY(-1px);
     }
 
+    /* Outline variant */
     .ls-btn-outline {
-      color: var(--ls-btn-outline-color);
-      background-color: var(--ls-btn-outline-bg);
-      border-color: var(--ls-btn-outline-border);
+      color: var(--ls-text-secondary);
+      background-color: transparent;
+      border-color: var(--ls-border-secondary);
     }
 
     .ls-btn-outline:hover:not(:disabled) {
-      background-color: var(--ls-btn-outline-hover-bg);
-      border-color: var(--ls-btn-outline-hover-border);
+      background-color: var(--ls-bg-secondary);
+      border-color: var(--ls-text-muted);
+      color: var(--ls-text-primary);
+      transform: translateY(-1px);
     }
 
-    .ls-btn-danger {
-      color: var(--ls-btn-danger-color);
-      background-color: var(--ls-btn-danger-bg);
-      border-color: var(--ls-btn-danger-border);
-    }
-
-    .ls-btn-danger:hover:not(:disabled) {
-      background-color: var(--ls-btn-danger-hover-bg);
-      border-color: var(--ls-btn-danger-hover-border);
-    }
-
+    /* Success variant */
     .ls-btn-success {
-      color: var(--ls-btn-success-color);
-      background-color: var(--ls-btn-success-bg);
-      border-color: var(--ls-btn-success-border);
+      color: white;
+      background-color: var(--ls-success-600);
+      border-color: var(--ls-success-600);
     }
 
     .ls-btn-success:hover:not(:disabled) {
-      background-color: var(--ls-btn-success-hover-bg);
-      border-color: var(--ls-btn-success-hover-border);
+      background-color: #059669;
+      border-color: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Danger variant */
+    .ls-btn-danger {
+      color: white;
+      background-color: var(--ls-error-600);
+      border-color: var(--ls-error-600);
+    }
+
+    .ls-btn-danger:hover:not(:disabled) {
+      background-color: #dc2626;
+      border-color: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Warning variant */
+    .ls-btn-warning {
+      color: white;
+      background-color: var(--ls-warning-600);
+      border-color: var(--ls-warning-600);
+    }
+
+    .ls-btn-warning:hover:not(:disabled) {
+      background-color: #d97706;
+      border-color: #d97706;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Disabled state */
+    .ls-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
     }
 
     /* Loading state */
     .ls-btn-loading-icon {
       animation: spin 1s linear infinite;
-      width: 1rem;
-      height: 1rem;
     }
 
     @keyframes spin {
@@ -115,48 +177,38 @@ export class LsButton extends LitElement {
       }
     }
 
-    .ls-btn-icon {
+    /* Icon styling */
+    .ls-btn-icon,
+    .ls-btn-loading-icon {
       width: 1rem;
       height: 1rem;
+      stroke: currentColor;
+      flex-shrink: 0;
     }
 
+    /* Button text */
     .button-text {
-      display: inline-block;
-      font-weight: inherit;
-      font-size: inherit;
-      color: inherit;
+      flex-shrink: 0;
     }
-
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  `;
+  `
 
   constructor() {
-    super();
-    this.text = "";
-    this.type = "button";
-    this.variant = "primary"; // primary, secondary, outline, danger, success
-    this.size = ""; // sm, lg (empty for default)
-    this.disabled = false;
-    this.loading = false;
-    this.icon = "";
-    this.iconPosition = "left"; // left, right
-    this.hxPost = "";
-    this.hxGet = "";
-    this.hxTrigger = "";
-    this.hxTarget = "";
-    this.hxSwap = "";
-    this.hxInclude = "";
-    this.isLoading = false;
+    super()
+    this.text = ""
+    this.type = "button"
+    this.variant = "primary" // primary, secondary, outline, danger, success
+    this.size = "" // sm, lg (empty for default)
+    this.disabled = false
+    this.loading = false
+    this.icon = ""
+    this.iconPosition = "left" // left, right
+    this.hxPost = ""
+    this.hxGet = ""
+    this.hxTrigger = ""
+    this.hxTarget = ""
+    this.hxSwap = ""
+    this.hxInclude = ""
+    this.isLoading = false
   }
 
   static get properties() {
@@ -176,21 +228,42 @@ export class LsButton extends LitElement {
       hxSwap: { type: String },
       hxInclude: { type: String },
       isLoading: { type: Boolean, state: true },
-    };
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    // Initialize icons after the component is connected and rendered
+    this.updateComplete.then(() => {
+      this.initializeLucideIcons()
+    })
+  }
+
+  updated(changedProperties) {
+    super.updated(changedProperties)
+    // Re-initialize icons when properties change
+    this.initializeLucideIcons()
+  }
+
+  initializeLucideIcons() {
+    setTimeout(() => {
+      createIconsManually(this.shadowRoot)
+    }, 50)
   }
 
   handleClick() {
-    if (this.disabled || this.loading) return;
+    if (this.disabled || this.loading) return
 
     if (this.hxPost || this.hxGet) {
-      this.isLoading = true;
+      this.isLoading = true
       // HTMX will handle the loading state
       setTimeout(() => {
-        this.isLoading = false;
-      }, 100);
+        this.isLoading = false
+      }, 100)
     }
 
-    this.dispatchEvent(new CustomEvent("click", { bubbles: true }));
+    this.dispatchEvent(new CustomEvent("click", { bubbles: true }))
   }
 
   render() {
@@ -200,32 +273,24 @@ export class LsButton extends LitElement {
       this.size ? `ls-btn-${this.size}` : "",
     ]
       .filter(Boolean)
-      .join(" ");
+      .join(" ")
 
-    const showLoading = this.loading || this.isLoading;
-    const showIcon = this.icon && !showLoading;
+    const showLoading = this.loading || this.isLoading
+    const showIcon = this.icon && !showLoading
 
     const renderIcon = (position) => {
       if (showLoading && position === this.iconPosition) {
         return html`
           <i data-lucide="loader-2" class="ls-btn-loading-icon"></i>
-        `;
+        `
       }
 
       if (showIcon && position === this.iconPosition) {
-        return html` <i data-lucide="${this.icon}" class="ls-btn-icon"></i> `;
+        return html` <i data-lucide="${this.icon}" class="ls-btn-icon"></i> `
       }
 
-      return "";
-    };
-
-    const htmxAttributes = {};
-    if (this.hxPost) htmxAttributes["hx-post"] = this.hxPost;
-    if (this.hxGet) htmxAttributes["hx-get"] = this.hxGet;
-    if (this.hxTrigger) htmxAttributes["hx-trigger"] = this.hxTrigger;
-    if (this.hxTarget) htmxAttributes["hx-target"] = this.hxTarget;
-    if (this.hxSwap) htmxAttributes["hx-swap"] = this.hxSwap;
-    if (this.hxInclude) htmxAttributes["hx-include"] = this.hxInclude;
+      return ""
+    }
 
     return html`
       <button
@@ -245,9 +310,9 @@ export class LsButton extends LitElement {
         <slot></slot>
         ${this.iconPosition === "right" ? renderIcon("right") : ""}
       </button>
-    `;
+    `
   }
 }
 
 // Register the custom element
-customElements.define("ls-button", LsButton);
+customElements.define("ls-button", LsButton)
