@@ -324,25 +324,13 @@
                     this.$nextTick(() => {
                         this.initializeComponents();
                         this.loadInitialContent();
+                        this.setupSidebarSync();
                     });
                 },
                 
                 toggleSidebar() {
-                    if (window.innerWidth <= 768) {
-                        // Mobile: slide sidebar
-                        this.sidebarOpen = !this.sidebarOpen;
-                        const container = document.getElementById('sidebarContainer');
-                        const overlay = document.getElementById('mobileOverlay');
-                        container.classList.toggle('open', this.sidebarOpen);
-                        overlay.classList.toggle('show', this.sidebarOpen);
-                    } else {
-                        // Desktop: collapse sidebar
-                        this.sidebarCollapsed = !this.sidebarCollapsed;
-                        const container = document.getElementById('sidebarContainer');
-                        const sidebar = document.getElementById('sidebar');
-                        container.classList.toggle('collapsed', this.sidebarCollapsed);
-                        sidebar.collapsed = this.sidebarCollapsed;
-                    }
+                    // Component event system handles this now
+                    // Let the navbar and sidebar components manage their own state
                 },
                 
                 initializeComponents() {
@@ -362,6 +350,45 @@
                         navbar.breadcrumb = this.getBreadcrumbData();
                         navbar.notificationCount = 3;
                         console.log('Navbar initialized with user data');
+                    }
+                },
+                
+                setupSidebarSync() {
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebarContainer = document.getElementById('sidebarContainer');
+                    
+                    if (sidebar) {
+                        // Listen for sidebar toggle events from component
+                        document.addEventListener('sidebar-toggle', (e) => {
+                            console.log('Alpine: Received sidebar toggle event', e.detail);
+                            // Update Alpine state to match component state
+                            this.sidebarCollapsed = e.detail.collapsed;
+                            
+                            // Update container class to trigger CSS width change
+                            if (sidebarContainer) {
+                                if (e.detail.collapsed) {
+                                    sidebarContainer.classList.add('collapsed');
+                                    console.log('Alpine: Added collapsed class to container');
+                                } else {
+                                    sidebarContainer.classList.remove('collapsed');
+                                    console.log('Alpine: Removed collapsed class from container');
+                                }
+                            }
+                        });
+                        
+                        // Sync initial state
+                        this.sidebarCollapsed = sidebar.collapsed;
+                        this.sidebarOpen = sidebar.sidebarOpen;
+                        
+                        // Sync initial container class
+                        if (sidebarContainer && sidebar.collapsed) {
+                            sidebarContainer.classList.add('collapsed');
+                        }
+                        
+                        console.log('Alpine: Sidebar state synced', {
+                            collapsed: this.sidebarCollapsed,
+                            open: this.sidebarOpen
+                        });
                     }
                 },
                 

@@ -33,7 +33,7 @@ body {
 }
 
 .sidebar-container.collapsed {
-  width: 4rem; /* Component will handle collapsed state internally */
+  width: 3rem; /* Match component collapsed width */
 }
 
 /* Ensure ls-sidebar fills the container and scrolls independently */
@@ -90,6 +90,7 @@ ls-sidebar::-webkit-scrollbar-thumb:active {
   min-width: 0;
   height: 100vh; /* Fixed height */
   overflow: hidden; /* Container doesn't scroll */
+  transition: margin-left 0.3s ease-in-out; /* Smooth transition when sidebar toggles */
 }
 
 .content-area {

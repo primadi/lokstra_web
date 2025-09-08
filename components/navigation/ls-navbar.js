@@ -382,6 +382,7 @@ export class LsNavbar extends LitElement {
   }
 
   toggleSidebar() {
+    console.log("Navbar: Dispatching toggle-sidebar event")
     this.dispatchEvent(
       new CustomEvent("toggle-sidebar", {
         bubbles: true,

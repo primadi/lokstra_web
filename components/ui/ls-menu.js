@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit"
-import { createIconsManually, toPascalCase } from "/static/js/lucide-utils.js"
+import "./ls-icon.js"
 
 export class LsMenu extends LitElement {
   static styles = css`
@@ -26,6 +26,12 @@ export class LsMenu extends LitElement {
       opacity: 0;
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       backdrop-filter: blur(8px);
+    }
+
+    /* Floating mode - fixed position to escape sidebar container */
+    :host([floating]) .menu-container {
+      position: fixed;
+      z-index: 1000;
     }
 
     :host([open]) .menu-container {
@@ -260,30 +266,13 @@ export class LsMenu extends LitElement {
       margin: 0.25rem 0;
     }
 
-    /* Lucide Icons Styling */
-    svg[data-lucide] {
-      display: inline-block !important;
-      stroke-width: 2 !important;
-      fill: none !important;
-      stroke: currentColor !important;
-    }
-
-    .menu-item-icon svg[data-lucide] {
-      width: 0.875rem !important;
-      height: 0.875rem !important;
-    }
-
-    .menu-item-check svg[data-lucide] {
-      width: 0.875rem !important;
-      height: 0.875rem !important;
-    }
-
-    i[data-lucide] {
+    /* Icon Styling */
+    .menu-item-icon,
+    .menu-item-check {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      width: 0.875rem;
-      height: 0.875rem;
+      flex-shrink: 0;
     }
 
     /* Dark theme enhancements */
@@ -341,6 +330,7 @@ export class LsMenu extends LitElement {
   constructor() {
     super()
     this.open = false
+    this.floating = false
     this.position = "right" // right, left, center
     this.title = ""
     this.subtitle = ""
@@ -349,11 +339,13 @@ export class LsMenu extends LitElement {
     this.sections = []
     this.iconTimeout = null
     this.isUpdatingIcons = false
+    this.portalContainer = null // For floating menus
   }
 
   static get properties() {
     return {
       open: { type: Boolean, reflect: true },
+      floating: { type: Boolean, reflect: true },
       position: { type: String, reflect: true },
       title: { type: String },
       subtitle: { type: String },
@@ -365,61 +357,147 @@ export class LsMenu extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-
-    // Initialize icons after the component is connected and rendered
-    this.updateComplete.then(() => {
-      this.initializeLucideIcons()
-    })
   }
 
   updated(changedProperties) {
     super.updated(changedProperties)
 
-    // Initialize icons when content changes
-    if (
-      changedProperties.has("items") ||
-      changedProperties.has("sections") ||
-      changedProperties.has("open")
-    ) {
-      this.scheduleIconRefresh()
-    }
-  }
-
-  scheduleIconRefresh() {
-    // Prevent multiple simultaneous icon refreshes
-    if (this.isUpdatingIcons) return
-
-    // Clear any pending timeout
-    if (this.iconTimeout) {
-      clearTimeout(this.iconTimeout)
-    }
-
-    this.iconTimeout = setTimeout(() => {
-      this.initializeLucideIcons()
-      this.iconTimeout = null
-    }, 50)
-  }
-
-  initializeLucideIcons() {
-    // Prevent multiple simultaneous calls
-    if (this.isUpdatingIcons) return
-    this.isUpdatingIcons = true
-
-    setTimeout(() => {
-      if (this.shadowRoot && window.lucide) {
-        // Use utility function from lucide-utils.js
-        createIconsManually(this.shadowRoot, window.lucide)
+    // Handle floating positioning
+    if (this.floating && changedProperties.has("open")) {
+      if (this.open) {
+        this.createPortalMenu()
+      } else {
+        this.destroyPortalMenu()
       }
-      this.isUpdatingIcons = false
-    }, 10)
+    }
+  }
+
+  createPortalMenu() {
+    if (!this.floating) return
+
+    // Create portal container di document body
+    this.portalContainer = document.createElement("div")
+    this.portalContainer.className = "ls-menu-portal"
+    this.portalContainer.style.cssText = `
+      position: fixed;
+      z-index: 1000;
+      pointer-events: auto;
+    `
+
+    // Get host position
+    const hostRect = this.getBoundingClientRect()
+
+    // Create menu content
+    const menuHtml = this.renderMenuContent()
+    this.portalContainer.innerHTML = menuHtml
+
+    // Position portal - closer to icon with no gap
+    this.portalContainer.style.left = `${hostRect.right - 5}px` // Overlap slightly
+    this.portalContainer.style.top = `${hostRect.top - 4}px` // Slight vertical overlap
+
+    // Add to document body
+    document.body.appendChild(this.portalContainer)
+
+    // Add event listeners
+    this.addPortalEventListeners()
+  }
+
+  destroyPortalMenu() {
+    if (this.portalContainer) {
+      document.body.removeChild(this.portalContainer)
+      this.portalContainer = null
+    }
+  }
+
+  addPortalEventListeners() {
+    if (!this.portalContainer) return
+
+    // Handle clicks
+    this.portalContainer.addEventListener("click", (e) => {
+      e.stopPropagation()
+      const target = e.target.closest("[data-item-key]")
+      if (target) {
+        const itemKey = target.dataset.itemKey
+        const item = this.items.find((item) => item.key === itemKey)
+        if (item) {
+          this.handleItemClick(item)
+          // Close menu after click
+          this.open = false
+        }
+      }
+    })
+
+    // Handle mouse leave - close menu when mouse exits
+    this.portalContainer.addEventListener("mouseleave", () => {
+      console.log("Portal: Mouse left menu area, closing")
+      this.open = false
+    })
+
+    // Prevent portal from closing when mouse enters
+    this.portalContainer.addEventListener("mouseenter", () => {
+      console.log("Portal: Mouse entered menu area")
+    })
+  }
+
+  renderMenuContent() {
+    return `
+      <div class="menu-container" style="
+        position: static;
+        background: var(--ls-gray-800, #1f2937);
+        border: 1px solid var(--ls-gray-700, #374151);
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        min-width: 10rem;
+        padding: 0.25rem 0;
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        margin: 0;
+      ">
+        ${this.items
+          .map(
+            (item) => `
+          <a 
+            href="${item.href || "#"}" 
+            data-item-key="${item.key}"
+            style="
+              display: block;
+              padding: 0.5rem 1rem;
+              color: var(--ls-gray-300, #d1d5db);
+              text-decoration: none;
+              font-size: 0.875rem;
+              transition: all 0.2s ease-in-out;
+              white-space: nowrap;
+              ${
+                item.active
+                  ? "background-color: var(--ls-primary-600, #2563eb); color: #ffffff;"
+                  : ""
+              }
+            "
+            onmouseover="this.style.backgroundColor = 'var(--ls-gray-700, #374151)'; this.style.color = 'var(--ls-gray-100, #f9fafb)';"
+            onmouseout="this.style.backgroundColor = '${
+              item.active ? "var(--ls-primary-600, #2563eb)" : "transparent"
+            }'; this.style.color = '${
+              item.active ? "#ffffff" : "var(--ls-gray-300, #d1d5db)"
+            }';"
+          >
+            ${item.label}
+            ${
+              item.badge
+                ? `<span style="background-color: var(--ls-error-500); color: white; font-size: 0.75rem; padding: 0.125rem 0.5rem; border-radius: 9999px; margin-left: auto;">${item.badge}</span>`
+                : ""
+            }
+          </a>
+        `
+          )
+          .join("")}
+      </div>
+    `
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-
-    if (this.iconTimeout) {
-      clearTimeout(this.iconTimeout)
-    }
+    // Clean up portal when component is removed
+    this.destroyPortalMenu()
   }
 
   toggle() {
@@ -520,11 +598,17 @@ export class LsMenu extends LitElement {
     return html`
       <button
         class="${classes}"
-        @click="${(e) => this.handleItemClick(item, e)}"
-        ?disabled="${item.disabled}"
+        @click=${(e) => this.handleItemClick(item, e)}
+        ?disabled=${item.disabled}
       >
         ${item.icon
-          ? html` <i class="menu-item-icon" data-lucide="${item.icon}"></i> `
+          ? html`
+              <ls-icon
+                name=${item.icon}
+                size="1rem"
+                class="menu-item-icon"
+              ></ls-icon>
+            `
           : ""}
 
         <div class="menu-item-content">
@@ -544,7 +628,13 @@ export class LsMenu extends LitElement {
             ? html` <span class="menu-item-shortcut">${item.shortcut}</span> `
             : ""}
           ${item.showCheck
-            ? html` <i class="menu-item-check" data-lucide="check"></i> `
+            ? html`
+                <ls-icon
+                  name="check"
+                  size="1rem"
+                  class="menu-item-check"
+                ></ls-icon>
+              `
             : ""}
         </div>
       </button>
@@ -552,6 +642,11 @@ export class LsMenu extends LitElement {
   }
 
   render() {
+    // For floating menus, don't render in shadow DOM - use portal instead
+    if (this.floating) {
+      return html``
+    }
+
     if (!this.open) return ""
 
     return html`

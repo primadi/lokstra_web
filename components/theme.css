@@ -213,21 +213,8 @@
 }
 
 /* 🌙 DARK THEME VARIATIONS */
-.theme-dark,
-[data-theme="dark"] {
-  /* Dark theme color overrides - inverted gray scale */
-  --ls-gray-50: #1f2937;
-  --ls-gray-100: #374151;
-  --ls-gray-200: #4b5563;
-  --ls-gray-300: #6b7280;
-  --ls-gray-400: #9ca3af;
-  --ls-gray-500: #d1d5db;
-  --ls-gray-600: #e5e7eb;
-  --ls-gray-700: #f3f4f6;
-  --ls-gray-800: #f9fafb;
-  --ls-gray-900: #ffffff;
 
-  /* Legacy layout overrides for backward compatibility */
+[data-theme="dark"] {
   --ls-bg-primary: #2d3748;
   --ls-bg-secondary: #1a202c;
   --ls-bg-tertiary: #171923;
@@ -319,8 +306,7 @@
 }
 
 /* Dark Theme Scrollbar */
-[data-theme="dark"],
-[data-hs-theme-appearance="dark"] {
+[data-theme="dark"] {
   --scrollbar-track-bg: rgba(255, 255, 255, 0.05);
   --scrollbar-thumb-bg: rgba(255, 255, 255, 0.2);
   --scrollbar-thumb-hover-bg: rgba(255, 255, 255, 0.3);
