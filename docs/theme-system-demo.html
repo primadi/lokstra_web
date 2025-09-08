@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokstra Theme System Demo</title>
+    <link rel="stylesheet" href="/components/theme.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: var(--ls-gray-50);
+            color: var(--ls-gray-900);
+            transition: all var(--ls-duration-normal) var(--ls-ease-in-out);
+        }
+        
+        .demo-section {
+            margin-bottom: var(--ls-spacing-4xl);
+            padding: var(--ls-spacing-2xl);
+            background: white;
+            border-radius: var(--ls-radius-lg);
+            box-shadow: var(--ls-shadow-md);
+        }
+        
+        .theme-selector {
+            display: flex;
+            gap: var(--ls-spacing-md);
+            margin-bottom: var(--ls-spacing-xl);
+            flex-wrap: wrap;
+        }
+        
+        .theme-btn {
+            padding: var(--ls-spacing-sm) var(--ls-spacing-lg);
+            border: 1px solid var(--ls-gray-300);
+            border-radius: var(--ls-radius-md);
+            background: white;
+            color: var(--ls-gray-700);
+            cursor: pointer;
+            font-size: var(--ls-font-size-sm);
+            font-weight: var(--ls-font-weight-medium);
+            transition: all var(--ls-duration-fast) var(--ls-ease-out);
+        }
+        
+        .theme-btn:hover {
+            background: var(--ls-primary-50);
+            border-color: var(--ls-primary-300);
+            color: var(--ls-primary-700);
+            transform: translateY(-1px);
+        }
+        
+        .theme-btn.active {
+            background: var(--ls-primary-600);
+            border-color: var(--ls-primary-600);
+            color: white;
+        }
+        
+        .demo-card {
+            background: var(--ls-gray-50);
+            border-radius: var(--ls-radius-lg);
+            padding: var(--ls-spacing-lg);
+            margin: var(--ls-spacing-md) 0;
+            border: 1px solid var(--ls-gray-200);
+        }
+        
+        .demo-button {
+            background: var(--ls-primary-600);
+            color: white;
+            border: none;
+            padding: var(--ls-spacing-md) var(--ls-spacing-lg);
+            border-radius: var(--ls-radius-md);
+            font-weight: var(--ls-font-weight-medium);
+            cursor: pointer;
+            transition: all var(--ls-duration-fast) var(--ls-ease-out);
+            margin-right: var(--ls-spacing-md);
+        }
+        
+        .demo-button:hover {
+            background: var(--ls-primary-700);
+            transform: translateY(-1px);
+            box-shadow: var(--ls-shadow-md);
+        }
+        
+        .spacing-demo {
+            display: flex;
+            gap: var(--ls-spacing-md);
+            flex-wrap: wrap;
+            margin-top: var(--ls-spacing-lg);
+        }
+        
+        .spacing-box {
+            width: var(--ls-size-lg);
+            height: var(--ls-size-lg);
+            background: var(--ls-primary-100);
+            border: 2px solid var(--ls-primary-300);
+            border-radius: var(--ls-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--ls-font-size-xs);
+            font-weight: var(--ls-font-weight-semibold);
+            color: var(--ls-primary-700);
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: var(--ls-font-size-3xl); font-weight: var(--ls-font-weight-bold); color: var(--ls-gray-900); margin-bottom: var(--ls-spacing-xl);">
+        🎨 Lokstra Design System Demo
+    </h1>
+    
+    <div class="demo-section">
+        <h2 style="font-size: var(--ls-font-size-xl); font-weight: var(--ls-font-weight-semibold); margin-bottom: var(--ls-spacing-lg);">
+            🌈 Theme Variations
+        </h2>
+        
+        <div class="theme-selector">
+            <button class="theme-btn active" onclick="setTheme('light')">Light</button>
+            <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+            <button class="theme-btn" onclick="setTheme('ocean')">Ocean</button>
+            <button class="theme-btn" onclick="setTheme('forest')">Forest</button>
+            <button class="theme-btn" onclick="setTheme('sunset')">Sunset</button>
+            <button class="theme-btn" onclick="setTheme('royal')">Royal</button>
+            <button class="theme-btn" onclick="setTheme('high-contrast')">High Contrast</button>
+        </div>
+        
+        <div class="demo-card">
+            <h3 style="margin-top: 0; color: var(--ls-primary-600);">Theme-Aware Components</h3>
+            <p style="color: var(--ls-gray-600); margin-bottom: var(--ls-spacing-lg);">
+                Ini adalah contoh bagaimana komponen merespons perubahan tema secara otomatis menggunakan CSS design tokens.
+            </p>
+            <button class="demo-button">Primary Action</button>
+            <button class="demo-button" style="background: var(--ls-success-600);" 
+                    onmouseover="this.style.background='var(--ls-success-700)'" 
+                    onmouseout="this.style.background='var(--ls-success-600)'">Success</button>
+            <button class="demo-button" style="background: var(--ls-error-600);"
+                    onmouseover="this.style.background='var(--ls-error-700)'" 
+                    onmouseout="this.style.background='var(--ls-error-600)'">Error</button>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2 style="font-size: var(--ls-font-size-xl); font-weight: var(--ls-font-weight-semibold); margin-bottom: var(--ls-spacing-lg);">
+            📐 Spacing System
+        </h2>
+        
+        <div class="theme-selector">
+            <button class="theme-btn" onclick="setSpacing('compact')">Compact</button>
+            <button class="theme-btn active" onclick="setSpacing('normal')">Normal</button>
+            <button class="theme-btn" onclick="setSpacing('spacious')">Spacious</button>
+        </div>
+        
+        <div class="spacing-demo">
+            <div class="spacing-box">XS</div>
+            <div class="spacing-box">SM</div>
+            <div class="spacing-box">MD</div>
+            <div class="spacing-box">LG</div>
+            <div class="spacing-box">XL</div>
+            <div class="spacing-box">2XL</div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2 style="font-size: var(--ls-font-size-xl); font-weight: var(--ls-font-weight-semibold); margin-bottom: var(--ls-spacing-lg);">
+            🔤 Typography Scale
+        </h2>
+        
+        <div style="font-size: var(--ls-font-size-xs); margin-bottom: var(--ls-spacing-sm);">XS: The quick brown fox (12px)</div>
+        <div style="font-size: var(--ls-font-size-sm); margin-bottom: var(--ls-spacing-sm);">SM: The quick brown fox (14px)</div>
+        <div style="font-size: var(--ls-font-size-md); margin-bottom: var(--ls-spacing-sm);">MD: The quick brown fox (16px)</div>
+        <div style="font-size: var(--ls-font-size-lg); margin-bottom: var(--ls-spacing-sm);">LG: The quick brown fox (18px)</div>
+        <div style="font-size: var(--ls-font-size-xl); margin-bottom: var(--ls-spacing-sm);">XL: The quick brown fox (20px)</div>
+        <div style="font-size: var(--ls-font-size-2xl); margin-bottom: var(--ls-spacing-sm);">2XL: The quick brown fox (24px)</div>
+    </div>
+    
+    <script>
+        function setTheme(theme) {
+            // Remove all theme classes
+            document.body.className = '';
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add new theme
+            if (theme !== 'light') {
+                document.body.classList.add(`theme-${theme}`);
+                document.body.setAttribute('data-theme', theme);
+            }
+            
+            // Update active button
+            event.target.classList.add('active');
+        }
+        
+        function setSpacing(spacing) {
+            // Remove spacing classes
+            document.body.classList.remove('theme-compact', 'theme-spacious');
+            document.querySelectorAll('.theme-selector')[1].querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add new spacing
+            if (spacing !== 'normal') {
+                document.body.classList.add(`theme-${spacing}`);
+            }
+            
+            // Update active button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

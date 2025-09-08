@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
 
 export class LsModal extends LitElement {
   static styles = css`
@@ -165,49 +165,49 @@ export class LsModal extends LitElement {
       }
     }
 
-    /* Dark theme */
-    :host(.theme-dark) .hs-modal {
-      background-color: var(--ls-gray-800);
-      border-color: var(--ls-gray-700);
+    /* Theme-aware styling using CSS custom properties */
+    .hs-modal {
+      background-color: var(--ls-bg-primary);
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-modal-header {
-      border-color: var(--ls-gray-700);
-      background-color: var(--ls-gray-800);
+    .hs-modal-header {
+      border-color: var(--ls-border-primary);
+      background-color: var(--ls-bg-primary);
     }
 
-    :host(.theme-dark) .hs-modal-title {
-      color: var(--ls-gray-100);
+    .hs-modal-title {
+      color: var(--ls-text-primary);
     }
 
-    :host(.theme-dark) .hs-modal-body {
-      color: var(--ls-gray-300);
+    .hs-modal-body {
+      color: var(--ls-text-secondary);
     }
 
-    :host(.theme-dark) .hs-modal-footer {
-      background-color: var(--ls-gray-700);
-      border-color: var(--ls-gray-600);
+    .hs-modal-footer {
+      background-color: var(--ls-bg-secondary);
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-modal-close:hover {
-      background-color: var(--ls-gray-700);
-      color: var(--ls-gray-300);
+    .hs-modal-close:hover {
+      background-color: var(--ls-bg-secondary);
+      color: var(--ls-text-secondary);
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.open = false;
-    this.size = "md";
-    this.title = "";
-    this.showHeader = true;
-    this.showCloseButton = true;
-    this.showFooter = false;
-    this.footerAlign = "right";
-    this.actions = [];
-    this.dismissOnOverlay = true;
-    this.dismissOnEscape = true;
-    this.animateIn = true;
+    super()
+    this.open = false
+    this.size = "md"
+    this.title = ""
+    this.showHeader = true
+    this.showCloseButton = true
+    this.showFooter = false
+    this.footerAlign = "right"
+    this.actions = []
+    this.dismissOnOverlay = true
+    this.dismissOnEscape = true
+    this.animateIn = true
   }
 
   static get properties() {
@@ -223,40 +223,40 @@ export class LsModal extends LitElement {
       dismissOnOverlay: { type: Boolean },
       dismissOnEscape: { type: Boolean },
       animateIn: { type: Boolean },
-    };
+    }
   }
 
   connectedCallback() {
-    super.connectedCallback();
+    super.connectedCallback()
 
     if (this.dismissOnEscape) {
-      document.addEventListener("keydown", this.handleEscape.bind(this));
+      document.addEventListener("keydown", this.handleEscape.bind(this))
     }
 
     // Add to modal stack for proper z-index management
     this.style.zIndex =
-      9999 + document.querySelectorAll("ls-modal[open]").length;
+      9999 + document.querySelectorAll("ls-modal[open]").length
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener("keydown", this.handleEscape.bind(this));
+    super.disconnectedCallback()
+    document.removeEventListener("keydown", this.handleEscape.bind(this))
   }
 
   updated(changedProperties) {
-    super.updated(changedProperties);
+    super.updated(changedProperties)
 
     if (changedProperties.has("open")) {
       if (this.open) {
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow = "hidden"
         if (this.animateIn) {
-          this.classList.add("animate-in");
-          this.classList.add("show");
+          this.classList.add("animate-in")
+          this.classList.add("show")
         }
       } else {
-        document.body.style.overflow = "";
-        this.classList.remove("animate-in");
-        this.classList.remove("show");
+        document.body.style.overflow = ""
+        this.classList.remove("animate-in")
+        this.classList.remove("show")
       }
     }
 
@@ -265,34 +265,34 @@ export class LsModal extends LitElement {
 
   handleEscape(event) {
     if (event.key === "Escape" && this.open) {
-      this.close();
+      this.close()
     }
   }
 
   handleOverlayClick() {
     if (this.dismissOnOverlay) {
-      this.close();
+      this.close()
     }
   }
 
   close() {
-    this.open = false;
+    this.open = false
     this.dispatchEvent(
       new CustomEvent("modal-close", {
         detail: { title: this.title },
         bubbles: true,
       })
-    );
+    )
   }
 
   show() {
-    this.open = true;
+    this.open = true
     this.dispatchEvent(
       new CustomEvent("modal-open", {
         detail: { title: this.title },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleAction(action) {
@@ -301,29 +301,29 @@ export class LsModal extends LitElement {
         detail: { action, title: this.title },
         bubbles: true,
       })
-    );
+    )
 
     // Handle HTMX actions
     if (action.hxGet || action.hxPost) {
-      const url = action.hxGet || action.hxPost;
-      const method = action.hxGet ? "GET" : "POST";
+      const url = action.hxGet || action.hxPost
+      const method = action.hxGet ? "GET" : "POST"
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, url, {
           target: action.hxTarget,
-        });
+        })
       }
     }
 
     // Auto-close after action if specified
     if (action.autoClose !== false) {
-      this.close();
+      this.close()
     }
   }
 
   render() {
     if (!this.open) {
-      return html``;
+      return html``
     }
 
     return html`
@@ -399,8 +399,8 @@ export class LsModal extends LitElement {
             `
           : ""}
       </div>
-    `;
+    `
   }
 }
 
-customElements.define("ls-modal", LsModal);
+customElements.define("ls-modal", LsModal)

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
 
 export class LsLayout extends LitElement {
   static styles = css`
@@ -156,50 +156,50 @@ export class LsLayout extends LitElement {
       }
     }
 
-    /* Dark theme */
-    :host(.theme-dark) {
-      background-color: var(--ls-gray-900);
+    /* Theme-aware styling using CSS custom properties */
+    :host {
+      background-color: var(--ls-bg-primary);
     }
 
-    :host(.theme-dark) .hs-layout-page-title {
-      color: var(--ls-gray-100);
+    .hs-layout-page-title {
+      color: var(--ls-text-primary);
     }
 
-    :host(.theme-dark) .hs-layout-page-subtitle {
-      color: var(--ls-gray-400);
+    .hs-layout-page-subtitle {
+      color: var(--ls-text-muted);
     }
 
-    :host(.theme-dark) .hs-layout-footer {
-      background-color: var(--ls-gray-800);
-      border-color: var(--ls-gray-700);
-      color: var(--ls-gray-400);
+    .hs-layout-footer {
+      background-color: var(--ls-bg-secondary);
+      border-color: var(--ls-border-primary);
+      color: var(--ls-text-muted);
     }
 
-    :host(.theme-dark) .hs-layout-breadcrumb-item {
-      color: var(--ls-gray-400);
+    .hs-layout-breadcrumb-item {
+      color: var(--ls-text-muted);
     }
 
-    :host(.theme-dark) .hs-layout-breadcrumb-item:hover {
-      color: var(--ls-gray-100);
-      background-color: var(--ls-gray-700);
+    .hs-layout-breadcrumb-item:hover {
+      color: var(--ls-text-primary);
+      background-color: var(--ls-bg-secondary);
     }
 
-    :host(.theme-dark) .hs-layout-breadcrumb-item.active {
-      color: var(--ls-gray-100);
+    .hs-layout-breadcrumb-item.active {
+      color: var(--ls-text-primary);
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.pageTitle = "";
-    this.pageSubtitle = "";
-    this.showBreadcrumb = true;
-    this.showFooter = true;
-    this.footerText = "© 2024 Lokstra Framework. All rights reserved.";
-    this.breadcrumb = [];
-    this.pageActions = [];
-    this.sidebarOpen = false;
-    this.maxWidth = "1200px";
+    super()
+    this.pageTitle = ""
+    this.pageSubtitle = ""
+    this.showBreadcrumb = true
+    this.showFooter = true
+    this.footerText = "© 2024 Lokstra Framework. All rights reserved."
+    this.breadcrumb = []
+    this.pageActions = []
+    this.sidebarOpen = false
+    this.maxWidth = "1200px"
   }
 
   static get properties() {
@@ -213,27 +213,27 @@ export class LsLayout extends LitElement {
       pageActions: { type: Array },
       sidebarOpen: { type: Boolean, state: true },
       maxWidth: { type: String },
-    };
+    }
   }
 
   updated(changedProperties) {
-    super.updated(changedProperties);
+    super.updated(changedProperties)
 
     if (changedProperties.has("maxWidth")) {
-      this.style.setProperty("--layout-max-width", this.maxWidth);
+      this.style.setProperty("--layout-max-width", this.maxWidth)
     }
 
     // Icons will be initialized globally by dashboard.html
   }
 
   toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
+    this.sidebarOpen = !this.sidebarOpen
     this.dispatchEvent(
       new CustomEvent("sidebar-toggle", {
         detail: { open: this.sidebarOpen },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleBreadcrumbClick(item, index) {
@@ -242,17 +242,17 @@ export class LsLayout extends LitElement {
         detail: { item, index },
         bubbles: true,
       })
-    );
+    )
 
     // Handle HTMX navigation
     if (item.hxGet || item.hxPost) {
-      const url = item.hxGet || item.hxPost;
-      const method = item.hxGet ? "GET" : "POST";
+      const url = item.hxGet || item.hxPost
+      const method = item.hxGet ? "GET" : "POST"
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, url, {
           target: item.hxTarget || "body",
-        });
+        })
       }
     }
   }
@@ -263,22 +263,22 @@ export class LsLayout extends LitElement {
         detail: { action },
         bubbles: true,
       })
-    );
+    )
 
     // Handle confirmation
     if (action.confirm && !confirm(action.confirm)) {
-      return;
+      return
     }
 
     // Handle HTMX actions
     if (action.hxGet || action.hxPost) {
-      const url = action.hxGet || action.hxPost;
-      const method = action.hxGet ? "GET" : "POST";
+      const url = action.hxGet || action.hxPost
+      const method = action.hxGet ? "GET" : "POST"
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, url, {
           target: action.hxTarget || "body",
-        });
+        })
       }
     }
   }
@@ -330,8 +330,8 @@ export class LsLayout extends LitElement {
                                     ? "active"
                                     : ""}"
                                   @click="${(e) => {
-                                    e.preventDefault();
-                                    this.handleBreadcrumbClick(item, index);
+                                    e.preventDefault()
+                                    this.handleBreadcrumbClick(item, index)
                                   }}"
                                 >
                                   ${item.title}
@@ -383,8 +383,8 @@ export class LsLayout extends LitElement {
                                           href="${action.url}"
                                           class="text-blue-600 hover:text-blue-800 underline"
                                           @click="${(e) => {
-                                            e.preventDefault();
-                                            this.handlePageAction(action);
+                                            e.preventDefault()
+                                            this.handlePageAction(action)
                                           }}"
                                         >
                                           ${action.text}
@@ -426,8 +426,8 @@ export class LsLayout extends LitElement {
       >
         <i data-lucide="menu" style="width: 1.5rem; height: 1.5rem;"></i>
       </button>
-    `;
+    `
   }
 }
 
-customElements.define("ls-layout", LsLayout);
+customElements.define("ls-layout", LsLayout)

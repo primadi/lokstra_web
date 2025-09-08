@@ -1,0 +1,309 @@
+/* 🔘 LS-BUTTON COMPONENT - Lokstra Design System */
+
+/* Button Web Component Styling */
+:host {
+  /* === BUTTON VARIABLES (using design tokens) === */
+
+  /* Base styling */
+  --button-padding-y: var(--ls-spacing-md, 0.75rem);
+  --button-padding-x: var(--ls-spacing-lg, 1rem);
+  --button-font-size: var(--ls-font-size-sm, 0.875rem);
+  --button-font-weight: var(--ls-font-weight-medium, 500);
+  --button-line-height: var(--ls-line-height-tight, 1.25);
+  --button-border-radius: var(--ls-radius-md, 0.5rem);
+  --button-transition: all var(--ls-duration-fast, 150ms) var(--ls-ease-out);
+  --button-gap: var(--ls-spacing-sm, 0.5rem);
+
+  /* Primary variant (default) */
+  --button-bg: var(--ls-primary-600, #2563eb);
+  --button-text: var(--ls-white, #ffffff);
+  --button-border: var(--ls-primary-600, #2563eb);
+  --button-hover-bg: var(--ls-primary-700, #1d4ed8);
+  --button-hover-border: var(--ls-primary-700, #1d4ed8);
+  --button-active-bg: var(--ls-primary-800, #1e40af);
+
+  /* === COMPONENT STYLING === */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--button-gap);
+  padding: var(--button-padding-y) var(--button-padding-x);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: var(--button-line-height);
+  color: var(--button-text);
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  border-radius: var(--button-border-radius);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: var(--button-transition);
+  vertical-align: middle;
+}
+
+/* === SIZE VARIANTS === */
+:host([size="sm"]) {
+  --button-padding-y: var(--ls-spacing-sm, 0.5rem);
+  --button-padding-x: var(--ls-spacing-md, 0.75rem);
+  --button-font-size: var(--ls-font-size-xs, 0.75rem);
+}
+
+:host([size="lg"]) {
+  --button-padding-y: var(--ls-spacing-lg, 1rem);
+  --button-padding-x: var(--ls-spacing-xl, 1.5rem);
+  --button-font-size: var(--ls-font-size-md, 1rem);
+}
+
+/* === COLOR VARIANTS === */
+
+/* Secondary */
+:host([variant="secondary"]) {
+  --button-bg: var(--ls-gray-200, #e5e7eb);
+  --button-text: var(--ls-gray-900, #111827);
+  --button-border: var(--ls-gray-200, #e5e7eb);
+  --button-hover-bg: var(--ls-gray-300, #d1d5db);
+  --button-hover-border: var(--ls-gray-300, #d1d5db);
+}
+
+/* Outline */
+:host([variant="outline"]) {
+  --button-bg: transparent;
+  --button-text: var(--ls-primary-600, #2563eb);
+  --button-border: var(--ls-primary-600, #2563eb);
+  --button-hover-bg: var(--ls-primary-50, #eff6ff);
+  --button-hover-border: var(--ls-primary-700, #1d4ed8);
+}
+
+/* Ghost */
+:host([variant="ghost"]) {
+  --button-bg: transparent;
+  --button-text: var(--ls-gray-700, #374151);
+  --button-border: transparent;
+  --button-hover-bg: var(--ls-gray-100, #f3f4f6);
+  --button-hover-border: transparent;
+}
+
+/* Danger */
+:host([variant="danger"]) {
+  --button-bg: var(--ls-error-600, #dc2626);
+  --button-text: var(--ls-white, #ffffff);
+  --button-border: var(--ls-error-600, #dc2626);
+  --button-hover-bg: var(--ls-error-700, #b91c1c);
+  --button-hover-border: var(--ls-error-700, #b91c1c);
+}
+
+/* Success */
+:host([variant="success"]) {
+  --button-bg: var(--ls-success-600, #059669);
+  --button-text: var(--ls-white, #ffffff);
+  --button-border: var(--ls-success-600, #059669);
+  --button-hover-bg: var(--ls-success-700, #047857);
+  --button-hover-border: var(--ls-success-700, #047857);
+}
+
+/* Warning */
+:host([variant="warning"]) {
+  --button-bg: var(--ls-warning-600, #d97706);
+  --button-text: var(--ls-white, #ffffff);
+  --button-border: var(--ls-warning-600, #d97706);
+  --button-hover-bg: var(--ls-warning-700, #b45309);
+  --button-hover-border: var(--ls-warning-700, #b45309);
+}
+
+/* === STATES === */
+:host(:hover:not([disabled])) {
+  background-color: var(--button-hover-bg);
+  border-color: var(--button-hover-border);
+  transform: translateY(-1px);
+  box-shadow: var(--ls-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+:host(:active:not([disabled])) {
+  background-color: var(--button-active-bg);
+  transform: translateY(0);
+  box-shadow: var(--ls-shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+:host(:focus-visible) {
+  outline: 2px solid var(--ls-primary-600, #2563eb);
+  outline-offset: 2px;
+}
+
+:host([disabled]) {
+  --button-bg: var(--ls-gray-300, #d1d5db);
+  --button-text: var(--ls-gray-500, #6b7280);
+  --button-border: var(--ls-gray-300, #d1d5db);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* === LOADING STATE === */
+:host([loading]) {
+  cursor: wait;
+  pointer-events: none;
+}
+
+:host([loading]) .loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === ICON STYLING === */
+:host ::slotted(svg),
+:host ::slotted(i) {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* === THEME RESPONSIVENESS === */
+
+/* Dark theme variants */
+
+:host([data-theme="dark"][variant="secondary"]) {
+  --button-bg: var(--ls-gray-700, #374151);
+  --button-text: var(--ls-gray-100, #f3f4f6);
+  --button-border: var(--ls-gray-700, #374151);
+  --button-hover-bg: var(--ls-gray-600, #4b5563);
+}
+
+:host([data-theme="dark"][variant="ghost"]) {
+  --button-text: var(--ls-gray-300, #d1d5db);
+  --button-hover-bg: var(--ls-gray-800, #1f2937);
+}
+
+:host([data-theme="dark"][variant="outline"]) {
+  --button-text: var(--ls-primary-400, #60a5fa);
+  --button-border: var(--ls-primary-400, #60a5fa);
+  --button-hover-bg: var(--ls-primary-950, #1e3a8a);
+}
+
+/* High contrast theme */
+:host([data-theme="high-contrast"]) {
+  --button-bg: #000000;
+  --button-text: #ffffff;
+  --button-border: #000000;
+  --button-hover-bg: #333333;
+}
+
+:host([data-theme="high-contrast"][variant="outline"]) {
+  --button-bg: transparent;
+  --button-text: #000000;
+  --button-border: #000000;
+  --button-hover-bg: #f0f0f0;
+}
+
+/* === INTERNAL BUTTON ELEMENT === */
+button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: inherit;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+
+/* === UTILITY CLASSES FOR EXTERNAL USE === */
+.ls-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: all 150ms ease-out;
+
+  /* Primary styling */
+  background-color: var(--ls-primary-600, #2563eb);
+  color: var(--ls-white, #ffffff);
+  border-color: var(--ls-primary-600, #2563eb);
+}
+
+.ls-btn:hover:not(:disabled) {
+  background-color: var(--ls-primary-700, #1d4ed8);
+  border-color: var(--ls-primary-700, #1d4ed8);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.ls-btn:disabled {
+  background-color: var(--ls-gray-300, #d1d5db);
+  color: var(--ls-gray-500, #6b7280);
+  border-color: var(--ls-gray-300, #d1d5db);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* Button variants for external use */
+.ls-btn-secondary {
+  background-color: var(--ls-gray-200, #e5e7eb);
+  color: var(--ls-gray-900, #111827);
+  border-color: var(--ls-gray-200, #e5e7eb);
+}
+
+.ls-btn-secondary:hover:not(:disabled) {
+  background-color: var(--ls-gray-300, #d1d5db);
+  border-color: var(--ls-gray-300, #d1d5db);
+}
+
+.ls-btn-outline {
+  background-color: transparent;
+  color: var(--ls-primary-600, #2563eb);
+  border-color: var(--ls-primary-600, #2563eb);
+}
+
+.ls-btn-outline:hover:not(:disabled) {
+  background-color: var(--ls-primary-50, #eff6ff);
+  border-color: var(--ls-primary-700, #1d4ed8);
+}
+
+.ls-btn-danger {
+  background-color: var(--ls-error-600, #dc2626);
+  color: var(--ls-white, #ffffff);
+  border-color: var(--ls-error-600, #dc2626);
+}
+
+.ls-btn-danger:hover:not(:disabled) {
+  background-color: var(--ls-error-700, #b91c1c);
+  border-color: var(--ls-error-700, #b91c1c);
+}
+
+/* Size variants */
+.ls-btn-sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.ls-btn-lg {
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+}

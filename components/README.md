@@ -1,6 +1,273 @@
-# Lokstra Web Components
+# 🧩 Lokstra Components - Clean Architecture
 
-Koleksi web components standar untuk aplikasi bisnis menggunakan **Lit framework** dengan prefix `ls-`. Components menggunakan **Preline UI**, **Alpine.js**, **HTMX**, dan **Lucide Icons** untuk pengalaman development yang modern dan konsisten.
+## 🎯 **ARCHITECTURE CLEANUP COMPLETED**
+
+✅ **Clean Separation Achieved:**
+- **`theme.css`** → **Design tokens & theme variations ONLY**
+- **Component files** → **Complete self-contained styling**  
+- **No cross-contamination** → **Single responsibility per file**
+
+---
+
+## 📁 Clean Component Structure
+
+```
+components/
+├── theme.css                    # 🎨 DESIGN TOKENS ONLY
+│                               #     Colors, spacing, typography tokens
+│                               #     Theme variations (dark, accessibility)
+│                               #     NO component styling
+├── forms/                       # 📝 Form components
+│   ├── ls-button.css           #     Complete button styling + tokens
+│   └── ls-input.css            #     Complete input/form styling + tokens
+├── layout/                      # 📐 Layout components  
+│   └── ls-card.css             #     Complete card styling + tokens
+├── navigation/                  # 🧭 Navigation components
+│   └── ls-sidebar.js           #     Sidebar component (uses tokens)
+└── utilities/                   # 🛠️ Utility classes
+    └── ls-utilities.css        #     Spacing, typography, responsive utilities
+```
+
+## ✅ What Was Cleaned Up
+
+### **BEFORE (Mixed Responsibilities):**
+```css
+/* theme.css was cluttered with component styles */
+:root { --ls-primary-600: #2563eb; }
+
+.ls-btn { padding: 0.75rem 1rem; } /* ❌ Component styling in theme */
+.ls-input { border: 1px solid; }   /* ❌ Component styling in theme */
+.ls-card { box-shadow: ...; }      /* ❌ Component styling in theme */
+/* Hard to maintain, unclear separation */
+```
+
+### **AFTER (Clean Separation):**
+```css
+/* theme.css: PURE design tokens */
+:root {
+  --ls-primary-600: #2563eb;
+  --ls-spacing-lg: 1rem;
+  /* ONLY tokens and theme variations */
+}
+
+/* components/forms/ls-button.css: Complete button */
+:host {
+  --button-bg: var(--ls-primary-600, #2563eb);
+  background: var(--button-bg);
+  /* Self-contained with token usage */
+}
+```
+
+---
+
+## 🎨 Pure Design Token System
+
+### **`theme.css` Now Contains ONLY:**
+
+#### **🎨 Color Tokens**
+```css
+--ls-primary-600: #2563eb;    /* Blue-600 */
+--ls-gray-900: #111827;       /* Near black */
+--ls-error-600: #dc2626;      /* Red-600 */
+--ls-success-600: #059669;    /* Emerald-600 */
+```
+
+#### **📐 Spatial Tokens**  
+```css
+--ls-spacing-xs: 0.25rem;     /* 4px */
+--ls-spacing-lg: 1rem;        /* 16px */
+--ls-spacing-2xl: 2rem;       /* 32px */
+```
+
+#### **🔤 Typography Tokens**
+```css
+--ls-font-size-sm: 0.875rem;  /* 14px */
+--ls-font-weight-medium: 500;
+--ls-line-height-normal: 1.5;
+```
+
+#### **🌈 Theme Variations**
+```css
+.theme-dark { --ls-gray-900: #ffffff; }
+.theme-ocean { --ls-primary-600: #0891b2; }
+.theme-high-contrast { --ls-primary-600: #0000ff; }
+```
+
+---
+
+## 🧩 Self-Contained Components
+
+### **Component Pattern:**
+```css
+/* Each component file is complete */
+:host {
+  /* Component variables using design tokens */
+  --component-bg: var(--ls-gray-50, #f9fafb);
+  --component-text: var(--ls-gray-900, #111827);
+  --component-padding: var(--ls-spacing-lg, 1rem);
+  
+  /* Component styling */
+  background: var(--component-bg);
+  color: var(--component-text);
+  padding: var(--component-padding);
+}
+
+/* Theme responsiveness */
+:host([data-theme="dark"]) {
+  --component-bg: var(--ls-gray-800, #1f2937);
+}
+```
+
+### **Available Component Files:**
+
+#### **📝 `forms/ls-button.css`**
+- Complete button component styling
+- Size variants: sm, lg
+- Color variants: primary, secondary, outline, danger, success
+- States: hover, active, disabled, loading
+- Theme responsive
+
+#### **📝 `forms/ls-input.css`**  
+- Complete input/form styling
+- Input, textarea, select support
+- Validation states: error, success
+- Form groups, labels, feedback
+- Theme responsive
+
+#### **🎴 `layout/ls-card.css`**
+- Complete card component
+- Variants: elevated, outlined, flat, interactive
+- Size variants: sm, lg
+- Status indicators: error, warning, success
+- Theme responsive
+
+#### **🛠️ `utilities/ls-utilities.css`**
+- Atomic utility classes
+- Spacing: `.ls-p-lg`, `.ls-m-md`
+- Typography: `.ls-text-lg`, `.ls-font-bold`
+- Layout: `.ls-d-flex`, `.ls-justify-center`
+- All using design tokens
+
+---
+
+## 🔗 Usage Examples
+
+### **1. Import Component Styles**
+```html
+<!-- In web component -->
+<style>
+  @import url('./components/forms/ls-button.css');
+</style>
+
+<!-- In main CSS -->
+@import url('./components/forms/ls-button.css');
+@import url('./components/layout/ls-card.css');
+@import url('./components/utilities/ls-utilities.css');
+```
+
+### **2. Web Component Usage**
+```html
+<!-- Component attributes -->
+<ls-button variant="primary" size="lg">Click me</ls-button>
+<ls-input state="error" size="sm" placeholder="Enter text"></ls-input>
+<ls-card variant="elevated" status="success">Card content</ls-card>
+```
+
+### **3. Utility Class Usage**
+```html
+<!-- Quick styling with utilities -->
+<div class="ls-p-lg ls-rounded-md ls-bg-primary ls-text-white ls-d-flex">
+  Styled with design token utilities
+</div>
+```
+
+### **4. Theme Switching**
+```javascript
+// Global theme change affects all components
+document.body.setAttribute('data-theme', 'dark');
+document.body.classList.add('theme-ocean');
+document.body.classList.add('theme-compact');
+```
+
+---
+
+## 📈 Benefits Achieved
+
+### **✅ For Developers:**
+- **Clear Separation**: Know exactly where to find component styles
+- **Easy Maintenance**: Update components independently
+- **No Conflicts**: Clean file boundaries prevent CSS collisions
+- **Scalable**: Add new components without polluting theme.css
+
+### **✅ For Components:**
+- **Self-Contained**: All styling within component file
+- **Token-Aware**: Automatic theme responsiveness
+- **Fallback Safe**: Work even without theme.css loaded
+- **Performance**: Only load needed component styles
+
+### **✅ For Design System:**
+- **Pure Tokens**: theme.css is single source of design truth
+- **Consistent Theming**: All components use same token foundation
+- **Easy Customization**: Change tokens → all components update
+- **Clear Architecture**: Obvious file responsibilities
+
+---
+
+## 🚀 Migration Guide
+
+### **Old Global Classes → New Component Files**
+
+#### **Buttons:**
+```html
+<!-- OLD: Global classes from theme.css -->
+<button class="ls-btn ls-btn-primary">Old way</button>
+
+<!-- NEW: Component file or web component -->
+<ls-button variant="primary">New way</ls-button>
+<!-- OR -->
+<button class="ls-btn ls-btn-primary">Still works via ls-button.css</button>
+```
+
+#### **Inputs:**
+```html
+<!-- OLD: Global classes -->
+<input class="ls-input">
+
+<!-- NEW: Component file -->
+<ls-input placeholder="Enter text"></ls-input>
+<!-- OR -->
+<input class="ls-input"> <!-- Via ls-input.css -->
+```
+
+### **Import New Component Styles:**
+```css
+/* Add to your main CSS */
+@import url('./components/forms/ls-button.css');
+@import url('./components/forms/ls-input.css');
+@import url('./components/layout/ls-card.css');
+@import url('./components/utilities/ls-utilities.css');
+```
+
+---
+
+## 📚 Documentation
+
+- **[Design System Guide](../docs/design-system.md)** - Complete token reference
+- **[Component Implementation](../docs/component-guide.md)** - Step-by-step guide
+- **[Theme Demo](../docs/theme-system-demo.html)** - Interactive showcase
+
+---
+
+## 🎉 Architecture Success
+
+**Clean separation achieved!** Every file now has a single, clear responsibility:
+
+- **`theme.css`** = Design tokens only
+- **`components/*.css`** = Complete component styling  
+- **`utilities/*.css`** = Utility classes
+- **`navigation/*.js`** = Web components
+
+**Result:** Maintainable, scalable, and clean component architecture! 🚀
 
 ## Tech Stack
 

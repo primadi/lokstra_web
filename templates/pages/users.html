@@ -19,9 +19,8 @@
     </div>
     
     <!-- Search and Filters -->
-    <div class="ls-card" style="margin-bottom: 1.5rem;">
-        <div class="ls-card-body">
-            <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+    <ls-card style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap; padding: 1.5rem;">
                 <div style="flex: 1; min-width: 250px;">
                     <ls-input
                         label="Search users"
@@ -66,13 +65,13 @@
                 </div>
             </div>
         </div>
-    </div>
+    </ls-card>
     
     <!-- Users Table -->
-    <div class="ls-card">
-        <div class="ls-card-header">
-            <h2 class="card-title">All Users</h2>
-            <div style="color: var(--ls-gray-600); font-size: 0.875rem;">
+    <ls-card>
+        <div slot="header">
+            <h2>All Users</h2>
+            <div style="color: var(--ls-text-muted); font-size: 0.875rem;">
                 <span id="userCount">Loading...</span> users found
             </div>
         </div>
@@ -83,7 +82,7 @@
                 <p>Loading users...</p>
             </div>
         </div>
-    </div>
+    </ls-card>
     
     <!-- User Modal (for editing) -->
     <div id="userModal" style="display: none;">

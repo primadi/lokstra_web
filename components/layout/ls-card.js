@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
 
 export class LsCard extends LitElement {
   static styles = css`
@@ -251,46 +251,46 @@ export class LsCard extends LitElement {
       }
     }
 
-    /* Dark theme */
-    :host(.theme-dark) .hs-card {
-      background-color: var(--ls-gray-800);
-      border-color: var(--ls-gray-700);
+    /* Theme-aware styling using CSS custom properties */
+    .hs-card {
+      background-color: var(--ls-bg-primary);
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-card-title {
-      color: var(--ls-gray-100);
+    .hs-card-title {
+      color: var(--ls-text-primary);
     }
 
-    :host(.theme-dark) .hs-card-body {
-      color: var(--ls-gray-300);
+    .hs-card-body {
+      color: var(--ls-text-secondary);
     }
 
-    :host(.theme-dark) .hs-card-header {
-      border-color: var(--ls-gray-700);
+    .hs-card-header {
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-card-footer {
-      border-color: var(--ls-gray-700);
+    .hs-card-footer {
+      border-color: var(--ls-border-primary);
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.variant = "default";
-    this.size = "md";
-    this.title = "";
-    this.subtitle = "";
-    this.interactive = false;
-    this.loading = false;
-    this.expanded = false;
-    this.expandable = false;
-    this.status = "";
-    this.imageSrc = "";
-    this.imageAlt = "";
-    this.showHeader = true;
-    this.showFooter = false;
-    this.footerAlign = "right";
-    this.actions = [];
+    super()
+    this.variant = "default"
+    this.size = "md"
+    this.title = ""
+    this.subtitle = ""
+    this.interactive = false
+    this.loading = false
+    this.expanded = false
+    this.expandable = false
+    this.status = ""
+    this.imageSrc = ""
+    this.imageAlt = ""
+    this.showHeader = true
+    this.showFooter = false
+    this.footerAlign = "right"
+    this.actions = []
   }
 
   static get properties() {
@@ -310,11 +310,11 @@ export class LsCard extends LitElement {
       showFooter: { type: Boolean },
       footerAlign: { type: String },
       actions: { type: Array },
-    };
+    }
   }
 
   updated(changedProperties) {
-    super.updated(changedProperties);
+    super.updated(changedProperties)
 
     // Icons will be initialized globally by dashboard.html
   }
@@ -326,18 +326,18 @@ export class LsCard extends LitElement {
           detail: { title: this.title, variant: this.variant },
           bubbles: true,
         })
-      );
+      )
     }
   }
 
   toggleExpanded() {
-    this.expanded = !this.expanded;
+    this.expanded = !this.expanded
     this.dispatchEvent(
       new CustomEvent("card-toggle", {
         detail: { expanded: this.expanded, title: this.title },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleAction(action) {
@@ -346,22 +346,22 @@ export class LsCard extends LitElement {
         detail: { action, title: this.title },
         bubbles: true,
       })
-    );
+    )
 
     // Handle confirmation
     if (action.confirm && !confirm(action.confirm)) {
-      return;
+      return
     }
 
     // Handle HTMX actions
     if (action.hxGet || action.hxPost) {
-      const url = action.hxGet || action.hxPost;
-      const method = action.hxGet ? "GET" : "POST";
+      const url = action.hxGet || action.hxPost
+      const method = action.hxGet ? "GET" : "POST"
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, url, {
           target: action.hxTarget,
-        });
+        })
       }
     }
   }
@@ -392,12 +392,12 @@ export class LsCard extends LitElement {
           <div class="hs-card-skeleton" style="width: 90%;"></div>
         </div>
       </div>
-    `;
+    `
   }
 
   render() {
     if (this.loading) {
-      return this.renderSkeletonLoader();
+      return this.renderSkeletonLoader()
     }
 
     return html`
@@ -466,8 +466,8 @@ export class LsCard extends LitElement {
                         type="button"
                         title="${action.title}"
                         @click="${(e) => {
-                          e.stopPropagation();
-                          this.handleAction(action);
+                          e.stopPropagation()
+                          this.handleAction(action)
                         }}"
                       >
                         ${action.icon
@@ -517,8 +517,8 @@ export class LsCard extends LitElement {
             `
           : ""}
       </div>
-    `;
+    `
   }
 }
 
-customElements.define("ls-card", LsCard);
+customElements.define("ls-card", LsCard)

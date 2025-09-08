@@ -20,10 +20,10 @@ body {
 
 /* Sidebar Container - Fixed positioning */
 .sidebar-container {
-  width: var(--ls-sidebar-width, 16rem);
+  width: 16rem; /* Fixed width, component handles its own sizing */
   height: 100vh; /* Full viewport height */
-  background-color: var(--ls-sidebar-bg, var(--ls-bg-secondary));
-  border-right: 1px solid var(--ls-sidebar-border, var(--ls-border-primary));
+  background-color: transparent; /* Let component handle its own background */
+  border-right: none; /* Let component handle its own border */
   position: sticky; /* Sticky positioning */
   top: 0;
   left: 0;
@@ -33,7 +33,7 @@ body {
 }
 
 .sidebar-container.collapsed {
-  width: var(--ls-sidebar-collapsed-width, 4rem);
+  width: 4rem; /* Component will handle collapsed state internally */
 }
 
 /* Ensure ls-sidebar fills the container and scrolls independently */

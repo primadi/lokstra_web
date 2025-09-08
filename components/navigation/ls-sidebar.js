@@ -4,20 +4,53 @@ import { createIconsManually } from "/static/js/lucide-utils.js"
 export class LsSidebar extends LitElement {
   static styles = css`
     :host {
+      /* 🎯 COMPONENT VARIABLES using DESIGN TOKENS */
+      --sidebar-width: calc(var(--ls-spacing-2xl, 2rem) * 8); /* 16rem */
+      --sidebar-collapsed-width: var(--ls-size-xl, 3rem); /* 3rem */
+      --sidebar-padding: var(--ls-spacing-lg, 1rem); /* 1rem */
+      --sidebar-item-padding: var(--ls-spacing-md, 0.75rem)
+        var(--ls-spacing-lg, 1rem); /* 12px 16px */
+
+      /* 🎨 THEMING using global color tokens with fallbacks */
+      --sidebar-bg: var(--ls-gray-900, #111827);
+      --sidebar-border: var(--ls-gray-800, #1f2937);
+      --sidebar-text: var(--ls-gray-100, #f9fafb);
+      --sidebar-text-muted: var(--ls-gray-400, #9ca3af);
+      --sidebar-item-hover-bg: var(--ls-gray-800, #1f2937);
+      --sidebar-item-active-bg: var(--ls-primary-600, #2563eb);
+      --sidebar-item-active-border: var(--ls-primary-400, #60a5fa);
+
+      /* 🏗️ HOST STYLING using design tokens */
       display: block;
       width: 100%;
       height: 100%;
-      background-color: var(--ls-sidebar-bg);
-      color: var(--ls-sidebar-text);
-      transition: all 0.3s ease-in-out;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+
+      /* ⏱️ ANIMATION using design tokens */
+      transition: all var(--ls-duration-normal, 300ms)
+        var(--ls-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
       position: relative;
-      /* Remove overflow-y and positioning from host, let container handle it */
+
+      /* 🔤 TYPOGRAPHY using design tokens */
+      font-size: var(--ls-font-size-sm, 0.875rem);
+      font-weight: var(--ls-font-weight-medium, 500);
+      line-height: var(--ls-line-height-normal, 1.5);
+
+      /* 🌀 BORDER using design tokens */
+      border-right: 1px solid var(--sidebar-border);
+    }
+
+    /* 🌙 DARK THEME - component responds to global theme */
+    :host([data-theme="dark"]) {
+      --sidebar-bg: var(--ls-gray-800, #374151);
+      --sidebar-text: var(--ls-gray-200, #e5e7eb);
+      --sidebar-border: var(--ls-gray-700, #374151);
     }
 
     :host(.collapsed) {
-      width: var(--ls-sidebar-collapsed-width);
+      width: var(--sidebar-collapsed-width);
     }
-
     .ls-sidebar {
       display: flex;
       flex-direction: column;
@@ -25,8 +58,8 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--ls-sidebar-border);
+      padding: var(--ls-spacing-xl, 1.5rem);
+      border-bottom: 1px solid var(--sidebar-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -34,30 +67,31 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--ls-sidebar-text);
+      font-size: var(--ls-font-size-2xl, 1.5rem);
+      font-weight: var(--ls-font-weight-bold, 700);
+      color: var(--sidebar-text);
       text-decoration: none;
     }
 
     .ls-sidebar-toggle {
       background: none;
       border: none;
-      color: var(--ls-sidebar-text-muted);
+      color: var(--sidebar-text-muted);
       cursor: pointer;
-      padding: 0.5rem;
-      border-radius: var(--ls-border-radius-sm);
-      transition: color 0.2s ease-in-out;
+      padding: var(--ls-spacing-sm, 0.5rem);
+      border-radius: var(--ls-radius-sm, 0.25rem);
+      transition: color var(--ls-duration-fast, 150ms)
+        var(--ls-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
       display: none;
     }
 
     .ls-sidebar-toggle:hover {
-      color: var(--ls-sidebar-text);
+      color: var(--sidebar-text);
     }
 
     .ls-sidebar-body {
       flex: 1;
-      padding: 1rem 0;
+      padding: var(--sidebar-padding) 0;
       overflow-y: auto;
       /* Enhanced scrollbar for sidebar */
       scrollbar-width: thin;
@@ -100,7 +134,7 @@ export class LsSidebar extends LitElement {
       padding: 0.5rem 1.5rem;
       font-size: 0.75rem;
       font-weight: 600;
-      color: var(--ls-sidebar-text-muted);
+      color: var(--sidebar-text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 0.5rem;
@@ -110,7 +144,7 @@ export class LsSidebar extends LitElement {
       display: flex;
       align-items: center;
       padding: 0.75rem 1.5rem;
-      color: var(--ls-sidebar-text-muted);
+      color: var(--sidebar-text-muted);
       text-decoration: none;
       transition: all 0.2s ease-in-out;
       border-left: 3px solid transparent;
@@ -119,14 +153,14 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-nav-item:hover {
-      background-color: var(--ls-sidebar-item-hover-bg);
-      color: var(--ls-sidebar-text);
+      background-color: var(--sidebar-item-hover-bg);
+      color: var(--sidebar-text);
     }
 
     .ls-sidebar-nav-item.active {
-      background-color: var(--ls-sidebar-item-active-bg);
+      background-color: var(--sidebar-item-active-bg);
       color: #ffffff;
-      border-left-color: var(--ls-sidebar-item-active-border);
+      border-left-color: var(--sidebar-item-active-border);
     }
 
     .ls-sidebar-nav-icon {
@@ -153,7 +187,7 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-submenu {
-      background-color: var(--ls-sidebar-item-hover-bg);
+      background-color: var(--sidebar-item-hover-bg);
       overflow: hidden;
       transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
       max-height: 0;
@@ -168,7 +202,7 @@ export class LsSidebar extends LitElement {
     .ls-sidebar-submenu-item {
       display: block;
       padding: 0.5rem 1.5rem 0.5rem 3.5rem;
-      color: var(--ls-sidebar-text-muted);
+      color: var(--sidebar-text-muted);
       text-decoration: none;
       font-size: 0.875rem;
       transition: all 0.2s ease-in-out;
@@ -176,11 +210,11 @@ export class LsSidebar extends LitElement {
 
     .ls-sidebar-submenu-item:hover {
       background-color: rgba(255, 255, 255, 0.1);
-      color: var(--ls-sidebar-text);
+      color: var(--sidebar-text);
     }
 
     .ls-sidebar-submenu-item.active {
-      background-color: var(--ls-sidebar-item-active-bg);
+      background-color: var(--sidebar-item-active-bg);
       color: #ffffff;
     }
 

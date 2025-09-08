@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
 
 export class LsTable extends LitElement {
   static styles = css`
@@ -194,52 +194,52 @@ export class LsTable extends LitElement {
       color: var(--ls-warning-700);
     }
 
-    /* Dark theme */
-    :host(.theme-dark) .hs-table-wrapper {
-      background-color: var(--ls-gray-800);
-      border-color: var(--ls-gray-700);
+    /* Theme-aware styling using CSS custom properties */
+    .hs-table-wrapper {
+      background-color: var(--ls-bg-primary);
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-table-header {
-      background-color: var(--ls-gray-700);
-      border-color: var(--ls-gray-600);
+    .hs-table-header {
+      background-color: var(--ls-bg-secondary);
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-table-header th {
-      color: var(--ls-gray-200);
+    .hs-table-header th {
+      color: var(--ls-text-primary);
     }
 
-    :host(.theme-dark) .hs-table-body tr {
-      border-color: var(--ls-gray-600);
+    .hs-table-body tr {
+      border-color: var(--ls-border-primary);
     }
 
-    :host(.theme-dark) .hs-table-body tr:hover {
-      background-color: var(--ls-gray-700);
+    .hs-table-body tr:hover {
+      background-color: var(--ls-bg-secondary);
     }
 
-    :host(.theme-dark) .hs-table-body td {
-      color: var(--ls-gray-100);
+    .hs-table-body td {
+      color: var(--ls-text-primary);
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.columns = [];
-    this.data = [];
-    this.sortBy = "";
-    this.sortDir = "asc";
-    this.selectable = false;
-    this.loading = false;
-    this.empty = false;
-    this.emptyMessage = "No data available";
-    this.loadingMessage = "Loading...";
-    this.selectedRows = new Set();
-    this.selectAll = false;
-    this.pagination = null;
-    this.hxGet = "";
-    this.hxPost = "";
-    this.hxTarget = "";
-    this.hxTrigger = "";
+    super()
+    this.columns = []
+    this.data = []
+    this.sortBy = ""
+    this.sortDir = "asc"
+    this.selectable = false
+    this.loading = false
+    this.empty = false
+    this.emptyMessage = "No data available"
+    this.loadingMessage = "Loading..."
+    this.selectedRows = new Set()
+    this.selectAll = false
+    this.pagination = null
+    this.hxGet = ""
+    this.hxPost = ""
+    this.hxTarget = ""
+    this.hxTrigger = ""
   }
 
   static get properties() {
@@ -260,11 +260,11 @@ export class LsTable extends LitElement {
       hxPost: { type: String },
       hxTarget: { type: String },
       hxTrigger: { type: String },
-    };
+    }
   }
 
   updated(changedProperties) {
-    super.updated(changedProperties);
+    super.updated(changedProperties)
 
     if (changedProperties.has("data") || changedProperties.has("columns")) {
       // Icons will be initialized globally by dashboard.html
@@ -272,13 +272,13 @@ export class LsTable extends LitElement {
   }
 
   handleSort(column) {
-    if (!column.sortable) return;
+    if (!column.sortable) return
 
     if (this.sortBy === column.key) {
-      this.sortDir = this.sortDir === "asc" ? "desc" : "asc";
+      this.sortDir = this.sortDir === "asc" ? "desc" : "asc"
     } else {
-      this.sortBy = column.key;
-      this.sortDir = "asc";
+      this.sortBy = column.key
+      this.sortDir = "asc"
     }
 
     this.dispatchEvent(
@@ -286,31 +286,31 @@ export class LsTable extends LitElement {
         detail: { sortBy: this.sortBy, sortDir: this.sortDir, column },
         bubbles: true,
       })
-    );
+    )
 
     // HTMX integration for sorting
     if (column.hxGet || column.hxPost) {
-      const url = column.hxGet || column.hxPost;
-      const method = column.hxGet ? "GET" : "POST";
-      const params = new URLSearchParams();
-      params.set("sort", this.sortBy);
-      params.set("dir", this.sortDir);
+      const url = column.hxGet || column.hxPost
+      const method = column.hxGet ? "GET" : "POST"
+      const params = new URLSearchParams()
+      params.set("sort", this.sortBy)
+      params.set("dir", this.sortDir)
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, `${url}?${params.toString()}`, {
           target: column.hxTarget || this.hxTarget,
-        });
+        })
       }
     }
   }
 
   handleSelectAll() {
-    this.selectAll = !this.selectAll;
+    this.selectAll = !this.selectAll
 
     if (this.selectAll) {
-      this.selectedRows = new Set(this.data.map((_, index) => index));
+      this.selectedRows = new Set(this.data.map((_, index) => index))
     } else {
-      this.selectedRows = new Set();
+      this.selectedRows = new Set()
     }
 
     this.dispatchEvent(
@@ -321,18 +321,18 @@ export class LsTable extends LitElement {
         },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleRowSelect(index) {
     if (this.selectedRows.has(index)) {
-      this.selectedRows.delete(index);
+      this.selectedRows.delete(index)
     } else {
-      this.selectedRows.add(index);
+      this.selectedRows.add(index)
     }
 
-    this.selectAll = this.selectedRows.size === this.data.length;
-    this.requestUpdate();
+    this.selectAll = this.selectedRows.size === this.data.length
+    this.requestUpdate()
 
     this.dispatchEvent(
       new CustomEvent("table-select-row", {
@@ -343,7 +343,7 @@ export class LsTable extends LitElement {
         },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleAction(action, rowData, index) {
@@ -352,35 +352,35 @@ export class LsTable extends LitElement {
         detail: { action, rowData, index },
         bubbles: true,
       })
-    );
+    )
 
     // Handle confirmation
     if (action.confirm && !confirm(action.confirm)) {
-      return;
+      return
     }
 
     // HTMX integration for actions
     if (action.hxGet || action.hxPost) {
-      const url = action.hxGet || action.hxPost;
-      const method = action.hxGet ? "GET" : "POST";
+      const url = action.hxGet || action.hxPost
+      const method = action.hxGet ? "GET" : "POST"
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, url, {
           target: action.hxTarget || this.hxTarget,
-        });
+        })
       }
     }
   }
 
   renderCell(column, rowData, index) {
-    const value = rowData[column.key];
+    const value = rowData[column.key]
 
     if (column.template === "status") {
       return html`
         <span class="ls-status-badge ls-status-${value.toLowerCase()}">
           ${value}
         </span>
-      `;
+      `
     }
 
     if (column.template === "avatar") {
@@ -398,22 +398,22 @@ export class LsTable extends LitElement {
             </div>
           </div>
         </div>
-      `;
+      `
     }
 
     if (column.template === "date") {
       return html`
         <span title="${value}"> ${new Date(value).toLocaleDateString()} </span>
-      `;
+      `
     }
 
-    return html`<span>${value}</span>`;
+    return html`<span>${value}</span>`
   }
 
   renderActions(rowData, index) {
-    if (!this.columns.some((col) => col.actions)) return "";
+    if (!this.columns.some((col) => col.actions)) return ""
 
-    const actionsColumn = this.columns.find((col) => col.actions);
+    const actionsColumn = this.columns.find((col) => col.actions)
 
     return html`
       <div class="hs-table-actions">
@@ -434,7 +434,7 @@ export class LsTable extends LitElement {
           `
         )}
       </div>
-    `;
+    `
   }
 
   render() {
@@ -450,7 +450,7 @@ export class LsTable extends LitElement {
             <p>${this.loadingMessage}</p>
           </div>
         </div>
-      `;
+      `
     }
 
     if (this.empty || this.data.length === 0) {
@@ -464,10 +464,10 @@ export class LsTable extends LitElement {
             <p>${this.emptyMessage}</p>
           </div>
         </div>
-      `;
+      `
     }
 
-    const hasActions = this.columns.some((col) => col.actions);
+    const hasActions = this.columns.some((col) => col.actions)
 
     return html`
       <div class="hs-table-wrapper">
@@ -600,33 +600,33 @@ export class LsTable extends LitElement {
             `
           : ""}
       </div>
-    `;
+    `
   }
 
   handlePageChange(page) {
-    if (page < 1 || page > this.pagination.lastPage) return;
+    if (page < 1 || page > this.pagination.lastPage) return
 
     this.dispatchEvent(
       new CustomEvent("table-page-change", {
         detail: { page },
         bubbles: true,
       })
-    );
+    )
 
     // HTMX integration for pagination
     if (this.pagination.hxGet || this.pagination.hxPost) {
-      const url = this.pagination.hxGet || this.pagination.hxPost;
-      const method = this.pagination.hxGet ? "GET" : "POST";
-      const params = new URLSearchParams();
-      params.set("page", page.toString());
+      const url = this.pagination.hxGet || this.pagination.hxPost
+      const method = this.pagination.hxGet ? "GET" : "POST"
+      const params = new URLSearchParams()
+      params.set("page", page.toString())
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, `${url}?${params.toString()}`, {
           target: this.pagination.hxTarget || this.hxTarget,
-        });
+        })
       }
     }
   }
 }
 
-customElements.define("ls-table", LsTable);
+customElements.define("ls-table", LsTable)

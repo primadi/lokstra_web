@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
 
 export class LsAlert extends LitElement {
   static styles = css`
@@ -177,45 +177,45 @@ export class LsAlert extends LitElement {
       }
     }
 
-    /* Dark theme */
-    :host(.theme-dark) .hs-alert.info {
-      background-color: var(--ls-info-900);
-      border-color: var(--ls-info-600);
-      color: var(--ls-info-100);
+    /* Alert variants use theme-aware colors automatically */
+    .hs-alert.info {
+      background-color: var(--ls-info-100);
+      border-color: var(--ls-info-300);
+      color: var(--ls-info-700);
     }
 
-    :host(.theme-dark) .hs-alert.success {
-      background-color: var(--ls-success-900);
-      border-color: var(--ls-success-600);
-      color: var(--ls-success-100);
+    .hs-alert.success {
+      background-color: var(--ls-success-100);
+      border-color: var(--ls-success-300);
+      color: var(--ls-success-700);
     }
 
-    :host(.theme-dark) .hs-alert.warning {
-      background-color: var(--ls-warning-900);
-      border-color: var(--ls-warning-600);
-      color: var(--ls-warning-100);
+    .hs-alert.warning {
+      background-color: var(--ls-warning-100);
+      border-color: var(--ls-warning-300);
+      color: var(--ls-warning-700);
     }
 
-    :host(.theme-dark) .hs-alert.error {
-      background-color: var(--ls-error-900);
-      border-color: var(--ls-error-600);
-      color: var(--ls-error-100);
+    .hs-alert.error {
+      background-color: var(--ls-error-100);
+      border-color: var(--ls-error-300);
+      color: var(--ls-error-700);
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.variant = "info";
-    this.size = "md";
-    this.title = "";
-    this.message = "";
-    this.dismissible = true;
-    this.autoHide = false;
-    this.autoHideDuration = 5000;
-    this.icon = "";
-    this.actions = [];
-    this.show = true;
-    this.animateIn = false;
+    super()
+    this.variant = "info"
+    this.size = "md"
+    this.title = ""
+    this.message = ""
+    this.dismissible = true
+    this.autoHide = false
+    this.autoHideDuration = 5000
+    this.icon = ""
+    this.actions = []
+    this.show = true
+    this.animateIn = false
   }
 
   static get properties() {
@@ -231,31 +231,31 @@ export class LsAlert extends LitElement {
       actions: { type: Array },
       show: { type: Boolean, state: true },
       animateIn: { type: Boolean },
-    };
+    }
   }
 
   connectedCallback() {
-    super.connectedCallback();
+    super.connectedCallback()
 
     if (this.autoHide) {
       setTimeout(() => {
-        this.hide();
-      }, this.autoHideDuration);
+        this.hide()
+      }, this.autoHideDuration)
     }
 
     if (this.animateIn) {
-      this.classList.add("animate-in");
+      this.classList.add("animate-in")
     }
   }
 
   updated(changedProperties) {
-    super.updated(changedProperties);
+    super.updated(changedProperties)
 
     // Icons will be initialized globally by dashboard.html
   }
 
   hide() {
-    this.show = false;
+    this.show = false
     this.dispatchEvent(
       new CustomEvent("alert-dismissed", {
         detail: {
@@ -265,7 +265,7 @@ export class LsAlert extends LitElement {
         },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleAction(action) {
@@ -274,29 +274,29 @@ export class LsAlert extends LitElement {
         detail: { action, variant: this.variant },
         bubbles: true,
       })
-    );
+    )
 
     // Handle HTMX actions
     if (action.hxGet || action.hxPost) {
-      const url = action.hxGet || action.hxPost;
-      const method = action.hxGet ? "GET" : "POST";
+      const url = action.hxGet || action.hxPost
+      const method = action.hxGet ? "GET" : "POST"
 
       if (typeof htmx !== "undefined") {
         htmx.ajax(method, url, {
           target: action.hxTarget,
-        });
+        })
       }
     }
 
     // Auto-dismiss after action if specified
     if (action.autoDismiss !== false) {
-      this.hide();
+      this.hide()
     }
   }
 
   getVariantIcon() {
     if (this.icon) {
-      return this.icon;
+      return this.icon
     }
 
     const icons = {
@@ -304,14 +304,14 @@ export class LsAlert extends LitElement {
       success: "check-circle",
       warning: "alert-triangle",
       error: "x-circle",
-    };
+    }
 
-    return icons[this.variant] || "info";
+    return icons[this.variant] || "info"
   }
 
   render() {
     if (!this.show) {
-      return html``;
+      return html``
     }
 
     return html`
@@ -371,8 +371,8 @@ export class LsAlert extends LitElement {
             `
           : ""}
       </div>
-    `;
+    `
   }
 }
 
-customElements.define("ls-alert", LsAlert);
+customElements.define("ls-alert", LsAlert)

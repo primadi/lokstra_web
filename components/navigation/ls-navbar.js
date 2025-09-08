@@ -1,4 +1,6 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit"
+import "/components/ui/ls-menu.js"
+import "/components/ui/ls-icon.js"
 
 export class LsNavbar extends LitElement {
   static styles = css`
@@ -246,6 +248,10 @@ export class LsNavbar extends LitElement {
     }
 
     .theme-switcher {
+      position: relative;
+    }
+
+    .theme-switcher-btn {
       background: none;
       border: none;
       cursor: pointer;
@@ -258,31 +264,13 @@ export class LsNavbar extends LitElement {
       justify-content: center;
     }
 
-    .theme-switcher:hover {
+    .theme-switcher-btn:hover {
       background-color: var(--ls-bg-secondary);
       color: var(--ls-text-primary);
     }
 
     .hidden {
       display: none;
-    }
-
-    /* Lucide Icons Styling within Shadow DOM */
-    svg[data-lucide] {
-      display: inline-block !important;
-      width: inherit !important;
-      height: inherit !important;
-      stroke-width: 2 !important;
-      fill: none !important;
-      stroke: currentColor !important;
-    }
-
-    i[data-lucide] {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      width: 1rem;
-      height: 1rem;
     }
 
     /* Responsive */
@@ -295,20 +283,90 @@ export class LsNavbar extends LitElement {
         display: flex;
       }
     }
-  `;
+  `
 
   constructor() {
-    super();
-    this.breadcrumb = [];
-    this.user = {};
-    this.showNotifications = true;
-    this.notificationCount = 0;
-    this.userMenuOpen = false;
-    this.notificationOpen = false;
-    this.currentTheme = "light"; // Default value
-    this.unsubscribeTheme = null;
-    this.iconTimeout = null;
-    this.isUpdatingIcons = false;
+    super()
+    this.breadcrumb = []
+    this.user = {}
+    this.showNotifications = true
+    this.notificationCount = 0
+    this.userMenuOpen = false
+    this.notificationOpen = false
+    this.currentTheme = "light" // Default value
+    this.unsubscribeTheme = null
+
+    // Available themes configuration
+    this.availableThemes = {
+      base: [
+        {
+          value: "light",
+          label: "Light",
+          icon: "sun",
+          description: "Classic light theme",
+        },
+        {
+          value: "dark",
+          label: "Dark",
+          icon: "moon",
+          description: "Classic dark theme",
+        },
+      ],
+      colors: [
+        {
+          value: "ocean",
+          label: "Ocean",
+          icon: "waves",
+          description: "Cyan-based theme",
+        },
+        {
+          value: "forest",
+          label: "Forest",
+          icon: "tree-pine",
+          description: "Green-based theme",
+        },
+        {
+          value: "sunset",
+          label: "Sunset",
+          icon: "sunrise",
+          description: "Orange-based theme",
+        },
+        {
+          value: "royal",
+          label: "Royal",
+          icon: "crown",
+          description: "Purple-based theme",
+        },
+      ],
+      spacing: [
+        {
+          value: "compact",
+          label: "Compact",
+          icon: "minimize-2",
+          description: "Tighter spacing",
+        },
+        {
+          value: "spacious",
+          label: "Spacious",
+          icon: "maximize-2",
+          description: "More breathing room",
+        },
+      ],
+      accessibility: [
+        {
+          value: "high-contrast",
+          label: "High Contrast",
+          icon: "contrast",
+          description: "Enhanced visibility",
+        },
+        {
+          value: "large-text",
+          label: "Large Text",
+          icon: "type",
+          description: "Bigger fonts",
+        },
+      ],
+    }
   }
 
   static get properties() {
@@ -319,8 +377,8 @@ export class LsNavbar extends LitElement {
       notificationCount: { type: Number },
       userMenuOpen: { type: Boolean },
       notificationOpen: { type: Boolean },
-      currentTheme: { type: String },
-    };
+      currentTheme: { type: String, reflect: true },
+    }
   }
 
   toggleSidebar() {
@@ -328,17 +386,63 @@ export class LsNavbar extends LitElement {
       new CustomEvent("toggle-sidebar", {
         bubbles: true,
       })
-    );
+    )
   }
 
   toggleUserMenu() {
-    this.userMenuOpen = !this.userMenuOpen;
-    this.notificationOpen = false;
+    this.userMenuOpen = !this.userMenuOpen
+    this.notificationOpen = false
+    // Close theme menu
+    const themeMenu = this.shadowRoot?.querySelector("ls-menu")
+    if (themeMenu) {
+      themeMenu.close()
+    }
   }
 
   toggleNotifications() {
-    this.notificationOpen = !this.notificationOpen;
-    this.userMenuOpen = false;
+    this.notificationOpen = !this.notificationOpen
+    this.userMenuOpen = false
+    // Close theme menu
+    const themeMenu = this.shadowRoot?.querySelector("ls-menu")
+    if (themeMenu) {
+      themeMenu.close()
+    }
+  }
+
+  toggleThemeMenu() {
+    this.notificationOpen = false
+    const themeMenu = this.shadowRoot.querySelector("ls-menu")
+    if (themeMenu) {
+      themeMenu.toggle()
+    }
+  }
+
+  handleThemeMenuItemSelect(event) {
+    const { value } = event.detail
+    this.setTheme(value)
+  }
+
+  getThemeMenuSections() {
+    return Object.entries(this.availableThemes).map(
+      ([categoryKey, themes]) => ({
+        title:
+          categoryKey === "base"
+            ? "Base Themes"
+            : categoryKey === "colors"
+            ? "Color Themes"
+            : categoryKey === "spacing"
+            ? "Spacing Themes"
+            : "Accessibility",
+        items: themes.map((theme) => ({
+          value: theme.value,
+          label: theme.label,
+          // description: theme.description,
+          icon: theme.icon,
+          active: this.currentTheme === theme.value,
+          showCheck: this.currentTheme === theme.value,
+        })),
+      })
+    )
   }
 
   handleSearch(e) {
@@ -347,333 +451,111 @@ export class LsNavbar extends LitElement {
         detail: { query: e.target.value },
         bubbles: true,
       })
-    );
+    )
   }
 
   handleClickOutside(e) {
     if (!e.composedPath().includes(this)) {
-      this.userMenuOpen = false;
-      this.notificationOpen = false;
+      this.userMenuOpen = false
+      this.notificationOpen = false
+      // Close theme menu
+      const themeMenu = this.shadowRoot?.querySelector("ls-menu")
+      if (themeMenu) {
+        themeMenu.close()
+      }
     }
   }
 
   getCurrentTheme() {
-    return window.LokstraTheme?.getCurrentTheme() || "light";
+    return window.LokstraTheme?.getCurrentTheme() || "light"
+  }
+
+  setTheme(themeName) {
+    console.log("Navbar: Setting theme:", themeName)
+
+    if (window.LokstraTheme) {
+      window.LokstraTheme.setTheme(themeName)
+    } else {
+      console.warn("Navbar: LokstraTheme not available, using fallback")
+      // Fallback manual theme switch
+      document.documentElement.setAttribute("data-theme", themeName)
+      localStorage.setItem("lokstra-theme", themeName)
+
+      // Manual theme update for fallback
+      this.currentTheme = themeName
+      this.requestUpdate()
+    }
+
+    // Update menu sections to reflect new active theme
+    this.requestUpdate()
   }
 
   toggleTheme() {
-    console.log("Navbar: Toggle theme called");
-    console.log("Navbar: LokstraTheme available:", !!window.LokstraTheme);
-    console.log("Navbar: Current theme:", this.currentTheme);
-
-    const newTheme = this.currentTheme === "light" ? "dark" : "light";
-    console.log("Navbar: Setting new theme:", newTheme);
-
-    if (window.LokstraTheme) {
-      window.LokstraTheme.setTheme(newTheme);
-    } else {
-      console.warn("Navbar: LokstraTheme not available, using fallback");
-      // Fallback manual theme switch
-      document.documentElement.setAttribute("data-theme", newTheme);
-      document.documentElement.classList.toggle(
-        "theme-dark",
-        newTheme === "dark"
-      );
-      localStorage.setItem("lokstra-theme", newTheme);
-
-      // Manually trigger CSS variables update
-      this.updateCSSVariables(newTheme);
-
-      // Manual theme update for fallback
-      this.currentTheme = newTheme;
-      this.requestUpdate();
-      this.updateThemeIcon(newTheme);
-    }
-
-    // Icons will be re-initialized automatically in theme change handler
+    console.log("Navbar: Toggle theme called")
+    const currentTheme = this.currentTheme
+    const newTheme = currentTheme === "light" ? "dark" : "light"
+    this.setTheme(newTheme)
   }
 
-  updateCSSVariables(theme) {
-    const root = document.documentElement;
+  getThemeIcon(themeName) {
+    const allThemes = [
+      ...this.availableThemes.base,
+      ...this.availableThemes.colors,
+      ...this.availableThemes.spacing,
+      ...this.availableThemes.accessibility,
+    ]
 
-    if (theme === "dark") {
-      root.style.setProperty("--ls-bg-primary", "#0f172a");
-      root.style.setProperty("--ls-bg-secondary", "#1e293b");
-      root.style.setProperty("--ls-bg-tertiary", "#334155");
-      root.style.setProperty("--ls-text-primary", "#f1f5f9");
-      root.style.setProperty("--ls-text-secondary", "#cbd5e1");
-      root.style.setProperty("--ls-text-muted", "#94a3b8");
-      root.style.setProperty("--ls-border-primary", "#334155");
-      root.style.setProperty("--ls-border-secondary", "#475569");
-    } else {
-      root.style.setProperty("--ls-bg-primary", "#ffffff");
-      root.style.setProperty("--ls-bg-secondary", "#f8fafc");
-      root.style.setProperty("--ls-bg-tertiary", "#e2e8f0");
-      root.style.setProperty("--ls-text-primary", "#0f172a");
-      root.style.setProperty("--ls-text-secondary", "#334155");
-      root.style.setProperty("--ls-text-muted", "#64748b");
-      root.style.setProperty("--ls-border-primary", "#cbd5e1");
-      root.style.setProperty("--ls-border-secondary", "#94a3b8");
-    }
+    const theme = allThemes.find((t) => t.value === themeName)
+    return theme ? theme.icon : "palette"
   }
 
   connectedCallback() {
-    super.connectedCallback();
-    document.addEventListener("click", this.handleClickOutside.bind(this));
+    super.connectedCallback()
+    document.addEventListener("click", this.handleClickOutside.bind(this))
 
-    // Only listen to ThemeManager - remove duplicate event listeners
+    // Only listen to ThemeManager
     if (window.LokstraTheme) {
       this.unsubscribeTheme = window.LokstraTheme.onThemeChange((theme) => {
-        console.log("Navbar: Theme changed to:", theme);
-        this.currentTheme = theme;
-        this.requestUpdate();
-
-        // Debounced icon refresh to prevent multiple calls
-        this.scheduleIconRefresh();
-
-        // Update theme icon manually since Lit won't re-render SVG
-        this.updateThemeIcon(theme);
-      });
+        console.log("Navbar: Theme changed to:", theme)
+        this.currentTheme = theme
+        // With ls-icon, automatic re-rendering happens!
+        this.requestUpdate()
+      })
     }
 
     // Initialize current theme
-    this.currentTheme = this.getCurrentTheme();
-
-    // Initialize icons after the component is connected and rendered
-    this.updateComplete.then(() => {
-      this.initializeLucideIcons();
-    });
+    this.currentTheme = this.getCurrentTheme()
   }
+
   updated(changedProperties) {
-    super.updated(changedProperties);
+    super.updated(changedProperties)
 
-    // Only initialize icons if currentTheme changed and no icons refresh is pending
-    if (changedProperties.has("currentTheme") && !this.iconTimeout) {
-      this.scheduleIconRefresh();
+    // With ls-icon, no manual icon management needed!
+    if (changedProperties.has("currentTheme")) {
+      console.log("Navbar: Theme changed to:", this.currentTheme)
+      // ls-icon will automatically re-render when reactive properties change
     }
-  }
-
-  scheduleIconRefresh() {
-    // Prevent multiple simultaneous icon refreshes
-    if (this.isUpdatingIcons) return;
-
-    // Clear any pending timeout
-    if (this.iconTimeout) {
-      clearTimeout(this.iconTimeout);
-    }
-
-    this.iconTimeout = setTimeout(() => {
-      this.initializeLucideIcons();
-      this.iconTimeout = null;
-    }, 150);
-  }
-
-  updateThemeIcon(theme) {
-    // Manually update the theme switcher icon since it's conditional
-    setTimeout(() => {
-      const themeButton = this.shadowRoot?.querySelector(".theme-switcher");
-      if (themeButton) {
-        // Find the theme icon (either <i> or <svg>)
-        let themeIcon = themeButton.querySelector(
-          "i[data-lucide], svg[data-lucide]"
-        );
-
-        if (themeIcon) {
-          const newIconName = theme === "dark" ? "sun" : "moon";
-          const currentIconName = themeIcon.getAttribute("data-lucide");
-
-          console.log(
-            `Navbar: Updating theme icon from ${currentIconName} to ${newIconName}`
-          );
-
-          // If it's an SVG, replace it completely
-          if (themeIcon.tagName === "SVG") {
-            // Create new i element with new icon name
-            const newIconElement = document.createElement("i");
-            newIconElement.setAttribute("data-lucide", newIconName);
-
-            // Replace SVG with new i element
-            themeIcon.parentNode.replaceChild(newIconElement, themeIcon);
-
-            // Create new SVG for the new icon
-            this.createSingleIcon(newIconElement, newIconName);
-          } else {
-            // If it's still an i element, just update the attribute
-            themeIcon.setAttribute("data-lucide", newIconName);
-            this.createSingleIcon(themeIcon, newIconName);
-          }
-        }
-      }
-    }, 50);
-  }
-
-  createSingleIcon(iconElement, iconName) {
-    if (!window.lucide) return;
-
-    const pascalName = this.toPascalCase(iconName);
-    const iconData = window.lucide[iconName] || window.lucide[pascalName];
-
-    if (iconData) {
-      try {
-        // Create SVG manually
-        const svg = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "svg"
-        );
-        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        svg.setAttribute("width", "20");
-        svg.setAttribute("height", "20");
-        svg.setAttribute("viewBox", "0 0 24 24");
-        svg.setAttribute("fill", "none");
-        svg.setAttribute("stroke", "currentColor");
-        svg.setAttribute("stroke-width", "2");
-        svg.setAttribute("stroke-linecap", "round");
-        svg.setAttribute("stroke-linejoin", "round");
-        svg.setAttribute("data-lucide", iconName);
-
-        // Set icon paths
-        if (iconData && iconData.length >= 3) {
-          const svgContent = iconData[2]
-            .map((child) => {
-              if (Array.isArray(child)) {
-                return `<${child[0]} ${Object.entries(child[1] || {})
-                  .map(([k, v]) => `${k}="${v}"`)
-                  .join(" ")}>${child[2] || ""}</${child[0]}>`;
-              }
-              return child;
-            })
-            .join("");
-          svg.innerHTML = svgContent;
-        }
-
-        // Replace the i element
-        iconElement.parentNode.replaceChild(svg, iconElement);
-        console.log(`Navbar: Successfully created theme icon ${iconName}`);
-      } catch (error) {
-        console.error(
-          `Navbar: Failed to create theme icon ${iconName}:`,
-          error
-        );
-      }
-    }
-  }
-  initializeLucideIcons() {
-    // Prevent multiple simultaneous calls
-    if (this.isUpdatingIcons) return;
-    this.isUpdatingIcons = true;
-
-    // Add delay to ensure DOM is ready and Lucide is loaded
-    setTimeout(() => {
-      console.log("Navbar: Attempting to initialize Lucide icons");
-
-      if (this.shadowRoot && window.lucide) {
-        // Use MANUAL CREATION method (proven to work in icon-test)
-        this.createIconsManually();
-      } else {
-        console.warn(
-          "Navbar: Lucide or Shadow DOM not available for icon initialization"
-        );
-      }
-
-      this.isUpdatingIcons = false;
-    }, 50);
-  }
-
-  createIconsManually() {
-    if (!this.shadowRoot || !window.lucide) return;
-
-    // Find only i elements that need to be processed - more efficient
-    const iconsToCreate = this.shadowRoot.querySelectorAll("i[data-lucide]");
-    console.log("Navbar: Found icons to process:", iconsToCreate.length);
-
-    iconsToCreate.forEach((iconElement) => {
-      const iconName = iconElement.getAttribute("data-lucide");
-
-      // Skip if already processed and is an SVG
-      if (iconElement.tagName === "SVG") return;
-
-      // Check if icon exists in lucide library (try both kebab-case and PascalCase)
-      const pascalName = this.toPascalCase(iconName);
-      const iconData = window.lucide[iconName] || window.lucide[pascalName];
-
-      if (iconData) {
-        try {
-          // Create SVG manually
-          const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg"
-          );
-          svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-          svg.setAttribute("width", "20");
-          svg.setAttribute("height", "20");
-          svg.setAttribute("viewBox", "0 0 24 24");
-          svg.setAttribute("fill", "none");
-          svg.setAttribute("stroke", "currentColor");
-          svg.setAttribute("stroke-width", "2");
-          svg.setAttribute("stroke-linecap", "round");
-          svg.setAttribute("stroke-linejoin", "round");
-          svg.setAttribute("data-lucide", iconName);
-
-          // Set icon paths
-          if (iconData && iconData.length >= 3) {
-            const svgContent = iconData[2]
-              .map((child) => {
-                if (Array.isArray(child)) {
-                  return `<${child[0]} ${Object.entries(child[1] || {})
-                    .map(([k, v]) => `${k}="${v}"`)
-                    .join(" ")}>${child[2] || ""}</${child[0]}>`;
-                }
-                return child;
-              })
-              .join("");
-            svg.innerHTML = svgContent;
-          }
-
-          // Replace the i element
-          iconElement.parentNode.replaceChild(svg, iconElement);
-          console.log(`Navbar: Successfully created SVG for ${iconName}`);
-        } catch (error) {
-          console.error(`Navbar: Failed to create ${iconName}:`, error);
-        }
-      }
-    });
-  }
-
-  // Helper function to convert kebab-case to PascalCase
-  toPascalCase(str) {
-    return str
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join("");
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener("click", this.handleClickOutside.bind(this));
+    super.disconnectedCallback()
+    document.removeEventListener("click", this.handleClickOutside.bind(this))
 
     // Clean up theme subscription
     if (this.unsubscribeTheme) {
-      this.unsubscribeTheme();
-    }
-
-    // Clear any pending timeouts
-    if (this.iconTimeout) {
-      clearTimeout(this.iconTimeout);
+      this.unsubscribeTheme()
     }
   }
 
   renderBreadcrumb() {
-    if (!this.breadcrumb.length) return "";
+    if (!this.breadcrumb.length) return ""
 
     return html`
       <div class="breadcrumb">
         ${this.breadcrumb.map(
           (item, index) => html`
             ${index > 0
-              ? html`<i
-                  data-lucide="chevron-right"
-                  style="width: 1rem; height: 1rem;"
-                ></i>`
+              ? html`<ls-icon name="chevron-right" size="1rem"></ls-icon>`
               : ""}
             <a
               href="${item.url}"
@@ -686,7 +568,7 @@ export class LsNavbar extends LitElement {
           `
         )}
       </div>
-    `;
+    `
   }
 
   render() {
@@ -695,7 +577,7 @@ export class LsNavbar extends LitElement {
         <!-- Left section -->
         <div class="navbar-left">
           <button class="menu-toggle" @click="${this.toggleSidebar}">
-            <i data-lucide="menu"></i>
+            <ls-icon name="menu" size="1.5rem"></ls-icon>
           </button>
 
           ${this.renderBreadcrumb()}
@@ -704,15 +586,26 @@ export class LsNavbar extends LitElement {
         <!-- Right section -->
         <div class="navbar-right">
           <!-- Theme Switcher -->
-          <button
-            class="theme-switcher"
-            @click="${this.toggleTheme}"
-            title="Toggle theme"
-          >
-            <i
-              data-lucide="${this.currentTheme === "dark" ? "sun" : "moon"}"
-            ></i>
-          </button>
+          <div class="theme-switcher">
+            <button
+              class="theme-switcher-btn"
+              @click="${this.toggleThemeMenu}"
+              title="Choose theme"
+            >
+              <ls-icon
+                name="${this.getThemeIcon(this.currentTheme)}"
+                size="1.5rem"
+              ></ls-icon>
+            </button>
+
+            <ls-menu
+              title="🎨 Choose Theme"
+              subtitle="Customize your experience"
+              position="right"
+              .sections="${this.getThemeMenuSections()}"
+              @menu-item-select="${this.handleThemeMenuItemSelect}"
+            ></ls-menu>
+          </div>
 
           <!-- Notifications -->
           ${this.showNotifications
@@ -722,7 +615,7 @@ export class LsNavbar extends LitElement {
                     class="notification-btn"
                     @click="${this.toggleNotifications}"
                   >
-                    <i data-lucide="bell"></i>
+                    <ls-icon name="bell" size="1.5rem"></ls-icon>
                     ${this.notificationCount > 0
                       ? html` <span class="notification-badge"></span> `
                       : ""}
@@ -734,10 +627,7 @@ export class LsNavbar extends LitElement {
                       : "hidden"}"
                   >
                     <div class="dropdown-item">
-                      <i
-                        data-lucide="info"
-                        style="width: 1rem; height: 1rem;"
-                      ></i>
+                      <ls-icon name="info" size="1rem"></ls-icon>
                       No new notifications
                     </div>
                   </div>
@@ -767,35 +657,29 @@ export class LsNavbar extends LitElement {
                 <span class="user-name">${this.user.name || "User"}</span>
                 <span class="user-role">${this.user.role || "Member"}</span>
               </div>
-              <i
-                data-lucide="chevron-down"
-                style="width: 1rem; height: 1rem;"
-              ></i>
+              <ls-icon name="chevron-down" size="1rem"></ls-icon>
             </button>
 
             <div class="user-dropdown ${this.userMenuOpen ? "" : "hidden"}">
               <a href="/profile" class="dropdown-item">
-                <i data-lucide="user" style="width: 1rem; height: 1rem;"></i>
+                <ls-icon name="user" size="1rem"></ls-icon>
                 Profile
               </a>
               <a href="/settings" class="dropdown-item">
-                <i
-                  data-lucide="settings"
-                  style="width: 1rem; height: 1rem;"
-                ></i>
+                <ls-icon name="settings" size="1rem"></ls-icon>
                 Settings
               </a>
               <a href="/logout" class="dropdown-item">
-                <i data-lucide="log-out" style="width: 1rem; height: 1rem;"></i>
+                <ls-icon name="log-out" size="1rem"></ls-icon>
                 Logout
               </a>
             </div>
           </div>
         </div>
       </div>
-    `;
+    `
   }
 }
 
 // Register the custom element
-customElements.define("ls-navbar", LsNavbar);
+customElements.define("ls-navbar", LsNavbar)
