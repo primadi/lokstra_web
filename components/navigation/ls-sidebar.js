@@ -1,58 +1,70 @@
-import { LitElement, html, css } from "lit"
+import { LitElement, html, css, nothing } from "lit"
 import "/components/ui/ls-icon.js"
 import "/components/ui/ls-menu.js"
 
 export class LsSidebar extends LitElement {
   static styles = css`
     :host {
-      /* 🎯 COMPONENT VARIABLES using DESIGN TOKENS */
-      --sidebar-width: calc(var(--ls-spacing-2xl, 2rem) * 8); /* 16rem */
-      --sidebar-collapsed-width: var(--ls-size-xl, 3rem); /* 3rem */
-      --sidebar-padding: var(--ls-spacing-lg, 1rem); /* 1rem */
-      --sidebar-item-padding: var(--ls-spacing-md, 0.75rem)
-        var(--ls-spacing-lg, 1rem); /* 12px 16px */
+      /* 🎯 INTERNAL CSS VARIABLES - Two-layer system for external override */
+      --_sidebar-width: var(
+        --sidebar-width,
+        calc(var(--ls-spacing-2xl) * 8)
+      ); /* External: --sidebar-width, Internal: --_sidebar-width */
+      --_sidebar-collapsed-width: var(
+        --sidebar-collapsed-width,
+        var(--ls-size-xl)
+      ); /* External: --sidebar-collapsed-width, Internal: --_sidebar-collapsed-width */
+      --_sidebar-padding: var(
+        --sidebar-padding,
+        var(--ls-spacing-lg)
+      ); /* External: --sidebar-padding, Internal: --_sidebar-padding */
 
-      /* 🎨 THEMING using global color tokens with fallbacks */
-      --sidebar-bg: var(--ls-gray-900, #111827);
-      --sidebar-border: var(--ls-gray-800, #1f2937);
-      --sidebar-text: var(--ls-gray-100, #f9fafb);
-      --sidebar-text-muted: var(--ls-gray-400, #9ca3af);
-      --sidebar-item-hover-bg: var(--ls-gray-800, #1f2937);
-      --sidebar-item-active-bg: var(--ls-primary-600, #2563eb);
-      --sidebar-item-active-border: var(--ls-primary-400, #60a5fa);
+      /* 🎨 THEMING - Internal variables for external override */
+      --_sidebar-bg: var(--sidebar-bg, var(--ls-gray-900));
+      --_sidebar-border: var(--sidebar-border, var(--ls-gray-800));
+      --_sidebar-text: var(--sidebar-text, var(--ls-gray-100));
+      --_sidebar-text-muted: var(--sidebar-text-muted, var(--ls-gray-400));
+      --_sidebar-item-hover-bg: var(
+        --sidebar-item-hover-bg,
+        var(--ls-gray-800)
+      );
+      --_sidebar-item-active-bg: var(
+        --sidebar-item-active-bg,
+        var(--ls-primary-600)
+      );
+      --_sidebar-item-active-border: var(
+        --sidebar-item-active-border,
+        var(--ls-primary-400)
+      );
+      --_sidebar-group-title-bg: var(
+        --sidebar-group-title-bg,
+        var(--ls-gray-800)
+      ); /* Slightly lighter than sidebar bg for visual separation */
 
-      /* 🏗️ HOST STYLING using design tokens */
+      /* 🏗️ HOST STYLING using internal variables */
       display: block;
-      width: var(--sidebar-width); /* Default to full width */
+      width: var(--_sidebar-width);
       height: 100%;
-      background-color: var(--sidebar-bg);
-      color: var(--sidebar-text);
+      background-color: var(--_sidebar-bg);
+      color: var(--_sidebar-text);
 
       /* ⏱️ ANIMATION using design tokens */
-      transition: all var(--ls-duration-normal, 300ms)
-        var(--ls-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+      transition: all var(--ls-duration-normal) var(--ls-ease-in-out);
       position: relative;
 
       /* 🔤 TYPOGRAPHY using design tokens */
-      font-size: var(--ls-font-size-sm, 0.875rem);
-      font-weight: var(--ls-font-weight-medium, 500);
-      line-height: var(--ls-line-height-normal, 1.5);
+      font-size: var(--ls-font-size-sm);
+      font-weight: var(--ls-font-weight-medium);
+      line-height: var(--ls-line-height-normal);
 
-      /* 🌀 BORDER using design tokens */
-      border-right: 1px solid var(--sidebar-border);
-    }
-
-    /* 🌙 DARK THEME - component responds to global theme */
-    :host([data-theme="dark"]) {
-      --sidebar-bg: var(--ls-gray-800, #374151);
-      --sidebar-text: var(--ls-gray-200, #e5e7eb);
-      --sidebar-border: var(--ls-gray-700, #374151);
+      /* 🌀 BORDER using internal variables */
+      border-right: 1px solid var(--_sidebar-border);
     }
 
     :host(.collapsed) {
-      width: var(--sidebar-collapsed-width) !important;
-      min-width: var(--sidebar-collapsed-width);
-      max-width: var(--sidebar-collapsed-width);
+      width: var(--_sidebar-collapsed-width) !important;
+      min-width: var(--_sidebar-collapsed-width);
+      max-width: var(--_sidebar-collapsed-width);
       overflow-x: hidden; /* Prevent horizontal scroll */
     }
 
@@ -60,18 +72,18 @@ export class LsSidebar extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
-      width: 100%; /* Take full width of host */
+      width: var(--_sidebar-width);
       overflow: hidden; /* Prevent content overflow when collapsed */
     }
 
     /* Collapsed state for inner div */
     .ls-sidebar.collapsed {
-      /* Don't set width here, let host control it */
+      width: var(--_sidebar-collapsed-width); /* Use internal variable */
     }
 
     .ls-sidebar-header {
-      padding: var(--ls-spacing-xl, 1.5rem);
-      border-bottom: 1px solid var(--sidebar-border);
+      padding: var(--_sidebar-padding);
+      border-bottom: 1px solid var(--_sidebar-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -79,31 +91,30 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-logo {
-      font-size: var(--ls-font-size-2xl, 1.5rem);
-      font-weight: var(--ls-font-weight-bold, 700);
-      color: var(--sidebar-text);
+      font-size: var(--ls-font-size-2xl);
+      font-weight: var(--ls-font-weight-bold);
+      color: var(--_sidebar-text);
       text-decoration: none;
     }
 
     .ls-sidebar-toggle {
       background: none;
       border: none;
-      color: var(--sidebar-text-muted);
+      color: var(--_sidebar-text-muted);
       cursor: pointer;
-      padding: var(--ls-spacing-sm, 0.5rem);
-      border-radius: var(--ls-radius-sm, 0.25rem);
-      transition: color var(--ls-duration-fast, 150ms)
-        var(--ls-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+      padding: var(--ls-spacing-sm);
+      border-radius: var(--ls-radius-sm);
+      transition: color var(--ls-duration-fast) var(--ls-ease-in-out);
       display: none;
     }
 
     .ls-sidebar-toggle:hover {
-      color: var(--sidebar-text);
+      color: var(--_sidebar-text);
     }
 
     .ls-sidebar-body {
       flex: 1;
-      padding: var(--sidebar-padding) 0;
+      padding: var(--_sidebar-padding) 0;
       overflow-y: auto;
       /* Enhanced scrollbar for sidebar */
       scrollbar-width: thin;
@@ -143,20 +154,40 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-nav-group-title {
-      padding: 0.5rem 1.5rem;
+      padding: 0.75rem 1.5rem 0.5rem 1.5rem; /* Slightly more padding */
       font-size: 0.75rem;
       font-weight: 600;
-      color: var(--sidebar-text-muted);
+      color: var(--_sidebar-text-muted);
+      background-color: var(--_sidebar-group-title-bg); /* Subtle background */
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 0.5rem;
+      border-left: 3px solid transparent; /* Consistent with nav items */
+      position: relative;
+    }
+
+    /* Add subtle visual separator for group titles */
+    .ls-sidebar-nav-group-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 1.5rem;
+      right: 1.5rem;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        var(--_sidebar-border),
+        transparent
+      );
+      opacity: 0.5;
     }
 
     .ls-sidebar-nav-item {
       display: flex;
       align-items: center;
       padding: 0.75rem 1.5rem;
-      color: var(--sidebar-text-muted);
+      color: var(--_sidebar-text-muted);
       text-decoration: none;
       transition: all 0.2s ease-in-out;
       border-left: 3px solid transparent;
@@ -165,14 +196,14 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-nav-item:hover {
-      background-color: var(--sidebar-item-hover-bg);
-      color: var(--sidebar-text);
+      background-color: var(--_sidebar-item-hover-bg);
+      color: var(--_sidebar-text);
     }
 
     .ls-sidebar-nav-item.active {
-      background-color: var(--sidebar-item-active-bg);
+      background-color: var(--_sidebar-item-active-bg);
       color: #ffffff;
-      border-left-color: var(--sidebar-item-active-border);
+      border-left-color: var(--_sidebar-item-active-border);
     }
 
     .ls-sidebar-nav-icon {
@@ -199,7 +230,7 @@ export class LsSidebar extends LitElement {
     }
 
     .ls-sidebar-submenu {
-      background-color: var(--sidebar-item-hover-bg);
+      background-color: var(--_sidebar-item-hover-bg);
       overflow: hidden;
       transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
       max-height: 0;
@@ -214,7 +245,7 @@ export class LsSidebar extends LitElement {
     .ls-sidebar-submenu-item {
       display: block;
       padding: 0.5rem 1.5rem 0.5rem 3.5rem;
-      color: var(--sidebar-text-muted);
+      color: var(--_sidebar-text-muted);
       text-decoration: none;
       font-size: 0.875rem;
       transition: all 0.2s ease-in-out;
@@ -222,11 +253,11 @@ export class LsSidebar extends LitElement {
 
     .ls-sidebar-submenu-item:hover {
       background-color: rgba(255, 255, 255, 0.1);
-      color: var(--sidebar-text);
+      color: var(--_sidebar-text);
     }
 
     .ls-sidebar-submenu-item.active {
-      background-color: var(--sidebar-item-active-bg);
+      background-color: var(--_sidebar-item-active-bg);
       color: #ffffff;
     }
 
@@ -271,9 +302,9 @@ export class LsSidebar extends LitElement {
     :host(.collapsed) .ls-sidebar-nav-item {
       justify-content: center;
       padding: 1rem 0; /* Increased vertical padding for better spacing */
-      min-width: var(--sidebar-collapsed-width);
-      width: var(--sidebar-collapsed-width); /* Fixed width */
-      max-width: var(--sidebar-collapsed-width); /* Prevent expansion */
+      min-width: var(--_sidebar-collapsed-width);
+      width: var(--_sidebar-collapsed-width); /* Fixed width */
+      max-width: var(--_sidebar-collapsed-width); /* Prevent expansion */
       overflow: hidden;
       position: relative;
       display: flex;
@@ -297,7 +328,7 @@ export class LsSidebar extends LitElement {
 
     /* Collapsed header */
     :host(.collapsed) .ls-sidebar-header {
-      padding: var(--ls-spacing-md, 0.75rem) var(--ls-spacing-sm, 0.5rem);
+      padding: var(--ls-spacing-md) var(--ls-spacing-sm);
       justify-content: center;
     }
 
@@ -314,11 +345,11 @@ export class LsSidebar extends LitElement {
       left: 100%;
       top: 50%;
       transform: translateY(-50%);
-      background-color: var(--ls-gray-800, #1f2937);
-      color: var(--ls-gray-100, #f9fafb);
+      background-color: var(--ls-gray-800);
+      color: var(--ls-gray-100);
       padding: 0.5rem 0.75rem;
-      border-radius: var(--ls-radius-md, 0.375rem);
-      font-size: var(--ls-font-size-sm, 0.875rem);
+      border-radius: var(--ls-radius-md);
+      font-size: var(--ls-font-size-sm);
       white-space: nowrap;
       z-index: 1000;
       margin-left: 0.5rem;
@@ -333,7 +364,7 @@ export class LsSidebar extends LitElement {
       top: 50%;
       transform: translateY(-50%);
       border: 5px solid transparent;
-      border-right-color: var(--ls-gray-800, #1f2937);
+      border-right-color: var(--ls-gray-800);
       z-index: 1001;
       margin-left: -5px;
       pointer-events: none;
@@ -353,8 +384,8 @@ export class LsSidebar extends LitElement {
       position: static;
       margin-top: 0;
       min-width: 12rem;
-      background-color: var(--ls-gray-800, #1f2937);
-      border: 1px solid var(--ls-gray-700, #374151);
+      background-color: var(--ls-gray-800);
+      border: 1px solid var(--ls-gray-700);
     }
 
     /* Center logo/brand in collapsed state */
@@ -365,18 +396,6 @@ export class LsSidebar extends LitElement {
 
     /* Mobile styles */
     @media (max-width: 768px) {
-      :host {
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translateX(-100%);
-        z-index: 50;
-      }
-
-      :host(.open) {
-        transform: translateX(0);
-      }
-
       .ls-sidebar-toggle {
         display: block;
       }
@@ -440,7 +459,7 @@ export class LsSidebar extends LitElement {
       collapsed: { type: Boolean, reflect: true },
       sidebarOpen: { type: Boolean, reflect: true },
       menuItems: { type: Array },
-      activeItem: { type: String },
+      activeItem: { type: String, reflect: true },
       expandedGroups: { type: Array },
     }
   }
@@ -456,21 +475,84 @@ export class LsSidebar extends LitElement {
       "toggle-sidebar",
       this.handleToggleFromNavbar.bind(this)
     )
-    console.log("Sidebar: Event listener added")
+
+    // Listen for window resize to handle mobile/desktop transitions
+    this.handleResize = this.handleResize.bind(this)
+    window.addEventListener("resize", this.handleResize)
+
+    console.log("Sidebar: Event listeners added")
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    // Remove event listener
+    // Remove event listeners
     document.removeEventListener(
       "toggle-sidebar",
       this.handleToggleFromNavbar.bind(this)
     )
+    window.removeEventListener("resize", this.handleResize)
+  }
+
+  handleResize() {
+    const isMobile = window.innerWidth <= 768
+
+    if (!isMobile && this.sidebarOpen) {
+      // When switching from mobile to desktop, close mobile sidebar
+      console.log("Sidebar: Switching to desktop, closing mobile sidebar")
+      const sidebarContainer = document.getElementById("sidebarContainer")
+      const mobileOverlay = document.getElementById("mobileOverlay")
+
+      if (sidebarContainer && mobileOverlay) {
+        sidebarContainer.classList.remove("open")
+        mobileOverlay.classList.remove("show")
+      }
+
+      this.sidebarOpen = false
+    }
+  }
+
+  isMobileMode() {
+    return window.innerWidth <= 768
   }
 
   handleToggleFromNavbar() {
     console.log("Sidebar: Received toggle event from navbar")
-    this.toggleCollapse()
+
+    // Check if we're in mobile mode
+    const isMobile = this.isMobileMode()
+
+    if (isMobile) {
+      // Mobile mode: toggle the external sidebar container and mobile overlay
+      console.log("Sidebar: Mobile mode - toggling sidebar container")
+      const sidebarContainer = document.getElementById("sidebarContainer")
+      const mobileOverlay = document.getElementById("mobileOverlay")
+
+      if (sidebarContainer && mobileOverlay) {
+        const isOpen = sidebarContainer.classList.contains("open")
+
+        if (isOpen) {
+          // Close mobile sidebar
+          sidebarContainer.classList.remove("open")
+          mobileOverlay.classList.remove("show")
+          this.sidebarOpen = false
+        } else {
+          // Open mobile sidebar
+          sidebarContainer.classList.add("open")
+          mobileOverlay.classList.add("show")
+          this.sidebarOpen = true
+        }
+
+        console.log("Sidebar: Mobile sidebar toggled to:", !isOpen)
+      } else {
+        console.warn("Sidebar: Mobile elements not found, using fallback")
+        // Fallback to component-based toggle
+        this.sidebarOpen = !this.sidebarOpen
+      }
+    } else {
+      // Desktop mode: use collapse/expand
+      console.log("Sidebar: Desktop mode - toggling collapse")
+      this.toggleCollapse()
+    }
   }
 
   handleSubmenuClick(item) {
@@ -540,6 +622,7 @@ export class LsSidebar extends LitElement {
 
   updated(changedProperties) {
     super.updated(changedProperties)
+
     // Apply collapsed class to host element for CSS targeting
     if (changedProperties.has("collapsed")) {
       console.log("Sidebar: collapsed state changed to:", this.collapsed)
@@ -552,6 +635,14 @@ export class LsSidebar extends LitElement {
         console.log("Sidebar: Removed 'collapsed' class from host element")
         console.log("Sidebar: Host classList:", this.classList.toString())
       }
+    }
+
+    // Apply open class to host element for mobile CSS targeting
+    if (changedProperties.has("sidebarOpen")) {
+      console.log("Sidebar: sidebarOpen state changed to:", this.sidebarOpen)
+      // Note: Mobile positioning is handled by sidebarContainer in dashboard.css
+      // We don't need to add 'open' class to host element anymore
+      console.log("Sidebar: Host classList:", this.classList.toString())
     }
   }
 
@@ -568,6 +659,28 @@ export class LsSidebar extends LitElement {
         bubbles: true,
       })
     )
+  }
+
+  handleSidebarToggleClick() {
+    console.log("Sidebar: Toggle button clicked")
+
+    if (this.isMobileMode()) {
+      // Mobile mode: close the sidebar
+      console.log("Sidebar: Mobile mode - closing sidebar")
+      const sidebarContainer = document.getElementById("sidebarContainer")
+      const mobileOverlay = document.getElementById("mobileOverlay")
+
+      if (sidebarContainer && mobileOverlay) {
+        sidebarContainer.classList.remove("open")
+        mobileOverlay.classList.remove("show")
+        this.sidebarOpen = false
+        console.log("Sidebar: Mobile sidebar closed")
+      }
+    } else {
+      // Desktop mode: toggle collapse
+      console.log("Sidebar: Desktop mode - toggling collapse")
+      this.toggleCollapse()
+    }
   }
 
   toggleGroup(groupKey) {
@@ -612,7 +725,10 @@ export class LsSidebar extends LitElement {
       <div class="ls-sidebar">
         <div class="ls-sidebar-header">
           <a href="/" class="ls-sidebar-logo">Lokstra</a>
-          <button class="ls-sidebar-toggle" @click="${this.toggleCollapse}">
+          <button
+            class="ls-sidebar-toggle"
+            @click="${this.handleSidebarToggleClick}"
+          >
             <ls-icon name="x" size="1.25rem"></ls-icon>
           </button>
         </div>
@@ -712,14 +828,10 @@ export class LsSidebar extends LitElement {
                                         .activeItem === subItem.key
                                         ? "active"
                                         : ""}"
-                                      @click="${() =>
-                                        this.handleItemClick(subItem)}"
-                                      ${subItem.hxGet
-                                        ? `hx-get="${subItem.hxGet}"`
-                                        : ""}
-                                      ${subItem.hxTarget
-                                        ? `hx-target="${subItem.hxTarget}"`
-                                        : ""}
+                                      @click=${() =>
+                                        this.handleItemClick(subItem)}
+                                      hx-get=${subItem.hxGet || nothing}
+                                      hx-target=${subItem.hxTarget || nothing}
                                     >
                                       ${subItem.title}
                                       ${subItem.badge
@@ -744,10 +856,8 @@ export class LsSidebar extends LitElement {
                                 : ""}"
                               @click="${() => this.handleItemClick(item)}"
                               data-tooltip="${item.title}"
-                              ${item.hxGet ? `hx-get="${item.hxGet}"` : ""}
-                              ${item.hxTarget
-                                ? `hx-target="${item.hxTarget}"`
-                                : ""}
+                              hx-get=${item.hxGet || nothing}
+                              hx-target=${item.hxTarget || nothing}
                             >
                               <ls-icon
                                 name="${item.icon || "circle"}"

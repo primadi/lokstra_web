@@ -5,23 +5,23 @@
 
 class ThemeManager {
   constructor() {
-    this.STORAGE_KEY = "lokstra-theme";
-    this.DEFAULT_THEME = "light";
-    this.THEME_CLASS_PREFIX = "theme-";
-    this.callbacks = [];
-    this.isInitialized = false;
-    this.isTransitioning = false;
-    this.transitionDuration = 300; // milliseconds
+    this.STORAGE_KEY = "lokstra-theme"
+    this.DEFAULT_THEME = "light"
+    this.THEME_CLASS_PREFIX = "theme-"
+    this.callbacks = []
+    this.isInitialized = false
+    this.isTransitioning = false
+    this.transitionDuration = 300 // milliseconds
 
     // Apply theme immediately to prevent FOUC
-    this.applyInitialTheme();
+    this.applyInitialTheme()
 
     // Wait for DOM to be ready before full initialization
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => this.init());
+      document.addEventListener("DOMContentLoaded", () => this.init())
     } else {
       // DOM is already ready
-      this.init();
+      this.init()
     }
   }
 
@@ -30,23 +30,23 @@ class ThemeManager {
    */
   applyInitialTheme() {
     const savedTheme =
-      localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME;
+      localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME
 
     // Apply data-theme attribute immediately
     // CSS variables will be applied automatically via CSS selectors
-    document.documentElement.setAttribute("data-theme", savedTheme);
+    document.documentElement.setAttribute("data-theme", savedTheme)
   }
 
   /**
    * Initialize theme system
    */
   init() {
-    if (this.isInitialized) return;
+    if (this.isInitialized) return
 
-    this.setupCSSVariables();
-    const savedTheme = this.getStoredTheme();
-    this.setTheme(savedTheme, false); // Don't trigger callbacks on init
-    this.isInitialized = true;
+    this.setupCSSVariables()
+    const savedTheme = this.getStoredTheme()
+    this.setTheme(savedTheme, false) // Don't trigger callbacks on init
+    this.isInitialized = true
   }
 
   /**
@@ -57,22 +57,22 @@ class ThemeManager {
     // This method is kept for potential future extensions
 
     // Just ensure the theme attribute is applied
-    const currentTheme = this.getStoredTheme();
-    document.documentElement.setAttribute("data-theme", currentTheme);
+    const currentTheme = this.getStoredTheme()
+    document.documentElement.setAttribute("data-theme", currentTheme)
   }
 
   /**
    * Get current theme from storage or return default
    */
   getStoredTheme() {
-    return localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME;
+    return localStorage.getItem(this.STORAGE_KEY) || this.DEFAULT_THEME
   }
 
   /**
    * Store theme preference
    */
   setStoredTheme(theme) {
-    localStorage.setItem(this.STORAGE_KEY, theme);
+    localStorage.setItem(this.STORAGE_KEY, theme)
   }
 
   /**
@@ -81,10 +81,10 @@ class ThemeManager {
   getCurrentTheme() {
     if (!document.documentElement) {
       // Fallback to stored theme if documentElement not available
-      return this.getStoredTheme();
+      return this.getStoredTheme()
     }
-    const dataTheme = document.documentElement.getAttribute("data-theme");
-    return dataTheme || this.getStoredTheme();
+    const dataTheme = document.documentElement.getAttribute("data-theme")
+    return dataTheme || this.getStoredTheme()
   }
 
   /**
@@ -95,88 +95,74 @@ class ThemeManager {
     if (!document.documentElement) {
       console.warn(
         "ThemeManager: document.documentElement not available, deferring theme application"
-      );
+      )
       // Retry after a short delay
-      setTimeout(() => this.setTheme(theme, triggerCallbacks), 10);
-      return;
+      setTimeout(() => this.setTheme(theme, triggerCallbacks), 10)
+      return
     }
 
     // Prevent multiple transitions at once
     if (this.isTransitioning) {
-      return;
+      return
     }
 
     // Set transitioning state
-    this.isTransitioning = true;
+    this.isTransitioning = true
 
     // Add theme transition class for enhanced animation
-    document.documentElement.classList.add("theme-transitioning");
+    document.documentElement.classList.add("theme-transitioning")
 
     // Set data attribute for CSS selectors - this is the main theme control
     // CSS variables will be applied automatically via CSS selectors
-    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme", theme)
 
     // Store preference
-    this.setStoredTheme(theme);
+    this.setStoredTheme(theme)
 
     // Remove transition class after animation completes
     setTimeout(() => {
-      document.documentElement.classList.remove("theme-transitioning");
-      this.isTransitioning = false;
-    }, this.transitionDuration);
+      document.documentElement.classList.remove("theme-transitioning")
+      this.isTransitioning = false
+    }, this.transitionDuration)
 
     // Trigger callbacks for components that need to know about theme changes
     if (triggerCallbacks) {
       // Delay callbacks slightly to allow CSS transition to start
       setTimeout(() => {
-        this.notifyComponents(theme);
-      }, 50);
+        this.notifyComponents(theme)
+      }, 50)
     }
 
-    console.log(`Theme changed to: ${theme}`);
-  }
-
-  /**
-   * Toggle between light and dark theme with smooth animation
-   */
-  toggleTheme() {
-    if (this.isTransitioning) {
-      return this.getCurrentTheme(); // Return current theme if already transitioning
-    }
-
-    const currentTheme = this.getCurrentTheme();
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    this.setTheme(newTheme);
-    return newTheme;
+    console.log(`Theme changed to: ${theme}`)
   }
 
   /**
    * Set theme transition duration (in milliseconds)
    */
   setTransitionDuration(duration) {
-    this.transitionDuration = duration;
+    this.transitionDuration = duration
   }
 
   /**
    * Check if theme is currently transitioning
    */
   isThemeTransitioning() {
-    return this.isTransitioning;
+    return this.isTransitioning
   }
 
   /**
    * Subscribe to theme changes
    */
   onThemeChange(callback) {
-    this.callbacks.push(callback);
+    this.callbacks.push(callback)
 
     // Return unsubscribe function
     return () => {
-      const index = this.callbacks.indexOf(callback);
+      const index = this.callbacks.indexOf(callback)
       if (index > -1) {
-        this.callbacks.splice(index, 1);
+        this.callbacks.splice(index, 1)
       }
-    };
+    }
   }
 
   /**
@@ -187,17 +173,17 @@ class ThemeManager {
     const event = new CustomEvent("lokstra-theme-changed", {
       detail: { theme },
       bubbles: true,
-    });
-    document.dispatchEvent(event);
+    })
+    document.dispatchEvent(event)
 
     // Also call registered callbacks
     this.callbacks.forEach((callback) => {
       try {
-        callback(theme);
+        callback(theme)
       } catch (error) {
-        console.error("Error in theme change callback:", error);
+        console.error("Error in theme change callback:", error)
       }
-    });
+    })
   }
 
   /**
@@ -206,28 +192,28 @@ class ThemeManager {
   getCSSVariable(variableName) {
     return getComputedStyle(document.documentElement)
       .getPropertyValue(`--ls-${variableName}`)
-      .trim();
+      .trim()
   }
 
   /**
    * Check if dark theme is active
    */
   isDarkTheme() {
-    return this.getCurrentTheme() === "dark";
+    return this.getCurrentTheme() === "dark"
   }
 
   /**
    * Check if light theme is active
    */
   isLightTheme() {
-    return this.getCurrentTheme() === "light";
+    return this.getCurrentTheme() === "light"
   }
 }
 
 // Create global instance
-window.LokstraTheme = new ThemeManager();
+window.LokstraTheme = new ThemeManager()
 
 // Export for module systems
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = ThemeManager;
+  module.exports = ThemeManager
 }

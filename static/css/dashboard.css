@@ -20,7 +20,7 @@ body {
 
 /* Sidebar Container - Fixed positioning */
 .sidebar-container {
-  width: 16rem; /* Fixed width, component handles its own sizing */
+  /* Don't set fixed width - let ls-sidebar component control its own width */
   height: 100vh; /* Full viewport height */
   background-color: transparent; /* Let component handle its own background */
   border-right: none; /* Let component handle its own border */
@@ -29,11 +29,7 @@ body {
   left: 0;
   z-index: 40;
   flex-shrink: 0; /* Don't shrink */
-  transition: width 0.3s ease-in-out;
-}
-
-.sidebar-container.collapsed {
-  width: 3rem; /* Match component collapsed width */
+  /* Remove width transition - component handles its own transitions */
 }
 
 /* Ensure ls-sidebar fills the container and scrolls independently */
@@ -295,54 +291,6 @@ ls-sidebar::-webkit-scrollbar-thumb:active {
   color: var(--ls-text-muted) !important;
 }
 
-/* Lucide Icons Dashboard-specific styling */
-body svg[data-lucide] {
-  display: inline-block !important;
-  width: inherit !important;
-  height: inherit !important;
-  stroke-width: 2 !important;
-  fill: none !important;
-  stroke: var(--ls-text-primary) !important;
-  color: var(--ls-text-primary) !important;
-}
-
-/* Specific icon color overrides for dashboard elements */
-body .stat-icon svg[data-lucide] {
-  stroke: #60a5fa !important;
-  color: #60a5fa !important;
-}
-
-body .stat-change.positive svg[data-lucide] {
-  stroke: var(--ls-success-600) !important;
-  color: var(--ls-success-600) !important;
-}
-
-body .stat-change.negative svg[data-lucide] {
-  stroke: var(--ls-error-600) !important;
-  color: var(--ls-error-600) !important;
-}
-
-body #themeIcon {
-  stroke: currentColor !important;
-  color: currentColor !important;
-}
-
-body #activityContent svg[data-lucide] {
-  stroke: var(--ls-text-muted) !important;
-  color: var(--ls-text-muted) !important;
-}
-
-body span[style*="success"] svg[data-lucide] {
-  stroke: var(--ls-success-600) !important;
-  color: var(--ls-success-600) !important;
-}
-
-body i[data-lucide] {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
 /* Dashboard responsive design */
 @media (max-width: 768px) {
   .content-grid {
@@ -381,4 +329,16 @@ body i[data-lucide] {
   .mobile-overlay {
     display: none !important;
   }
+}
+
+.footer {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  padding: 1rem 0;
+  color: var(--ls-text-muted);
+  background: transparent;
+  font-size: 0.95rem;
 }

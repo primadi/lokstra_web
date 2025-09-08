@@ -491,13 +491,6 @@ export class LsNavbar extends LitElement {
     this.requestUpdate()
   }
 
-  toggleTheme() {
-    console.log("Navbar: Toggle theme called")
-    const currentTheme = this.currentTheme
-    const newTheme = currentTheme === "light" ? "dark" : "light"
-    this.setTheme(newTheme)
-  }
-
   getThemeIcon(themeName) {
     const allThemes = [
       ...this.availableThemes.base,
@@ -561,8 +554,8 @@ export class LsNavbar extends LitElement {
             <a
               href="${item.url}"
               class="breadcrumb-item ${item.active ? "active" : ""}"
-              ${item.hxGet ? `hx-get="${item.hxGet}"` : ""}
-              ${item.hxTarget ? `hx-target="${item.hxTarget}"` : ""}
+              ?hx-get=${item.hxGet}
+              ?hx-target=${item.hxTarget}
             >
               ${item.title}
             </a>

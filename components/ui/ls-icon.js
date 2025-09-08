@@ -111,17 +111,11 @@ export class LsIcon extends LitElement {
   }
 
   render() {
-    console.log(
-      `ls-icon: Render called - name="${this.name}", size="${this.size}"`
-    )
-
     if (!this.name) {
       console.log("ls-icon: No name provided, showing warning")
       return html`<span style="color: red;">⚠</span>`
     }
 
-    console.log("ls-icon: Rendering simple <i> element")
-    // Simple approach: render <i data-lucide> and let createIconsManually convert it
     return html`
       <i
         data-lucide="${this.name}"

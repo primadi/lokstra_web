@@ -1,4 +1,4 @@
-// Loader for reusable scripts (importmap, theme, htmx, alpine, lucide, preline, etc)
+// Loader for reusable scripts (importmap, htmx, theme, lucide, etc)
 
 // Import map for Lit and related packages
 if (!window.__importMapInjected) {
@@ -25,14 +25,6 @@ if (!window.__importMapInjected) {
   window.__importMapInjected = true
 }
 
-// Alpine.js
-// if (!window.Alpine) {
-//   const alpineScript = document.createElement("script")
-//   alpineScript.defer = true
-//   alpineScript.src = "https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
-//   document.head.appendChild(alpineScript)
-// }
-
 // HTMX
 if (!window.htmx) {
   const htmxScript = document.createElement("script")
@@ -54,13 +46,6 @@ if (!window.lucide) {
   lucideScript.src = "https://unpkg.com/lucide@0.294.0/dist/umd/lucide.js"
   document.head.appendChild(lucideScript)
 }
-
-// Preline
-// if (!window.HSStaticMethods) {
-//   const prelineScript = document.createElement("script")
-//   prelineScript.src = "https://unpkg.com/preline@3.2.3/dist/preline.js"
-//   document.head.appendChild(prelineScript)
-// }
 
 // Lokstra Web Components
 if (!window.__lokstraComponentsInjected) {

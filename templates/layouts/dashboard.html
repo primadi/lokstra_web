@@ -4,14 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}} - Lokstra Framework</title>
-    
-    <!-- Prevent FOUC - Apply theme immediately -->
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('lokstra-theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        })();
-    </script>
 
     <!-- Lokstra Theme CSS -->
     <link rel="stylesheet" href="/components/theme.css">
@@ -21,318 +13,241 @@
 
     <script src="/static/js/init-loader.js"></script>
     
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Import Lokstra App Root Component -->
+    <script type="module" src="/components/app-root.js"></script>
     
-    <style>
-        /* Only critical inline styles that must be inline for FOUC prevention */
-        
-        /* Theme transition helper for smooth theme switching */
-        .theme-transitioning {
-            transition-duration: 0.4s !important;
-        }
-    </style>
+    <!-- Alpine.js -->
+    <!-- Prevent Alpine not loaded error -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body x-data="dashboard">
-    <div class="mobile-overlay" id="mobileOverlay"></div>
-    
-    <div class="dashboard-layout">
-        <!-- Sidebar -->
-        <div class="sidebar-container" id="sidebarContainer">
-            <ls-sidebar id="sidebar"></ls-sidebar>
-        </div>
+    <ls-app-root>
+        <div class="mobile-overlay" id="mobileOverlay"></div>
         
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Navigation -->
-            <ls-navbar id="navbar"></ls-navbar>
-
-            <!-- Page Content -->
-            <div class="content-area" id="pageContent">
-                <!-- Page Header -->
-                <div class="page-header">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div class="dashboard-layout">
+            <!-- Sidebar -->
+            <div class="sidebar-container" id="sidebarContainer">
+                <ls-sidebar id="sidebar"></ls-sidebar>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Top Navigation -->
+                <ls-navbar id="navbar"></ls-navbar>
+                
+                <!-- Page Content -->
+                <div class="content-area" id="pageContent">
+                    <!-- Page Header -->
+                    <div class="page-header">
                         <div>
                             <h1 class="page-title">{{.Title}}</h1>
                             <p class="page-subtitle">{{.Subtitle}}</p>
                         </div>
                         
-                        <!-- Theme Switcher Component -->
-                        <lokstra-theme-switcher></lokstra-theme-switcher>
+                        <div class="page-actions">
+                            <ls-button text="New Project" variant="primary" icon="plus" hx-get="/projects/new" hx-target="#pageContent"></ls-button>
+                            <ls-button text="Export Data" variant="outline" icon="download" hx-get="/api/export" hx-target="#dynamicContent"></ls-button>
+                            <ls-button text="Settings" variant="outline" icon="settings" hx-get="/settings" hx-target="#pageContent"></ls-button>
+                        </div>
                     </div>
                     
-                    <div class="page-actions">
-                        <ls-button text="New Project" variant="primary" icon="plus" hx-get="/projects/new" hx-target="#pageContent"></ls-button>
-                        <ls-button text="Export Data" variant="outline" icon="download" hx-get="/api/export" hx-target="#dynamicContent"></ls-button>
-                        <ls-button text="Settings" variant="outline" icon="settings" hx-get="/settings" hx-target="#pageContent"></ls-button>
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        {{range .Stats}}
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">{{.Title}}</span>
+                                <div class="stat-icon">
+                                    <ls-icon name="{{.Icon}}" size="1.25rem"></ls-icon>
+                                </div>
+                            </div>
+                            <div class="stat-value">{{.Value}}</div>
+                            <div class="stat-change {{.Type}}">
+                                {{if eq .Type "positive"}}
+                                    <ls-icon name="trending-up" size="1rem"></ls-icon>
+                                {{else if eq .Type "negative"}}
+                                    <ls-icon name="trending-down" size="1rem"></ls-icon>
+                                {{else}}
+                                    <ls-icon name="activity" size="1rem"></ls-icon>
+                                {{end}}
+                                {{.Change}}
+                            </div>
+                        </div>
+                        {{end}}
+                        {{if not .Stats}}
+                        <!-- Default stats if no data provided -->
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Total Users</span>
+                                <div class="stat-icon">
+                                    <ls-icon name="users" size="1.25rem"></ls-icon>
+                                </div>
+                            </div>
+                            <div class="stat-value">2,845</div>
+                            <div class="stat-change positive">
+                                <ls-icon name="trending-up" size="1rem"></ls-icon>
+                                +12% from last month
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Revenue</span>
+                                <div class="stat-icon">
+                                    <ls-icon name="dollar-sign" size="1.25rem"></ls-icon>
+                                </div>
+                            </div>
+                            <div class="stat-value">$48,290</div>
+                            <div class="stat-change positive">
+                                <ls-icon name="trending-up" size="1rem"></ls-icon>
+                                +8% from last month
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Orders</span>
+                                <div class="stat-icon">
+                                    <ls-icon name="shopping-cart" size="1.25rem"></ls-icon>
+                                </div>
+                            </div>
+                            <div class="stat-value">1,248</div>
+                            <div class="stat-change negative">
+                                <ls-icon name="trending-down" size="1rem"></ls-icon>
+                                -3% from last month
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Conversion</span>
+                                <div class="stat-icon">
+                                    <ls-icon name="target" size="1.25rem"></ls-icon>
+                                </div>
+                            </div>
+                            <div class="stat-value">3.24%</div>
+                            <div class="stat-change positive">
+                                <ls-icon name="trending-up" size="1rem"></ls-icon>
+                                +0.5% from last month
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <!-- Content Grid -->
+                    <div class="content-grid">
+                        <!-- Main Content Card -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">Recent Activity</h2>
+                                <ls-button text="View All" variant="outline" size="sm" hx-get="/activity" hx-target="#pageContent"></ls-button>
+                            </div>
+                            
+                            <div id="activityContent" style="background-color: var(--ls-card-bg); color: var(--ls-text-primary); border-radius: var(--ls-border-radius-lg);">
+                                <p style="color: var(--ls-text-muted); text-align: center; padding: 2rem;">
+                                    <ls-icon name="activity" size="2rem" style="margin-bottom: 0.5rem; display: block; margin: 0 auto 0.5rem;"></ls-icon>
+                                    Loading recent activity...
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Sidebar Content Card -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">Quick Actions</h2>
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <!-- Quick Actions with ls-button components -->
+                                <ls-button
+                                    fullwidth
+                                    text="Create User" 
+                                    variant="outline" 
+                                    size="sm" 
+                                    icon="user-plus" 
+                                    hx-get="/users/new" 
+                                    hx-target="#pageContent">
+                                </ls-button>
+                                <ls-button
+                                    fullwidth
+                                    text="Generate Report" 
+                                    variant="outline" 
+                                    size="sm" 
+                                    icon="file-text" 
+                                    hx-get="/reports/new" 
+                                    hx-target="#pageContent">
+                                </ls-button>
+                                <ls-button
+                                    fullwidth
+                                    text="Backup Data" 
+                                    variant="outline" 
+                                    size="sm" 
+                                    icon="hard-drive">
+                                </ls-button>
+                                <ls-button
+                                    fullwidth
+                                    text="System Health" 
+                                    variant="outline" 
+                                    size="sm" 
+                                    icon="activity" 
+                                    hx-get="/system/health" 
+                                    hx-target="#pageContent">
+                                </ls-button>
+                            </div>
+                            
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--ls-border-primary);">
+                                <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--ls-text-muted); margin-bottom: 1rem;">System Status</h3>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.875rem; color: var(--ls-text-muted);">Server</span>
+                                    <span style="font-size: 0.875rem; color: var(--ls-success-600); display: flex; align-items: center; gap: 0.25rem;">
+                                        <ls-icon name="check-circle" size="0.875rem"></ls-icon>
+                                        Online
+                                    </span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.875rem; color: var(--ls-text-muted);">Database</span>
+                                    <span style="font-size: 0.875rem; color: var(--ls-success-600); display: flex; align-items: center; gap: 0.25rem;">
+                                        <ls-icon name="check-circle" size="0.875rem"></ls-icon>
+                                        Connected
+                                    </span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 0.875rem; color: var(--ls-text-muted);">Storage</span>
+                                    <span style="font-size: 0.875rem; color: var(--ls-warning-600);">78% used</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Content Area for HTMX partial loading -->
+                    <div id="dynamicContent">
+                        <!-- Dynamic content loaded via HTMX will appear here -->
                     </div>
                 </div>
                 
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    {{range .Stats}}
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-title">{{.Title}}</span>
-                            <div class="stat-icon">
-                                <i data-lucide="{{.Icon}}" style="width: 1.25rem; height: 1.25rem;"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">{{.Value}}</div>
-                        <div class="stat-change {{.Type}}">
-                            {{if eq .Type "positive"}}
-                                <i data-lucide="trending-up" style="width: 1rem; height: 1rem;"></i>
-                            {{else if eq .Type "negative"}}
-                                <i data-lucide="trending-down" style="width: 1rem; height: 1rem;"></i>
-                            {{else}}
-                                <i data-lucide="activity" style="width: 1rem; height: 1rem;"></i>
-                            {{end}}
-                            {{.Change}}
-                        </div>
-                    </div>
-                    {{end}}
-                    {{if not .Stats}}
-                    <!-- Default stats if no data provided -->
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-title">Total Users</span>
-                            <div class="stat-icon">
-                                <i data-lucide="users" style="width: 1.25rem; height: 1.25rem;"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">2,845</div>
-                        <div class="stat-change positive">
-                            <i data-lucide="trending-up" style="width: 1rem; height: 1rem;"></i>
-                            +12% from last month
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-title">Revenue</span>
-                            <div class="stat-icon">
-                                <i data-lucide="dollar-sign" style="width: 1.25rem; height: 1.25rem;"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">$48,290</div>
-                        <div class="stat-change positive">
-                            <i data-lucide="trending-up" style="width: 1rem; height: 1rem;"></i>
-                            +8% from last month
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-title">Orders</span>
-                            <div class="stat-icon">
-                                <i data-lucide="shopping-cart" style="width: 1.25rem; height: 1.25rem;"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">1,248</div>
-                        <div class="stat-change negative">
-                            <i data-lucide="trending-down" style="width: 1rem; height: 1rem;"></i>
-                            -3% from last month
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-title">Conversion</span>
-                            <div class="stat-icon">
-                                <i data-lucide="target" style="width: 1.25rem; height: 1.25rem;"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">3.24%</div>
-                        <div class="stat-change positive">
-                            <i data-lucide="trending-up" style="width: 1rem; height: 1rem;"></i>
-                            +0.5% from last month
-                        </div>
-                    </div>
-                    {{end}}
+                <!-- Footer -->
+                <div class="footer">
+                    © 2025 Lokstra Framework. Built with ❤️ using Lit Web Components, HTMX & Alpine.js.
                 </div>
-                
-                <!-- Content Grid -->
-                <div class="content-grid">
-                    <!-- Main Content Card -->
-                    <div class="content-card">
-                        <div class="card-header">
-                            <h2 class="card-title">Recent Activity</h2>
-                            <ls-button text="View All" variant="outline" size="sm" hx-get="/activity" hx-target="#pageContent"></ls-button>
-                        </div>
-                        
-                        <div id="activityContent" style="background-color: var(--ls-card-bg); color: var(--ls-text-primary); border-radius: var(--ls-border-radius-lg);">
-                            <p style="color: var(--ls-text-muted); text-align: center; padding: 2rem;">
-                                <i data-lucide="activity" style="width: 2rem; height: 2rem; margin-bottom: 0.5rem; display: block; margin: 0 auto 0.5rem;"></i>
-                                Loading recent activity...
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- Sidebar Content Card -->
-                    <div class="content-card">
-                        <div class="card-header">
-                            <h2 class="card-title">Quick Actions</h2>
-                        </div>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <!-- Quick Actions with ls-button components -->
-                            <ls-button
-                                fullwidth
-                                text="Create User" 
-                                variant="outline" 
-                                size="sm" 
-                                icon="user-plus" 
-                                hx-get="/users/new" 
-                                hx-target="#pageContent">
-                            </ls-button>
-                            <ls-button
-                                fullwidth
-                                text="Generate Report" 
-                                variant="outline" 
-                                size="sm" 
-                                icon="file-text" 
-                                hx-get="/reports/new" 
-                                hx-target="#pageContent">
-                            </ls-button>
-                            <ls-button
-                                fullwidth
-                                text="Backup Data" 
-                                variant="outline" 
-                                size="sm" 
-                                icon="hard-drive">
-                            </ls-button>
-                            <ls-button
-                                fullwidth
-                                text="System Health" 
-                                variant="outline" 
-                                size="sm" 
-                                icon="activity" 
-                                hx-get="/system/health" 
-                                hx-target="#pageContent">
-                            </ls-button>
-                        </div>
-                        
-                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--ls-border-primary);">
-                            <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--ls-text-muted); margin-bottom: 1rem;">System Status</h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span style="font-size: 0.875rem; color: var(--ls-text-muted);">Server</span>
-                                <span style="font-size: 0.875rem; color: var(--ls-success-600); display: flex; align-items: center; gap: 0.25rem;">
-                                    <i data-lucide="check-circle" style="width: 0.875rem; height: 0.875rem;"></i>
-                                    Online
-                                </span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span style="font-size: 0.875rem; color: var(--ls-text-muted);">Database</span>
-                                <span style="font-size: 0.875rem; color: var(--ls-success-600); display: flex; align-items: center; gap: 0.25rem;">
-                                    <i data-lucide="check-circle" style="width: 0.875rem; height: 0.875rem;"></i>
-                                    Connected
-                                </span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.875rem; color: var(--ls-text-muted);">Storage</span>
-                                <span style="font-size: 0.875rem; color: var(--ls-warning-600);">78% used</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Additional Content Area for HTMX partial loading -->
-                <div id="dynamicContent">
-                    <!-- Dynamic content loaded via HTMX will appear here -->
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div class="footer">
-                © 2025 Lokstra Framework. Built with ❤️ using Lit Web Components, HTMX & Alpine.js.
             </div>
         </div>
+    </ls-app-root>
     </div>
 
     <script>
-        // Global timeout and throttling management
-        let lucideInitTimeout;
-        let isInitializingIcons = false;
-        let themeChangeTimeout;
-        
-        function initLucideIcons() {
-            // Prevent multiple simultaneous calls
-            if (isInitializingIcons) return;
-            
-            clearTimeout(lucideInitTimeout);
-            lucideInitTimeout = setTimeout(() => {
-                if (typeof lucide !== 'undefined' && !isInitializingIcons) {
-                    isInitializingIcons = true;
-                    
-                    try {
-                        // Only initialize icons for regular DOM elements (not Shadow DOM)
-                        lucide.createIcons({
-                            nameAttr: 'data-lucide',
-                            attrs: {
-                                'stroke-width': 2
-                            }
-                        });
-                    } catch (error) {
-                        console.warn("Lucide initialization error:", error);
-                    } finally {
-                        isInitializingIcons = false;
-                    }
-                }
-            }, 100);
-        }
-        
-        // Throttled theme change handler
-        function handleThemeChange() {
-            clearTimeout(themeChangeTimeout);
-            themeChangeTimeout = setTimeout(() => {
-                // Only reinitialize if there are new icons that need processing
-                const uninitializedIcons = document.querySelectorAll('i[data-lucide]:not([data-icon-processed])');
-                if (uninitializedIcons.length > 0) {
-                    initLucideIcons();
-                }
-            }, 200);
-        }
-        
-        // Wait for DOM and all scripts to load before initializing icons
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                initLucideIcons();
-            }, 500);
-        });
-        
-        // Throttled HTMX content swap handler
-        document.addEventListener('htmx:afterSwap', () => {
-            // Only reinitialize if new content has lucide icons
-            setTimeout(() => {
-                const newIcons = document.querySelectorAll('[data-lucide]:not([data-icon-processed])');
-                if (newIcons.length > 0) {
-                    initLucideIcons();
-                }
-            }, 100);
-        });
-        
         // Alpine.js data for dashboard
         document.addEventListener('alpine:init', () => {
             Alpine.data('dashboard', () => ({
-                sidebarCollapsed: false,
-                sidebarOpen: false,
-                
                 init() {
                     console.log('Dashboard Alpine.js initialized');
                     // Initialize components after Alpine is ready
                     this.$nextTick(() => {
                         this.initializeComponents();
                         this.loadInitialContent();
-                        this.setupSidebarSync();
                     });
                 },
-                
-                toggleSidebar() {
-                    // Component event system handles this now
-                    // Let the navbar and sidebar components manage their own state
-                },
-                
+       
                 initializeComponents() {
                     const sidebar = document.getElementById('sidebar');
                     const navbar = document.getElementById('navbar');
@@ -340,7 +255,7 @@
                     if (sidebar) {
                         // Set sidebar menu items - SINGLE SOURCE OF TRUTH
                         sidebar.menuItems = this.getMenuItems();
-                        sidebar.activeItem = 'dashboard';
+                        sidebar.activeItem = 'dashboard'; // Set active item
                         console.log('Sidebar initialized with menu items');
                     }
                     
@@ -350,45 +265,6 @@
                         navbar.breadcrumb = this.getBreadcrumbData();
                         navbar.notificationCount = 3;
                         console.log('Navbar initialized with user data');
-                    }
-                },
-                
-                setupSidebarSync() {
-                    const sidebar = document.getElementById('sidebar');
-                    const sidebarContainer = document.getElementById('sidebarContainer');
-                    
-                    if (sidebar) {
-                        // Listen for sidebar toggle events from component
-                        document.addEventListener('sidebar-toggle', (e) => {
-                            console.log('Alpine: Received sidebar toggle event', e.detail);
-                            // Update Alpine state to match component state
-                            this.sidebarCollapsed = e.detail.collapsed;
-                            
-                            // Update container class to trigger CSS width change
-                            if (sidebarContainer) {
-                                if (e.detail.collapsed) {
-                                    sidebarContainer.classList.add('collapsed');
-                                    console.log('Alpine: Added collapsed class to container');
-                                } else {
-                                    sidebarContainer.classList.remove('collapsed');
-                                    console.log('Alpine: Removed collapsed class from container');
-                                }
-                            }
-                        });
-                        
-                        // Sync initial state
-                        this.sidebarCollapsed = sidebar.collapsed;
-                        this.sidebarOpen = sidebar.sidebarOpen;
-                        
-                        // Sync initial container class
-                        if (sidebarContainer && sidebar.collapsed) {
-                            sidebarContainer.classList.add('collapsed');
-                        }
-                        
-                        console.log('Alpine: Sidebar state synced', {
-                            collapsed: this.sidebarCollapsed,
-                            open: this.sidebarOpen
-                        });
                     }
                 },
                 
@@ -459,15 +335,6 @@
             }));
         });
         
-        // Event listeners
-        document.addEventListener('toggle-sidebar', () => {
-            // Get Alpine.js dashboard instance and call toggleSidebar
-            const dashboardEl = document.querySelector('[x-data="dashboard"]');
-            if (dashboardEl && dashboardEl._x_dataStack) {
-                dashboardEl._x_dataStack[0].toggleSidebar();
-            }
-        });
-        
         document.addEventListener('nav-item-click', (e) => {
             // Close mobile sidebar after navigation
             if (window.innerWidth <= 768) {
@@ -488,11 +355,6 @@
                 document.getElementById('sidebarContainer').classList.remove('open');
                 document.getElementById('mobileOverlay').classList.remove('show');
             }
-        });
-        
-        // Initialize icons after HTMX content loads
-        document.addEventListener('htmx:afterSwap', () => {
-            initLucideIcons();
         });
     </script>
 </body>

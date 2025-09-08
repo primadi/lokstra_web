@@ -17,7 +17,8 @@ import "./layout/ls-card.js"
 import "./layout/ls-layout.js"
 
 // UI Components
-import "./ui/lokstra-theme-switcher.js"
+import "./ui/ls-icon.js"
+import "./ui/ls-menu.js"
 
 // Feedback
 import "./feedback/ls-alert.js"
